@@ -1,4 +1,4 @@
-import { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -212,11 +212,6 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -304,7 +299,6 @@ import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
-import * as ep___users_pages from './endpoints/users/pages.js';
 import * as ep___users_reactions from './endpoints/users/reactions.js';
 import * as ep___users_recommendation from './endpoints/users/recommendation.js';
 import * as ep___users_relation from './endpoints/users/relation.js';
@@ -529,11 +523,6 @@ const eps = [
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
-	['messaging/history', ep___messaging_history],
-	['messaging/messages', ep___messaging_messages],
-	['messaging/messages/create', ep___messaging_messages_create],
-	['messaging/messages/delete', ep___messaging_messages_delete],
-	['messaging/messages/read', ep___messaging_messages_read],
 	['meta', ep___meta],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],
@@ -621,7 +610,6 @@ const eps = [
 	['users/lists/show', ep___users_lists_show],
 	['users/lists/update', ep___users_lists_update],
 	['users/notes', ep___users_notes],
-	['users/pages', ep___users_pages],
 	['users/reactions', ep___users_reactions],
 	['users/recommendation', ep___users_recommendation],
 	['users/relation', ep___users_relation],

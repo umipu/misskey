@@ -21,7 +21,7 @@
 import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
 import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import type * as misskey from 'misskey-js';
 import { getScrollPosition } from '@/scripts/scroll';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
@@ -78,11 +78,11 @@ const headerTabs = $computed(() => user ? [{
 	key: 'clips',
 	title: i18n.ts.clips,
 	icon: 'fas fa-paperclip',
-}, {
+}, /* {
 	key: 'pages',
 	title: i18n.ts.pages,
 	icon: 'fas fa-file-alt',
-}, {
+},*/ {
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'fas fa-icons',

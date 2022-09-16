@@ -251,6 +251,12 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	// Shrimpia START
+	showPostFormPreview: {
+		where: 'device',
+		default: false,
+	},
+	// Shrimpia END
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

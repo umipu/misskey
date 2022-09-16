@@ -65,12 +65,12 @@
 <script lang="ts" setup>
 import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
 import { throttle } from 'throttle-debounce';
+import type * as misskey from 'misskey-js';
 import XNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -133,7 +133,9 @@ let poll = $ref<{
 	expiredAfter: string | null;
 } | null>(null);
 let useCw = $ref(false);
-let showPreview = $ref(false);
+// Shrimpia START
+let showPreview = $ref(defaultStore.state.showPostFormPreview);
+// Shrimpia END
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
@@ -223,6 +225,12 @@ watch($$(visibleUsers), () => {
 }, {
 	deep: true,
 });
+
+// Shrimpia START
+watch($$(showPreview), () => {
+	defaultStore.set('showPostFormPreview', showPreview);
+});
+// Shrimpia END
 
 if (props.mention) {
 	text = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;

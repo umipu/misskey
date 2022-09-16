@@ -14,13 +14,13 @@ export const navbarItemDef = reactive({
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		to: '/my/notifications',
 	},
-	messaging: {
-		title: 'messaging',
-		icon: 'fas fa-comments',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
-		to: '/my/messaging',
-	},
+	// messaging: {
+	// 	title: 'messaging',
+	// 	icon: 'fas fa-comments',
+	// 	show: computed(() => $i != null),
+	// 	indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
+	// 	to: '/my/messaging',
+	// },
 	drive: {
 		title: 'drive',
 		icon: 'fas fa-cloud',
