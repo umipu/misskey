@@ -17,7 +17,9 @@
 							<MkUserName class="name" :user="user" :nowrap="true"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+								<!-- Shrimpia START -->
+								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin"><ShEmperor/></span>
+								<!-- Shrimpia END -->
 								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="fas fa-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
@@ -34,7 +36,9 @@
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+							<!-- Shrimpia START -->
+							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><ShEmperor/></span>
+							<!-- Shrimpia END -->
 							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="fas fa-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
@@ -110,8 +114,8 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
-import * as misskey from 'misskey-js';
 import XUserTimeline from './index.timeline.vue';
+import type * as misskey from 'misskey-js';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
@@ -127,6 +131,9 @@ import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+// Shrimpia START
+import ShEmperor from '@/components/ShEmperor.vue';
+// Shrimpia END
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
