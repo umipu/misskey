@@ -36,6 +36,9 @@
 				<div class="top">
 					<MkA v-user-preview="appearNote.user.id" class="name" :to="userPage(appearNote.user)">
 						<MkUserName :user="appearNote.user"/>
+						<!-- Shrimpia START -->
+						<ShEmperor class="emperor"/>
+						<!-- Shrimpia END -->
 					</MkA>
 					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
 					<div class="info">
@@ -116,7 +119,10 @@
 <script lang="ts" setup>
 import { computed, inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+// Shrimpia START
+import ShEmperor from './ShEmperor.vue';
+// Shrimpia END
+import type * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import XNoteSimple from '@/components/MkNoteSimple.vue';
 import XReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -415,6 +421,12 @@ if (appearNote.replyId) {
 				> .top {
 					> .name {
 						font-weight: bold;
+
+						// Shrimpia START
+						> .emperor {
+							margin-left: 8px;
+						}
+						// Shrimpia END
 					}
 
 					> .is-bot {

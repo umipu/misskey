@@ -7,6 +7,7 @@
 
 <style lang="scss" scoped>
 .sh-emperor {
+	display: inline-block;
 	border-radius: 3px;
 	color: #fff;
 	background: linear-gradient(#e23731, #eb6101);
