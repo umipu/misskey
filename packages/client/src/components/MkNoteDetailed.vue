@@ -37,7 +37,7 @@
 					<MkA v-user-preview="appearNote.user.id" class="name" :to="userPage(appearNote.user)">
 						<MkUserName :user="appearNote.user"/>
 						<!-- Shrimpia START -->
-						<ShEmperor class="emperor"/>
+						<ShEmperor v-if="appearNote.user.isAdmin" class="emperor"/>
 						<!-- Shrimpia END -->
 					</MkA>
 					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
