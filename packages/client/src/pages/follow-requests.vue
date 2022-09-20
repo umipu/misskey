@@ -18,12 +18,9 @@
 								<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
 								<p class="acct">@{{ acct(req.follower) }}</p>
 							</div>
-							<div v-if="req.follower.description" class="description" :title="req.follower.description">
-								<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
-							</div>
-							<div class="actions">
-								<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
-								<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
+							<div class="commands">
+								<MkButton class="command" rounded primary @click="accept(req.follower)"><i class="fas fa-check"/> {{ i18n.ts.accept }}</MkButton>
+								<MkButton class="command" rounded danger @click="reject(req.follower)"><i class="fas fa-times"/> {{ i18n.ts.reject }}</MkButton>
 							</div>
 						</div>
 					</div>
@@ -37,6 +34,9 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
+// Shrimpia START
+import MkButton from '@/components/MkButton.vue';
+// Shrimpia END
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -90,13 +90,15 @@ definePageMetadata(computed(() => ({
 			display: flex;
 			width: calc(100% - 54px);
 			position: relative;
+			// Shrimpia START
+			flex-wrap: wrap;
+			gap: 8px;
+			// Shrimpia END
 
 			> .name {
-				width: 45%;
-
-				@media (max-width: 500px) {
-					width: 100%;
-				}
+				// Shrimpia START
+				flex: 1 1 50%;
+				// Shrimpia END
 
 				> .name,
 				> .acct {
@@ -134,6 +136,11 @@ definePageMetadata(computed(() => ({
 				@media (max-width: 500px) {
 					display: none;
 				}
+			}
+
+			> .commands {
+				display: flex;
+				gap: 8px;
 			}
 
 			> .actions {
