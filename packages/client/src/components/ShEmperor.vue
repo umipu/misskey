@@ -1,4 +1,4 @@
-<!-- Shrimpia Start -->
+<!-- Shrimpia START -->
 <template>
 <span class="sh-emperor">
 	皇帝
