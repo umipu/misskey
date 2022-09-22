@@ -21,7 +21,9 @@ const modal = ref<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
-	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+	// Shrimpia START
+	window.open('https://github.com/shrimpia/misskey/blob/master/CHANGELOG.md', '_blank');
+	// Shrimpia END
 };
 </script>
 

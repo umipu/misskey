@@ -19,7 +19,9 @@
 				</div>
 				<FormSection>
 					<div class="_formLinks">
-						<FormLink to="https://github.com/misskey-dev/misskey" external>
+						<!-- Shrimpia START -->
+						<FormLink to="https://github.com/shrimpia/misskey" external>
+							<!-- Shrimpia END -->
 							<template #icon><i class="fas fa-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
@@ -49,7 +51,7 @@
 						<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
 						<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
 					</div>
-					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
+					<template #caption><MkLink url="https://github.com/shrimpia/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
