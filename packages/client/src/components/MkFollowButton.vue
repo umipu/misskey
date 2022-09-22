@@ -1,14 +1,22 @@
 <template>
-<button class="kpoogebi _button"
+<!-- Shrimpia START -->
+<span v-if="disableIfFollowing && isFollowing" style="opacity: 0.5">
+	{{ $ts.alreadyFollowed }}
+</span>
+<button
+	v-else
+	class="kpoogebi _button"
 	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
 	:disabled="wait"
 	@click="onClick"
 >
+	<!-- Shrimpia END -->
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
 			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
 		</template>
-		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
+		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
+			<!-- つまりリモートフォローの場合。 -->
 			<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
 		</template>
 		<template v-else-if="isFollowing">
@@ -29,7 +37,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
@@ -38,9 +46,15 @@ const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
 	full?: boolean,
 	large?: boolean,
+	// Shrimpia START
+	disableIfFollowing?: boolean,
+	// Shrimpia END
 }>(), {
 	full: false,
 	large: false,
+	// Shrimpia START
+	disableIfFollowing: false,
+	// Shrimpia END
 });
 
 let isFollowing = $ref(props.user.isFollowing);
@@ -50,9 +64,9 @@ const connection = stream.useChannel('main');
 
 if (props.user.isFollowing == null) {
 	os.api('users/show', {
-		userId: props.user.id
+		userId: props.user.id,
 	})
-	.then(onFollowChange);
+		.then(onFollowChange);
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
@@ -75,17 +89,17 @@ async function onClick() {
 			if (canceled) return;
 
 			await os.api('following/delete', {
-				userId: props.user.id
+				userId: props.user.id,
 			});
 		} else {
 			if (hasPendingFollowRequestFromYou) {
 				await os.api('following/requests/cancel', {
-					userId: props.user.id
+					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = false;
 			} else {
 				await os.api('following/create', {
-					userId: props.user.id
+					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = true;
 			}

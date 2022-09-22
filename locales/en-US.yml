@@ -75,6 +75,9 @@ notes: "Notes"
 following: "Following"
 followers: "Followers"
 followsYou: "Follows you"
+# Shrimpia START
+alreadyFollowed: "Already followed"
+# Shrimpia END
 createList: "Create list"
 manageLists: "Manage lists"
 error: "Error"

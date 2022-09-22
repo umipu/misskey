@@ -75,6 +75,9 @@ notes: "ノート"
 following: "フォロー"
 followers: "フォロワー"
 followsYou: "フォローされています"
+# Shrimpia START
+alreadyFollowed: "フォローしています"
+# Shrimpia END
 createList: "リスト作成"
 manageLists: "リストの管理"
 error: "エラー"

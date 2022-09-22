@@ -62,9 +62,10 @@
 			<i class="fas fa-quote-right"></i>
 		</MkA>
 		<!-- Shrimpia START-->
-		<span v-if="notification.type === 'follow'" class="text">{{ i18n.ts.youGotNewFollower }}
+		<span v-if="notification.type === 'follow'" class="text">
+			{{ i18n.ts.youGotNewFollower }}
 			<div v-if="full">
-				<MkA class="profile-button" :to="userPage(notification.user)">{{ i18n.ts.profile }}</MkA>
+				<MkFollowButton :user="notification.user" :full="true" disable-if-following/>
 			</div>
 		</span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
@@ -87,8 +88,11 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import type * as misskey from 'misskey-js';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
+// Shrimpia START
 import MkButton from '@/components/MkButton.vue';
+// Shrimpia END
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
