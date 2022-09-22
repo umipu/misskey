@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.119.0-sh.2 (2022/09/20)
+## 12.119.0-sh.3 (2022/09/22)
 
 ### 通知欄
 
