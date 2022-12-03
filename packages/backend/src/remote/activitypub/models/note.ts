@@ -1,32 +1,33 @@
 import promiseLimit from 'promise-limit';
 
 import config from '@/config/index.js';
-import Resolver from '../resolver.js';
 import post from '@/services/note/create.js';
-import { resolvePerson } from './person.js';
-import { resolveImage } from './image.js';
-import { CacheableRemoteUser } from '@/models/entities/user.js';
-import { htmlToMfm } from '../misc/html-to-mfm.js';
-import { extractApHashtags } from './tag.js';
+import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import { unique, toArray, toSingle } from '@/prelude/array.js';
-import { extractPollFromQuestion } from './question.js';
 import vote from '@/services/note/polls/vote.js';
-import { apLogger } from '../logger.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host.js';
 import { Emojis, Polls, MessagingMessages } from '@/models/index.js';
-import { Note } from '@/models/entities/note.js';
-import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji, getApType } from '../type.js';
-import { Emoji } from '@/models/entities/emoji.js';
+import type { Note } from '@/models/entities/note.js';
+import type { Emoji } from '@/models/entities/emoji.js';
 import { genId } from '@/misc/gen-id.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { getApLock } from '@/misc/app-lock.js';
 import { createMessage } from '@/services/messages/create.js';
-import { parseAudience } from '../audience.js';
-import { extractApMentions } from './mention.js';
 import DbResolver from '../db-resolver.js';
 import { StatusError } from '@/misc/fetch.js';
+import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
+import { parseAudience } from '../audience.js';
+import { apLogger } from '../logger.js';
+import { htmlToMfm } from '../misc/html-to-mfm.js';
+import Resolver from '../resolver.js';
+import { extractApMentions } from './mention.js';
+import { extractPollFromQuestion } from './question.js';
+import { extractApHashtags } from './tag.js';
+import { resolveImage } from './image.js';
+import { resolvePerson } from './person.js';
+import type { IObject, IPost } from '../type.js';
 
 const logger = apLogger;
 
@@ -109,8 +110,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		}
 	}
 
-	let isTalk = note._misskey_talk && visibility === 'specified';
-
 	const apMentions = await extractApMentions(note.tag, resolver);
 	const apHashtags = await extractApHashtags(note.tag);
 
@@ -131,7 +130,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const reply: Note | null = note.inReplyTo
 		? await resolveNote(note.inReplyTo, resolver).then(x => {
 			if (x == null) {
-				logger.warn(`Specified inReplyTo, but nout found`);
+				logger.warn('Specified inReplyTo, but nout found');
 				throw new Error('inReplyTo not found');
 			} else {
 				return x;
@@ -143,7 +142,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 				const id = uri.split('/').pop();
 				const talk = await MessagingMessages.findOneBy({ id });
 				if (talk) {
-					isTalk = true;
 					return null;
 				}
 			}
@@ -198,7 +196,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// テキストのパース
 	let text: string | null = null;
-	if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source?.content === 'string') {
+	if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source.content === 'string') {
 		text = note.source.content;
 	} else if (typeof note._misskey_content !== 'undefined') {
 		text = note._misskey_content;
@@ -236,13 +234,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const poll = await extractPollFromQuestion(note, resolver).catch(() => undefined);
-
-	if (isTalk) {
-		for (const recipient of visibleUsers) {
-			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
-			return null;
-		}
-	}
 
 	return await post(actor, {
 		createdAt: note.published ? new Date(note.published) : null,

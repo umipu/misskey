@@ -1,9 +1,9 @@
-import config from '@/config/index.js';
 import { v4 as uuid } from 'uuid';
-import { IActivity } from '../type.js';
-import { LdSignature } from '../misc/ld-signature.js';
+import config from '@/config/index.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
-import { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/user.js';
+import { LdSignature } from '../misc/ld-signature.js';
+import type { IActivity } from '../type.js';
 
 export const renderActivity = (x: any): IActivity | null => {
 	if (x == null) return null;
@@ -37,7 +37,6 @@ export const renderActivity = (x: any): IActivity | null => {
 				'_misskey_quote': 'misskey:_misskey_quote',
 				'_misskey_reaction': 'misskey:_misskey_reaction',
 				'_misskey_votes': 'misskey:_misskey_votes',
-				'_misskey_talk': 'misskey:_misskey_talk',
 				'isCat': 'misskey:isCat',
 				// vcard
 				vcard: 'http://www.w3.org/2006/vcard/ns#',
