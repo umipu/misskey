@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-sh.1 (2022/12/04)
+
+### ActivityPub
+
+* 外部からのMisskey Chatの受信を、公開範囲:ダイレクトなノートとして処理するよう変更
+
 ## 12.119.2 (2022/12/04)
 ### Bugfixes
 - Server: Backported versions mitigate isn't working @mei23

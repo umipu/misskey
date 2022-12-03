@@ -32,6 +32,10 @@ mk.shrimpia.network で使用しているMisskeyは、通常のMisskeyをベー�
 
 * プレビューボタンのオンオフを記憶するよう変更
 
+## ActivityPub
+
+* 外部からのMisskey Chatの受信を、公開範囲:ダイレクトなノートとして処理するよう変更
+
 ## その他
 
 * 「管理者バッジ」を「皇帝バッジ」に変更
