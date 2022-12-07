@@ -1,9 +1,9 @@
 /* eslint-disable key-spacing */
+import { IsNull } from 'typeorm';
+import { Emojis } from '@/models/index.js';
 import { emojiRegex } from './emoji-regex.js';
 import { fetchMeta } from './fetch-meta.js';
-import { Emojis } from '@/models/index.js';
 import { toPunyNullable } from './convert-host.js';
-import { IsNull } from 'typeorm';
 
 const legacies: Record<string, string> = {
 	'like':     '👍',
