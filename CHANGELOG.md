@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-sh.2 (2022/12/07)
+
+* トップページの左下にある絵文字を🦐と🍤に変更
+* ログイン画面の文言を一部変更
+* 皇帝バッジを廃止
+* 細部のデザインを微調整
+
 ## 12.119.2-sh.1 (2022/12/04)
 
 ### ActivityPub
