@@ -5,9 +5,6 @@
 	</MkA>
 	<div v-if="note.user.isBot" class="is-bot">bot</div>
 	<div class="username"><MkAcct :user="note.user"/></div>
-	<!-- Shrimpia START -->
-	<ShEmperor v-if="note.user.isAdmin"/>
-	<!-- Shrimpia END -->
 	<div class="info">
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
@@ -19,10 +16,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import ShEmperor from './ShEmperor.vue';
-// Shrimpia START
 import type * as misskey from 'misskey-js';
-// Shrimpia END
 import MkVisibility from '@/components/MkVisibility.vue';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
