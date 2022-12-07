@@ -4,11 +4,13 @@
 		<MkFeaturedPhotos class="bg"/>
 		<div class="fade"></div>
 		<div class="emojis">
+			<!-- Shrimpia START -->
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
+			<!-- Shrimpia END -->
 		</div>
 		<div class="main">
 			<img src="/client-assets/misskey.svg" class="misskey"/>

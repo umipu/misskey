@@ -8,7 +8,9 @@
 				<div ref="containerEl" v-panel class="_formBlock about" :class="{ playing: easterEggEngine != null }">
 					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 					<div class="misskey">Misskey</div>
-					<div class="misskey">Shrimpia Edition</div>
+					<!-- Shrimpia START -->
+					<div class="shrimpia">Shrimpia Edition</div>
+					<!-- Shrimpia END -->
 					<div class="version">v{{ version }}</div>
 					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 				</div>
@@ -16,7 +18,9 @@
 					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
 				<div class="_formBlock" style="text-align: center;">
-					<MkButton primary rounded inline @click="iLoveMisskey">#シュリンピア帝国 <Mfm text="$[tada 万歳！]"/></MkButton>
+					<!-- Shrimpia START -->
+					<MkButton primary rounded inline @click="iLoveMisskey"><Mfm text="$[jelly 🦐]"/> #シュリンピア帝国 万歳！</MkButton>
+					<!-- Shrimpia END -->
 				</div>
 				<FormSection>
 					<div class="_formLinks">
@@ -189,11 +193,13 @@ function gravity() {
 
 function iLoveMisskey() {
 	os.post({
+		// Shrimpia START
 		initialText: `<center>
 #シュリンピア帝国
 
 $[tada 🦐 万歳！$[flip 🦐]]
 </center>`,
+		// Shrimpia END
 		instant: true,
 	});
 }
@@ -247,6 +253,13 @@ definePageMetadata({
 			margin: 0.75em auto 0 auto;
 			width: max-content;
 		}
+
+		// Shrimpia START
+		> .shrimpia {
+			margin: 0.15em auto 0 auto;
+			width: max-content;
+		}
+		// Shrimpia END
 
 		> .version {
 			margin: 0 auto;
