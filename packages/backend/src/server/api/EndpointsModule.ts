@@ -214,11 +214,6 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
@@ -315,7 +310,6 @@ import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
-import * as ep___users_pages from './endpoints/users/pages.js';
 import * as ep___users_reactions from './endpoints/users/reactions.js';
 import * as ep___users_recommendation from './endpoints/users/recommendation.js';
 import * as ep___users_relation from './endpoints/users/relation.js';
@@ -544,11 +538,6 @@ const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
 const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass: ep___i_webhooks_update.default };
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
-const $messaging_history: Provider = { provide: 'ep:messaging/history', useClass: ep___messaging_history.default };
-const $messaging_messages: Provider = { provide: 'ep:messaging/messages', useClass: ep___messaging_messages.default };
-const $messaging_messages_create: Provider = { provide: 'ep:messaging/messages/create', useClass: ep___messaging_messages_create.default };
-const $messaging_messages_delete: Provider = { provide: 'ep:messaging/messages/delete', useClass: ep___messaging_messages_delete.default };
-const $messaging_messages_read: Provider = { provide: 'ep:messaging/messages/read', useClass: ep___messaging_messages_read.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
@@ -645,7 +634,6 @@ const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: 
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
 const $users_lists_update: Provider = { provide: 'ep:users/lists/update', useClass: ep___users_lists_update.default };
 const $users_notes: Provider = { provide: 'ep:users/notes', useClass: ep___users_notes.default };
-const $users_pages: Provider = { provide: 'ep:users/pages', useClass: ep___users_pages.default };
 const $users_reactions: Provider = { provide: 'ep:users/reactions', useClass: ep___users_reactions.default };
 const $users_recommendation: Provider = { provide: 'ep:users/recommendation', useClass: ep___users_recommendation.default };
 const $users_relation: Provider = { provide: 'ep:users/relation', useClass: ep___users_relation.default };
@@ -878,11 +866,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$miauth_genToken,
 		$mute_create,
@@ -979,7 +962,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_show,
 		$users_lists_update,
 		$users_notes,
-		$users_pages,
 		$users_reactions,
 		$users_recommendation,
 		$users_relation,
@@ -1206,11 +1188,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$miauth_genToken,
 		$mute_create,
@@ -1305,7 +1282,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_show,
 		$users_lists_update,
 		$users_notes,
-		$users_pages,
 		$users_reactions,
 		$users_recommendation,
 		$users_relation,
