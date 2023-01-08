@@ -6,10 +6,7 @@
 			<div class="_gaps_m znqjceqz">
 				<div ref="containerEl" v-panel class="about" :class="{ playing: easterEggEngine != null }">
 					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
-					<div class="misskey">Misskey</div>
-					<!-- Shrimpia START -->
-					<div class="shrimpia">Shrimpia Edition</div>
-					<!-- Shrimpia END -->
+					<div class="misskey">Ebisskey</div>
 					<div class="version">v{{ version }}</div>
 					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :is-reaction="false" :normal="true" :no-style="true"/></span>
 				</div>
