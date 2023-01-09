@@ -29,6 +29,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'l-cherry',
 		'l-sushi',
 		'l-u0',
+		'l-dolce',
 
 		'd-dark',
 		'd-persimmon',
