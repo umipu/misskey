@@ -1,12 +1,13 @@
 <template>
-<img v-if="isCustom" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
+<template v-if="hasCustomEmojiNotFoundError">:{{ customEmojiName }}:</template>
+<img v-else-if="isCustom" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async" @error="onCustomEmojiNotFound"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle"/>
 <span v-else-if="char && useOsNativeEmojis" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
 <span v-else>{{ emoji }}</span>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { defaultStore } from '@/store';
@@ -37,6 +38,14 @@ const url = computed(() => {
 	}
 });
 const alt = computed(() => isCustom.value ? `:${customEmojiName}:` : char.value);
+const hasCustomEmojiNotFoundError = ref(false);
+
+watch(() => [
+	props.emoji,
+	props.host,
+], () => {
+	hasCustomEmojiNotFoundError.value = false;
+});
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
@@ -44,6 +53,10 @@ function computeTitle(event: PointerEvent): void {
 		? `:${customEmojiName}:`
 		: (getEmojiName(char.value as string) ?? char.value as string);
 	(event.target as HTMLElement).title = title;
+}
+
+function onCustomEmojiNotFound(): void {
+	hasCustomEmojiNotFoundError.value = true;
 }
 </script>
 
