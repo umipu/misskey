@@ -1366,6 +1366,7 @@ _widgets:
   userList: "ユーザーリスト"
   _userList:
     chooseList: "リストを選択"
+  clicker: "クリッカー"
 
 _cw:
   hide: "隠す"
@@ -1555,7 +1556,6 @@ _notification:
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がRenoteしました"
-  youGotPoll: "{name}が投票しました"
   youGotMessagingMessageFromUser: "{name}からのチャットがあります"
   youGotMessagingMessageFromGroup: "{name}のチャットがあります"
   youWereFollowed: "フォローされました"
@@ -1574,7 +1574,6 @@ _notification:
     renote: "Renote"
     quote: "引用"
     reaction: "リアクション"
-    pollVote: "アンケートに投票された"
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"

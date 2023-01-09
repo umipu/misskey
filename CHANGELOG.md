@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, etc)
+- New features (Play, new widgets, new charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
@@ -30,6 +30,7 @@ You should also include the user name that made the change.
 
 #### For users
 - ノートのウォッチ機能が削除されました
+- アンケートに投票された際に通知が作成されなくなりました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
@@ -77,13 +78,17 @@ You should also include the user name that made the change.
 - Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: Support remote objects in search @SoniEx2
+- Client: user activity page @syuilo
 - Client: add user list widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
+- Client: add new theme @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
+- Client: clicker game @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
@@ -94,6 +99,7 @@ You should also include the user name that made the change.
 - Server: アンテナの作成数上限を追加 @syuilo
 - Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
 - Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
+- Server: Escape SQL LIKE @mei23
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
