@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 * UI: Dolce テーマを内蔵 (thanks to @L1n4r1A)
 * ノート: 数字引用 / パクる 機能を追加
   * Renoteボタンから利用可能
+* リモートのカスタム絵文字リアクションについて、ローカルに同名の絵文字があれば押せる機能を追加
 
 ## 13.0.0 (unreleased)
 
