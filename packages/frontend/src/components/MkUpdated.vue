@@ -22,9 +22,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
-	// Shrimpia START
-	window.open('https://github.com/shrimpia/misskey/blob/master/CHANGELOG.md', '_blank');
-	// Shrimpia END
+	window.open('https://github.com/shrimpia/misskey/blob/13/CHANGELOG.md', '_blank');
 };
 
 onMounted(() => {
