@@ -1,6 +1,8 @@
 import { defineAsyncComponent, Ref, inject } from 'vue';
 import * as misskey from 'misskey-js';
 import { pleaseLogin } from './please-login';
+import { getTextLastNumeric, getTextWithoutEndingNumeric } from './get-note-last-numeric';
+import { playFile } from './sound';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
@@ -194,6 +196,8 @@ export function getNoteMenu(props: {
 			noteId: appearNote.id,
 		});
 
+		const nextNumeric = getTextLastNumeric(appearNote.text ?? '') + 1;
+
 		menu = [
 			...(
 				props.currentClipPage?.value.userId === $i.id ? [{
@@ -289,6 +293,33 @@ export function getNoteMenu(props: {
 				}]
 			: []
 			),
+
+			...(appearNote.text && (appearNote.visibility === 'public' || appearNote.visibility === 'home')) ? [
+				null,
+				{
+					icon: `ti ti-box-multiple-${Math.min(9, nextNumeric)}`,
+					text: '数字引用',
+					action: () => {
+						if (!appearNote.text) return;
+						os.api('notes/create', {
+							text: getTextWithoutEndingNumeric(appearNote.text) + nextNumeric,
+							visibility: appearNote.visibility,
+						}).then(() => {
+							if (nextNumeric !== 4) return;
+							playFile('shrimpia/4', 0.5);
+						});
+					},
+				}, {
+					icon: 'ti ti-swipe',
+					text: 'パクる',
+					action: () => {
+						if (!appearNote.text) return;
+						os.api('notes/create', {
+							text: appearNote.text,
+							visibility: appearNote.visibility,
+						});
+					},
+				}] : [],
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				null,
 				appearNote.userId === $i.id ? {

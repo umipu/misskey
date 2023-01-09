@@ -299,10 +299,10 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
+import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
 import { Note, UserDetailed } from 'misskey-js/built/entities';
-import { miLocalStorage } from './local-storage';
 
 export class ColdDeviceStorage {
 	public static default = {
@@ -312,8 +312,8 @@ export class ColdDeviceStorage {
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
 		sound_masterVolume: 0.3,
-		sound_note: { type: 'syuilo/down', volume: 1 },
-		sound_noteMy: { type: 'syuilo/up', volume: 1 },
+		sound_note: { type: 'syuilo/down', volume: 0 },
+		sound_noteMy: { type: 'syuilo/up', volume: 0 },
 		sound_notification: { type: 'syuilo/pope2', volume: 1 },
 		sound_chat: { type: 'syuilo/pope1', volume: 1 },
 		sound_chatBg: { type: 'syuilo/waon', volume: 1 },

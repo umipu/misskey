@@ -32,6 +32,7 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba5',
 	'noizenecio/kick_gaba6',
 	'noizenecio/kick_gaba7',
+	'shrimpia/4',
 ] as const;
 
 export function getAudio(file: string, useCache = true): HTMLAudioElement {

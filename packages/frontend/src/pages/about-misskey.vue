@@ -25,7 +25,7 @@
 							<!-- Shrimpia END -->
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>GitHub</template>
+							<template #suffix>shrimpia/misskey</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
 							<template #icon><i class="ti ti-language-hiragana"></i></template>
@@ -46,6 +46,13 @@
 						<FormLink to="https://github.com/tamaina" external>@tamaina</FormLink>
 						<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
 						<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
+					</div>
+					<template #caption><MkLink url="https://github.com/shrimpia/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
+				</FormSection>
+				<FormSection>
+					<template #label>改造してる奴</template>
+					<div class="_formLinksGrid">
+						<FormLink to="https://github.com/EbiseLutica" external>@EbiseLutica</FormLink>
 					</div>
 					<template #caption><MkLink url="https://github.com/shrimpia/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 				</FormSection>
