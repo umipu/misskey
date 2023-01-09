@@ -215,6 +215,7 @@ import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___meta from './endpoints/meta.js';
+import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -539,6 +540,7 @@ const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep
 const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass: ep___i_webhooks_update.default };
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
+const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
 const $mute_delete: Provider = { provide: 'ep:mute/delete', useClass: ep___mute_delete.default };
@@ -867,6 +869,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_update,
 		$i_webhooks_delete,
 		$meta,
+		$emojis,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,
@@ -1189,6 +1192,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_update,
 		$i_webhooks_delete,
 		$meta,
+		$emojis,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,

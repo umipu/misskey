@@ -214,6 +214,7 @@ import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___meta from './endpoints/meta.js';
+import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -536,6 +537,7 @@ const eps = [
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
 	['meta', ep___meta],
+	['emojis', ep___emojis],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],
