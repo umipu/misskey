@@ -53,7 +53,14 @@
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
 				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
-				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
+				<MkSwitch v-model="useKoruri">
+					Koruri フォントを使用 <span class="_beta">Shrimpia</span>
+					<template #caption>
+						可読性および欧文・和文間のバランスに優れた
+						<a ref="noopener noreferrer" class="_link" href="https://koruri.github.io/" target="_blank">Koruri</a>
+						フォントを使用します。
+					</template>
+				</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 			</div>
 			<div>
@@ -124,7 +131,7 @@ import { miLocalStorage } from '@/local-storage';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
-const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
+const useKoruri = ref(miLocalStorage.getItem('useSystemFont') == null);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -170,8 +177,8 @@ watch(fontSize, () => {
 	}
 });
 
-watch(useSystemFont, () => {
-	if (useSystemFont.value) {
+watch(useKoruri, () => {
+	if (!useKoruri.value) {
 		miLocalStorage.setItem('useSystemFont', 't');
 	} else {
 		miLocalStorage.removeItem('useSystemFont');
@@ -181,7 +188,7 @@ watch(useSystemFont, () => {
 watch([
 	lang,
 	fontSize,
-	useSystemFont,
+	useKoruri,
 	enableInfiniteScroll,
 	squareAvatars,
 	aiChanMode,
