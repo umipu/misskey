@@ -3,8 +3,8 @@
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle }"
-	@click="toggleReaction()"
+	:class="{ reacted: note.myReaction == reaction, canToggle: (canToggle || alternative) }"
+	@click="toggleReaction"
 >
 	<MkReactionIcon class="icon" :reaction="reaction"/>
 	<span class="count">{{ count }}</span>
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, ComputedRef, onMounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -20,6 +20,7 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
+import { customEmojis } from '@/custom-emojis';
 
 const props = defineProps<{
 	reaction: string;
@@ -30,10 +31,20 @@ const props = defineProps<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
+const reactionName = computed(() => {
+	const r = props.reaction.replace(':', '');
+	return r.slice(0, r.indexOf('@'));
+});
+
+const alternative: ComputedRef<string | null> = computed(() => (customEmojis).find(it => it.name === reactionName.value)?.name);
+
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
-const toggleReaction = () => {
-	if (!canToggle.value) return;
+const toggleReaction = (ev) => {
+	if (!canToggle.value) {
+		chooseAlternative(ev);
+		return;
+	}
 
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
@@ -62,6 +73,16 @@ const anime = () => {
 	const x = rect.left + 16;
 	const y = rect.top + (buttonEl.value.offsetHeight / 2);
 	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+};
+
+const chooseAlternative = (ev) => {
+	// メニュー表示にして、モデレーター以上の場合は登録もできるように
+	if (!alternative.value) return;
+	console.log(alternative.value);
+	os.api('notes/reactions/create', {
+		noteId: props.note.id,
+		reaction: `:${alternative.value}:`,
+	});
 };
 
 watch(() => props.count, (newCount, oldCount) => {
