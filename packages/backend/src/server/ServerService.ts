@@ -101,7 +101,7 @@ export class ServerService {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 			if (emoji == null) {
-				return await reply.status(404);
+				await reply.redirect(404, '/static-assets/user-unknown.png');
 			}
 
 			const url = new URL('/proxy/emoji.webp', this.config.url);
