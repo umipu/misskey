@@ -22,6 +22,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
+	// TODO masterリリースのときに変える
 	window.open('https://github.com/shrimpia/misskey/blob/13/CHANGELOG.md', '_blank');
 };
 
