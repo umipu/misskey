@@ -9,6 +9,16 @@
 You should also include the user name that made the change.
 -->
 
+## 13.0.0-sh.1（unreleased）
+
+* Ebisskey に名称変更
+* サウンド設定: `ノート` `ノート(自分)` のデフォルト音量を 0 に変更
+* サウンド設定: `チャット` の設定を削除
+* UI: Koruri をデフォルトのフォントに採用
+* UI: Dolce テーマを内蔵 (thanks to @L1n4r1A)
+* ノート: 数字引用 / パクる 機能を追加
+  * Renoteボタンから利用可能
+
 ## 13.0.0 (unreleased)
 
 ### TL;DR
