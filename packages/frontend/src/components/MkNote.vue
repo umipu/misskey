@@ -144,6 +144,8 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
+import { getTextLastNumeric, getTextWithoutEndingNumeric } from '@/scripts/get-note-last-numeric';
+import { playFile } from '@/scripts/sound';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -230,6 +232,7 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
+	const nextNumeric = getTextLastNumeric(appearNote.text ?? '') + 1;
 	os.popupMenu([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
@@ -244,6 +247,29 @@ function renote(viaKeyboard = false) {
 		action: () => {
 			os.post({
 				renote: appearNote,
+			});
+		},
+	}, null, {
+		icon: `ti ti-box-multiple-${Math.min(9, nextNumeric)}`,
+		text: '数字引用',
+		action: () => {
+			if (!appearNote.text) return;
+			os.api('notes/create', {
+				text: getTextWithoutEndingNumeric(appearNote.text) + nextNumeric,
+				visibility: appearNote.visibility,
+			}).then(() => {
+				if (nextNumeric !== 4) return;
+				playFile('shrimpia/4', 0.5);
+			});
+		},
+	}, {
+		icon: 'ti ti-swipe',
+		text: 'パクる',
+		action: () => {
+			if (!appearNote.text) return;
+			os.api('notes/create', {
+				text: appearNote.text,
+				visibility: appearNote.visibility,
 			});
 		},
 	}], renoteButton.value, {
