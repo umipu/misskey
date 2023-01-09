@@ -14,15 +14,11 @@
 					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
 				<div style="text-align: center;">
-					<!-- Shrimpia START -->
 					<MkButton primary rounded inline @click="iLoveMisskey"><Mfm text="$[jelly 🦐]"/> #シュリンピア帝国 万歳！</MkButton>
-					<!-- Shrimpia END -->
 				</div>
 				<FormSection>
 					<div class="_formLinks">
-						<!-- Shrimpia START -->
 						<FormLink to="https://github.com/shrimpia/misskey" external>
-							<!-- Shrimpia END -->
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>shrimpia/misskey</template>

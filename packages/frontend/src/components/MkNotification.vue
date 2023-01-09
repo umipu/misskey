@@ -61,7 +61,6 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
-		<!-- Shrimpia START-->
 		<span v-if="notification.type === 'follow'" class="text">
 			{{ i18n.ts.youGotNewFollower }}
 			<div v-if="full">
@@ -75,7 +74,6 @@
 				<MkButton class="command" rounded danger @click="rejectFollowRequest()"><i class="fas fa-times"/> {{ i18n.ts.reject }}</MkButton>
 			</div>
 		</span>
-		<!-- Shrimpia END -->
 		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button></div></span>
 		<span v-if="notification.type === 'app'" class="text">
 			<Mfm :text="notification.body" :nowrap="!full"/>

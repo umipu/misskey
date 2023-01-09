@@ -29,9 +29,7 @@
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
-				<!-- Shrimpia START -->
 				<small>Powered by <a href="https://github.com/shrimpia/misskey" target="_blank">Misskey</a></small>
-				<!-- Shrimpia END -->
 			</div>
 		</div>
 	</div>

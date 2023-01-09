@@ -1,5 +1,4 @@
 <template>
-<!-- Shrimpia START -->
 <span v-if="disableIfFollowing && isFollowing" style="opacity: 0.5">
 	{{ $ts.alreadyFollowed }}
 </span>
@@ -10,7 +9,6 @@
 	:disabled="wait"
 	@click="onClick"
 >
-	<!-- Shrimpia END -->
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
 			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>

@@ -7,13 +7,11 @@
 		<div class="shape2"></div>
 		<img src="/client-assets/misskey.svg" class="misskey"/>
 		<div class="emojis">
-			<!-- Shrimpia START -->
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
-			<!-- Shrimpia END -->
 		</div>
 		<div class="main">
 			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>

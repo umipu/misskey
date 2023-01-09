@@ -4,13 +4,11 @@
 		<MkFeaturedPhotos class="bg"/>
 		<div class="fade"></div>
 		<div class="emojis">
-			<!-- Shrimpia START -->
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍤"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🦐"/>
-			<!-- Shrimpia END -->
 		</div>
 		<div class="main">
 			<img src="/client-assets/misskey.svg" class="misskey"/>
@@ -140,7 +138,7 @@ export default defineComponent({
 				text: this.$ts.help,
 				icon: 'ti ti-question-circle',
 				action: () => {
-					window.open(`https://misskey-hub.net/help.md`, '_blank');
+					window.open('https://misskey-hub.net/help.md', '_blank');
 				},
 			}], ev.currentTarget ?? ev.target);
 		},

@@ -1,4 +1,3 @@
-<!-- Shrimpia START -->
 <template>
 <span class="sh-emperor">
 	皇帝
@@ -20,4 +19,3 @@
 	border-radius: 3px;
 }
 </style>
-<!-- Shrimpia END -->
