@@ -1341,6 +1341,7 @@ _weekday:
 
 _widgets:
   profile: "プロフィール"
+  instanceInfo: "インスタンス情報"
   memo: "付箋"
   notifications: "通知"
   timeline: "タイムライン"
