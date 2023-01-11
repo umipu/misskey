@@ -20,7 +20,7 @@
 							</div>
 							<div class="commands">
 								<MkButton class="command" rounded primary @click="accept(req.follower)"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
-								<MkButton class="command" rounded danger @click="reject(req.follower)"><i class="ti ti-times"/> {{ i18n.ts.reject }}</MkButton>
+								<MkButton class="command" rounded danger @click="reject(req.follower)"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
 							</div>
 						</div>
 					</div>

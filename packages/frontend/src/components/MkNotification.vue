@@ -66,8 +66,8 @@
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
 			<span v-else-if="notification.type === 'receiveFollowRequest'" :class="$style.text">{{ i18n.ts.receiveFollowRequest }}
 				<div v-if="full && !followRequestDone" :class="$style.followRequestCommands">
-					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptFollowRequest()"><i class="fas fa-check"/> {{ i18n.ts.accept }}</MkButton>
-					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectFollowRequest()"><i class="fas fa-times"/> {{ i18n.ts.reject }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptFollowRequest()"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectFollowRequest()"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
 				</div>
 			</span>
 			<span v-else-if="notification.type === 'groupInvited'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button></div></span>
@@ -309,7 +309,6 @@ useTooltip(reactionRef, (showing) => {
 > .followRequestCommandButton {
 	flex: 1;
 }
-// Shrimpia END
 
 @container (max-width: 600px) {
 	.root {
