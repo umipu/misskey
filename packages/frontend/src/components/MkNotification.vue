@@ -85,9 +85,7 @@ import * as misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
-// Shrimpia START
 import MkButton from '@/components/MkButton.vue';
-// Shrimpia END
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';

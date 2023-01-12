@@ -189,13 +189,11 @@ function gravity() {
 
 function iLoveMisskey() {
 	os.post({
-		// Shrimpia START
 		initialText: `<center>
 #シュリンピア帝国
 
 $[tada 🦐 万歳！$[flip 🦐]]
 </center>`,
-		// Shrimpia END
 		instant: true,
 	});
 }
@@ -249,13 +247,6 @@ definePageMetadata({
 			margin: 0.75em auto 0 auto;
 			width: max-content;
 		}
-
-		// Shrimpia START
-		> .shrimpia {
-			margin: 0.15em auto 0 auto;
-			width: max-content;
-		}
-		// Shrimpia END
 
 		> .version {
 			margin: 0 auto;

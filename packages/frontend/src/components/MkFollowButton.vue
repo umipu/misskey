@@ -44,15 +44,15 @@ const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
 	full?: boolean,
 	large?: boolean,
-	// Shrimpia START
+
+	// Shrimpia
 	disableIfFollowing?: boolean,
-	// Shrimpia END
 }>(), {
 	full: false,
 	large: false,
-	// Shrimpia START
+
+	// Shrimpia
 	disableIfFollowing: false,
-	// Shrimpia END
 });
 
 let isFollowing = $ref(props.user.isFollowing);

@@ -144,9 +144,9 @@ let poll = $ref<{
 	expiredAfter: string | null;
 } | null>(null);
 let useCw = $ref(false);
-// Shrimpia START
+// #region Shrimpia
 let showPreview = $ref(defaultStore.state.showPostFormPreview);
-// Shrimpia END
+// #endregion
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
@@ -237,11 +237,11 @@ watch($$(visibleUsers), () => {
 	deep: true,
 });
 
-// Shrimpia START
+// #region Shrimpia
 watch($$(showPreview), () => {
 	defaultStore.set('showPostFormPreview', showPreview);
 });
-// Shrimpia END
+// #endregion
 
 if (props.mention) {
 	text = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
