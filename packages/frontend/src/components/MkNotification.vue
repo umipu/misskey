@@ -304,7 +304,7 @@ useTooltip(reactionRef, (showing) => {
 	margin-top: 8px;
 }
 
-> .followRequestCommandButton {
+.followRequestCommandButton {
 	flex: 1;
 }
 
