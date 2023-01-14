@@ -2,12 +2,12 @@
 <button
 	ref="buttonEl"
 	v-ripple="canToggle"
-	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle: (canToggle || alternative) }"
-	@click="toggleReaction"
+	class="_button"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle || alternative }]"
+	@click="toggleReaction()"
 >
-	<MkReactionIcon class="icon" :reaction="reaction"/>
-	<span class="count">{{ count }}</span>
+	<MkReactionIcon :class="$style.icon" :reaction="reaction"/>
+	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
@@ -113,8 +113,8 @@ useTooltip(buttonEl, async (showing) => {
 }, 100);
 </script>
 
-<style lang="scss" scoped>
-.hkzvhatu {
+<style lang="scss" module>
+.root {
 	display: inline-block;
 	height: 32px;
 	margin: 2px;
@@ -148,11 +148,11 @@ useTooltip(buttonEl, async (showing) => {
 			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
+}
 
-	> .count {
-		font-size: 0.9em;
-		line-height: 32px;
-		margin: 0 0 0 4px;
-	}
+.count {
+	font-size: 0.9em;
+	line-height: 32px;
+	margin: 0 0 0 4px;
 }
 </style>
