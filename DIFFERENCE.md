@@ -1,6 +1,6 @@
-# Shrimpia Misskey と通常のMisskeyの違い
+# Ebisskey と通常のMisskeyの違い
 
-mk.shrimpia.network で使用しているMisskeyは、通常のMisskeyをベースに、次のような改変を施しています。ソースは https://github.com/shrimpia/misskey にあります。
+Ebisskeyは、通常のMisskeyをベースに次のような改変を施しています。ソースは https://github.com/shrimpia/misskey にあります。
 
 ## プロフィール画面
 
@@ -38,6 +38,8 @@ mk.shrimpia.network で使用しているMisskeyは、通常のMisskeyをベー�
 * 数字引用 / パクる 機能を追加
   * Renoteボタンから利用可能
 * リモートのカスタム絵文字リアクションについて、ローカルに同名の絵文字があれば押せる機能を追加
+* 存在しないカスタム絵文字は `:aaa:` のような感じで表示
+  * 本家ではv13から ❔ 表示になっている
 
 ## サウンド設定
 
