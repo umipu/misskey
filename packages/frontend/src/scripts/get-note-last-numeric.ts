@@ -1,4 +1,4 @@
-const ENDS_WITH_NUMERIC = /\d+$/;
+const ENDS_WITH_NUMERIC = /-?\d+$/;
 
 /**
  * 入力文字列が数字で終わるかを検証し、終わる場合はその数字を返します。

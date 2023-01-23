@@ -233,6 +233,7 @@ useTooltip(renoteButton, async (showing) => {
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	const nextNumeric = getTextLastNumeric(appearNote.text ?? '') + 1;
+	const nextNumericOnesPlace = nextNumeric % 10;
 	os.popupMenu([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
@@ -250,15 +251,17 @@ function renote(viaKeyboard = false) {
 			});
 		},
 	}, null, {
-		icon: `ti ti-box-multiple-${Math.min(9, nextNumeric)}`,
+		icon: `ti ti-box-multiple-${nextNumericOnesPlace}`,
 		text: '数字引用',
 		action: () => {
 			if (!appearNote.text) return;
+			let baseText = getTextWithoutEndingNumeric(appearNote.text);
+			if (baseText.endsWith('</center>')) baseText += '\n';
 			os.api('notes/create', {
-				text: getTextWithoutEndingNumeric(appearNote.text) + nextNumeric,
+				text: baseText + nextNumeric,
 				visibility: appearNote.visibility,
 			}).then(() => {
-				if (nextNumeric !== 4) return;
+				if (nextNumericOnesPlace !== 4) return;
 				playFile('shrimpia/4', 0.5);
 			});
 		},
