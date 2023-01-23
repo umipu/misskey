@@ -145,6 +145,7 @@ import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { getTextLastNumeric, getTextWithoutEndingNumeric } from '@/scripts/get-note-last-numeric';
 import { playFile } from '@/scripts/sound';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -294,6 +295,9 @@ function react(viaKeyboard = false): void {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
+		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}, () => {
 		focus();
 	});
