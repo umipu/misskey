@@ -245,8 +245,18 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			const visibility = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
+				defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility
+			) : defaultStore.state.defaultRenoteVisibility;
+
+			const localOnly = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
+				defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly
+			) : defaultStore.state.defaultRenoteLocalOnly;
+
 			os.api('notes/create', {
 				renoteId: appearNote.id,
+				visibility: visibility as never,
+				localOnly,
 			});
 		},
 	}, {

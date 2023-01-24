@@ -238,8 +238,18 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			const visibility = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
+				defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility
+			) : defaultStore.state.defaultRenoteVisibility;
+
+			const localOnly = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
+				defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly
+			) : defaultStore.state.defaultRenoteLocalOnly;
+
 			os.api('notes/create', {
 				renoteId: appearNote.id,
+				visibility: visibility as never,
+				localOnly,
 			});
 		},
 	}, {
@@ -251,15 +261,22 @@ function renote(viaKeyboard = false) {
 			});
 		},
 	}, null, {
-		icon: `ti ti-box-multiple-${nextNumericOnesPlace}`,
+		icon: `ti ti-box-multiple-${Math.abs(nextNumericOnesPlace)}`,
 		text: '数字引用',
 		action: () => {
 			if (!appearNote.text) return;
 			let baseText = getTextWithoutEndingNumeric(appearNote.text);
 			if (baseText.endsWith('</center>')) baseText += '\n';
+			const visibility = defaultStore.state.defaultNumberQuoteVisibility === 'inherits'
+				? appearNote.visibility 
+				: defaultStore.state.defaultNumberQuoteVisibility;
+			const localOnly = defaultStore.state.defaultNumberQuoteVisibility === 'inherits'
+				? appearNote.localOnly 
+				: defaultStore.state.defaultNumberQuoteLocalOnly;
 			os.api('notes/create', {
 				text: baseText + nextNumeric,
-				visibility: appearNote.visibility,
+				visibility: visibility as never,
+				localOnly,
 			}).then(() => {
 				if (nextNumericOnesPlace !== 4) return;
 				playFile('shrimpia/4', 0.5);
@@ -270,9 +287,16 @@ function renote(viaKeyboard = false) {
 		text: 'パクる',
 		action: () => {
 			if (!appearNote.text) return;
+			const visibility = defaultStore.state.defaultNumberQuoteVisibility === 'inherits'
+				? appearNote.visibility 
+				: defaultStore.state.defaultNumberQuoteVisibility;
+			const localOnly = defaultStore.state.defaultNumberQuoteVisibility === 'inherits'
+				? appearNote.localOnly 
+				: defaultStore.state.defaultNumberQuoteLocalOnly;
 			os.api('notes/create', {
 				text: appearNote.text,
-				visibility: appearNote.visibility,
+				visibility: visibility as never,
+				localOnly,
 			});
 		},
 	}], renoteButton.value, {
