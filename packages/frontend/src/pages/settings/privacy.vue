@@ -49,6 +49,45 @@
 					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
 				</div>
 			</MkFolder>
+
+			<MkSwitch v-model="useDefaultNoteVisibilityOnRenote" @update:model-value="save()">Renoteにデフォルトの公開範囲を適用する <span class="_beta">Shrimpia</span></MkSwitch>
+			<MkFolder v-if="!useDefaultNoteVisibilityOnRenote">
+				<template #label>{{ i18n.ts.defaultNoteVisibility }} (Renote) <span class="_beta">Shrimpia</span></template>
+				<template v-if="defaultRenoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+
+				<div class="_gaps_m">
+					<MkSelect v-model="defaultRenoteVisibility">
+						<option value="public">{{ i18n.ts._visibility.public }}</option>
+						<option value="home">{{ i18n.ts._visibility.home }}</option>
+						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
+						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+					</MkSelect>
+					<MkSwitch v-model="defaultRenoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts.defaultNoteVisibility }} (数字引用 / パクる) <span class="_beta">Shrimpia</span></template>
+				<template v-if="defaultNumberQuoteVisibility === 'inherits'" #suffix>元のノートに合わせる</template>
+				<template v-if="defaultNumberQuoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+				<template v-else-if="defaultNumberQuoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+				<template v-else-if="defaultNumberQuoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+				<template v-else-if="defaultNumberQuoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+
+				<div class="_gaps_m">
+					<MkSelect v-model="defaultNumberQuoteVisibility">
+						<option value="inherits">元のノートに合わせる</option>
+						<option value="public">{{ i18n.ts._visibility.public }}</option>
+						<option value="home">{{ i18n.ts._visibility.home }}</option>
+						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
+						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+					</MkSelect>
+					<MkSwitch v-if="defaultNumberQuoteVisibility !== 'inherits'" v-model="defaultNumberQuoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -80,6 +119,14 @@ let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNote
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+// #region Shrimpia
+let defaultRenoteVisibility = $computed(defaultStore.makeGetterSetter('defaultRenoteVisibility'));
+let defaultRenoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultRenoteLocalOnly'));
+let useDefaultNoteVisibilityOnRenote = $computed(defaultStore.makeGetterSetter('useDefaultNoteVisibilityOnRenote'));
+let defaultNumberQuoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNumberQuoteVisibility'));
+let defaultNumberQuoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNumberQuoteLocalOnly'));
+
+// #endregion
 
 function save() {
 	os.api('i/update', {
