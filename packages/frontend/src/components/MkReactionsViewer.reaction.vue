@@ -22,6 +22,7 @@ import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { customEmojis } from '@/custom-emojis';
 import { claimAchievement } from '@/scripts/achievements';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	reaction: string;
@@ -72,6 +73,7 @@ const toggleReaction = (ev) => {
 
 const anime = () => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
