@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## Ebisskey 13.2.3
+
+* Renote用のデフォルト公開範囲設定を追加
+* 数字引用 / パクる用のデフォルト公開範囲設定を追加
+
 ## 13.2.3 (2023/01/26)
 ### Improvements
 - カスタム絵文字の更新をリアルタイムで反映するように
