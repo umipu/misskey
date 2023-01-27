@@ -9,11 +9,23 @@
 You should also include the user name that made the change.
 -->
 
+## 13.2.4 (2023/01/27)
+### Improvements
+- リモートカスタム絵文字表示時のパフォーマンスを改善
+- Default to `animation: false` when prefers-reduced-motion is set
+- リアクション履歴が公開なら、ログインしていなくても表示できるように
+- tweak blur setting
+- tweak custom emoji cache
+
+### Bugfixes
+- fix aggregation of retention
+- ダッシュボードでオンラインユーザー数が表示されない問題を修正
+- フォロー申請・フォローのボタンが、通知から消えている問題を修正
+
 ## Ebisskey 13.2.3
 
 * Renote用のデフォルト公開範囲設定を追加
 * 数字引用 / パクる用のデフォルト公開範囲設定を追加
-
 ## 13.2.3 (2023/01/26)
 ### Improvements
 - カスタム絵文字の更新をリアルタイムで反映するように
