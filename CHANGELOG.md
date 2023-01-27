@@ -9,6 +9,10 @@
 You should also include the user name that made the change.
 -->
 
+## 13.2.5-sh.1 (2023/01/27)
+
+* リモートからのカスタム絵文字リアクションを正常に表示できない不具合を修正
+
 ## 13.2.4 (2023/01/27)
 ### Improvements
 - リモートカスタム絵文字表示時のパフォーマンスを改善
