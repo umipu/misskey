@@ -413,8 +413,12 @@ export class UserEntityService implements OnModuleInit {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
-			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
+			// パフォーマンス上の理由でローカルユーザーのみ
+			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then(rs => rs.map(r => ({
+				name: r.name,
+				iconUrl: r.iconUrl,
+			}))) : undefined,
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -454,10 +458,12 @@ export class UserEntityService implements OnModuleInit {
 					id: role.id,
 					name: role.name,
 					color: role.color,
+					iconUrl: role.iconUrl,
 					description: role.description,
 					isModerator: role.isModerator,
 					isAdministrator: role.isAdministrator,
 				}))),
+				emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			} : {}),
 
 			...(opts.detail && isMe ? {

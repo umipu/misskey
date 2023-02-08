@@ -14,7 +14,7 @@
 						<div ref="bannerEl" class="banner" :style="style"></div>
 						<div class="fade"></div>
 						<div class="title">
-							<MkUserName class="name" :user="user" :nowrap="true"/>
+							<span class="name _nowrap">{{ user.name ?? user.username }}</span>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
@@ -30,7 +30,7 @@
 					</div>
 					<MkAvatar class="avatar" :user="user" indicator/>
 					<div class="title">
-						<MkUserName :user="user" :nowrap="false" class="name"/>
+						<span class="name _nowrap">{{ user.name ?? user.username }}</span>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
 							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
@@ -39,7 +39,10 @@
 						</div>
 					</div>
 					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">{{ role.name }}</span>
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+							{{ role.name }}
+						</span>
 					</div>
 					<div class="description">
 						<MkOmit>

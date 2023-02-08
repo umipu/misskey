@@ -8,6 +8,38 @@
 
 You should also include the user name that made the change.
 -->
+## 13.5.0 (2023/02/08)
+
+### Changes
+- perf(client): do not render custom emojis in user names
+
+### Improvements
+- Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
+- enhance(client): tweak medialist style
+
+### Bugfixes
+- fix docker health check
+- Client: MkEmojiPickerでもChromeで検索ダイアログで変換確定するとそのまま検索されてしまうのを修正
+- fix(mfm): default degree not used in rotate
+- fix(server): validate urls from ap to improve security
+
+## 13.4.0 (2023/02/05)
+
+### Improvements
+- ロールにアイコンを設定してユーザー名の横に表示できるように
+- feat: timeline page for non-login users
+- 実績の単なるラッキーの獲得確立を調整
+- Add Thai language support
+
+### Bugfixes
+- fix(server): 自分のノートをお気に入りに登録しても実績解除される問題を修正
+- fix(server): clean up file in FileServer
+- fix(server): Deny UNIX domain socket
+- fix(server): validate filename and emoji name to improve security
+- fix(client): validate input response in aiscript
+- fix(client): add webhook delete button
+- fix(client): tweak notification style
+- fix(client): インラインコードを折り返して表示する
 
 ## 13.3.3 (2023/02/04)
 
