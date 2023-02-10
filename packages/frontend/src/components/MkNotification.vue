@@ -31,7 +31,7 @@
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
-			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><span class="_nowrap">{{ notification.user.name ?? notification.user.username }}</span></MkA>
+			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
@@ -217,7 +217,7 @@ useTooltip(reactionRef, (showing) => {
 	border-radius: 100%;
 	background: var(--panel);
 	box-shadow: 0 0 0 3px var(--panel);
-	font-size: 12px;
+	font-size: 11px;
 	text-align: center;
 	color: #fff;
 
