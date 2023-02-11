@@ -21,6 +21,9 @@
 	</MkRadios>
 
 	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
+	<MkSwitch v-model="usePostFormWindow">
+		{{ i18n.ts.usePostFormWindow }} <i class="ti ti-flask" v-tooltip="i18n.ts.experimentalFeatures" /> <span class="_beta">Shrimpia</span>
+	</MkSwitch>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.behavior }}</template>
@@ -165,6 +168,7 @@ const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfin
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const usePostFormWindow = computed(defaultStore.makeGetterSetter('usePostFormWindow'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

@@ -8,6 +8,7 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
 import { i18n } from './i18n';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
+import MkPostFormWindow from '@/components/MkPostFormWindow.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
@@ -17,6 +18,7 @@ import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
+import { defaultStore } from './store';
 
 export const openingWindowsCount = ref(0);
 
@@ -514,7 +516,8 @@ export function post(props: Record<string, any> = {}) {
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 		let dispose;
-		popup(MkPostFormDialog, props, {
+		const component = defaultStore.state.usePostFormWindow ? MkPostFormWindow : MkPostFormDialog;
+		popup(component, props, {
 			closed: () => {
 				resolve();
 				dispose();

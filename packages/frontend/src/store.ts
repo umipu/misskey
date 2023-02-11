@@ -274,6 +274,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	usePostFormWindow: {
+		where: 'device',
+		default: false,
+	},
 
 	// #region Shrimpia
 	showPostFormPreview: {
