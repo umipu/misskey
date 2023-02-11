@@ -113,11 +113,11 @@
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
-				<button ref="menuButton" class="button _button" @mousedown="menu()">
-					<i class="ti ti-dots"></i>
-				</button>
 				<button v-if="appearNote.text" ref="stealButton" class="button _button" @mousedown="stealMenu(appearNote, stealButton)">
 					<i class="ti ti-swipe"></i>
+				</button>
+				<button ref="menuButton" class="button _button" @mousedown="menu()">
+					<i class="ti ti-dots"></i>
 				</button>
 			</footer>
 		</div>
