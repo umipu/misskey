@@ -296,6 +296,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	stealConfirmed: {
+		where: 'account',
+		default: false,
+	},
+	numberQuoteConfirmed: {
+		where: 'account',
+		default: false,
+	},
 	// #endregion
 }));
 

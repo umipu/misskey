@@ -116,6 +116,9 @@
 				<button ref="menuButton" class="button _button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
+				<button v-if="appearNote.text" ref="stealButton" class="button _button" @mousedown="stealMenu(appearNote, stealButton)">
+					<i class="ti ti-swipe"></i>
+				</button>
 			</footer>
 		</div>
 	</article>
@@ -160,6 +163,7 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import { stealMenu } from '@/scripts/steal-menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -193,6 +197,7 @@ const menuButton = shallowRef<HTMLElement>();
 const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
+const stealButton = shallowRef<HTMLElement>(); // shrimpia
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
@@ -595,7 +600,7 @@ if (appearNote.replyId) {
 					opacity: 0.7;
 
 					&:not(:last-child) {
-						margin-right: 28px;
+						margin-right: 22px;
 					}
 
 					&:hover {
@@ -653,7 +658,7 @@ if (appearNote.replyId) {
 				> .footer {
 					> .button {
 						&:not(:last-child) {
-							margin-right: 18px;
+							margin-right: 12px;
 						}
 					}
 				}
@@ -678,7 +683,7 @@ if (appearNote.replyId) {
 				> .footer {
 					> .button {
 						&:not(:last-child) {
-							margin-right: 12px;
+							margin-right: 8px;
 						}
 					}
 				}
