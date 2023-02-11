@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 13.6.0-sh.1 (2023/02/11)
+
+* ユーザーページにタイムラインを初期表示するためのオプションを追加
+* 一度見たノートのRenoteをこれまでの表示に切り替えられるようオプションを追加
+* 数字引用メニューのボタンを調整
+
 ## 13.6.0 (2023/02/11)
 
 ### Improvements
