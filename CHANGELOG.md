@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.6.0 (2023/02/11)
 
 ### Improvements
 - MkPageHeaderをごっそり変えた
@@ -21,6 +21,8 @@ You should also include the user name that made the change.
 - コンディショナルロールもバッジとして表示可能に
 - enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
 - 一部のMFM構文をopt-outに
 
 ### Bugfixes
