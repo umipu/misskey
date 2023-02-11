@@ -66,6 +66,8 @@
 					</template>
 				</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
+				<MkSwitch v-model="showTimelineOnUserHome">ユーザータイムラインをホームに表示する <span class="_beta">Shrimpia</span></MkSwitch>
+				<MkSwitch v-model="compactRenote">1度見たことのあるRenoteを簡略化表示する <span class="_beta">Shrimpia</span></MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -169,6 +171,8 @@ const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 const usePostFormWindow = computed(defaultStore.makeGetterSetter('usePostFormWindow'));
+const showTimelineOnUserHome = computed(defaultStore.makeGetterSetter('showTimelineOnUserHome'));
+const compactRenote = computed(defaultStore.makeGetterSetter('compactRenote'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

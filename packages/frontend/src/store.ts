@@ -312,6 +312,14 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	showTimelineOnUserHome: {
+		where: 'device',
+		default: true,
+	},
+	compactRenote: {
+		where: 'device',
+		default: false,
+	},
 	// #endregion
 }));
 

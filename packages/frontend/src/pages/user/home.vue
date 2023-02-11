@@ -101,6 +101,9 @@
 					<XActivity :key="user.id" :user="user"/>
 				</template>
 			</div>
+			<div v-if="defaultStore.state.showTimelineOnUserHome">
+				<XUserTimeline :user="user"/>
+			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 			<XPhotos :key="user.id" :user="user"/>
@@ -114,6 +117,7 @@
 import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
+import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
@@ -132,6 +136,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
+import { defaultStore } from '@/store';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
