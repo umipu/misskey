@@ -100,7 +100,9 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
+				<div v-if="!defaultStore.state.showTimelineOnUserHome">
+					<MkNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
+				</div>
 			</div>
 			<div v-if="defaultStore.state.showTimelineOnUserHome">
 				<XUserTimeline :user="user"/>

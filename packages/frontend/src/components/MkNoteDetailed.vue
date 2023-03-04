@@ -319,6 +319,11 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
+	}, null, {
+		text: '公開範囲設定',
+		type: 'link',
+		icon: 'ti ti-settings',
+		to: '/settings/privacy',
 	}]);
 
 	os.popupMenu(items, renoteButton.value, {

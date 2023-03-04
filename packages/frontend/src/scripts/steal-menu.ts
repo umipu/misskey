@@ -1,5 +1,5 @@
 import { i18n } from "@/i18n";
-import { api, confirm, popupMenu, post } from "@/os";
+import {alert, api, confirm, popupMenu, post} from "@/os";
 import { defaultStore } from "@/store";
 import { Note } from "misskey-js/built/entities";
 import { getTextLastNumeric, getTextWithoutEndingNumeric } from "./get-note-last-numeric";
@@ -97,6 +97,16 @@ export function stealMenu(note: Note, el: HTMLElement) {
 				initialVisibility: visibility,
 				initialLocalOnly: localOnly,
 				instant: true,
+			});
+		},
+	}, null, {
+		text: i18n.ts.help,
+		icon: 'ti ti-question-circle',
+		action: async () => {
+			alert({
+				type: 'info',
+				title: '数字引用・パクる',
+				text: '「パクる」は、そのままこのノートの本文をコピーして投稿します。\n\n「数字引用」は、コピーした上で本文の末尾にある数値を1増分するか、なければ「2」を付与して投稿します。\n\nどちらも投稿の複製に当たるため、相手が不快に思わないよう使ってください。',
 			});
 		},
 	}], el);

@@ -69,7 +69,12 @@
 				</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="showTimelineOnUserHome">ユーザータイムラインをホームに表示する <span class="_beta">Shrimpia</span></MkSwitch>
-				<MkSwitch v-model="compactRenote">1度見たことのあるRenoteを簡略化表示する <span class="_beta">Shrimpia</span></MkSwitch>
+				<MkSwitch v-model="compactRenote" disabled>
+					1度見たことのあるRenoteを簡略化表示する <span class="_beta">Shrimpia</span>
+					<template #caption>
+						本オプションはMisskeyに正式実装されました。「{{ i18n.ts.collapseRenotes }}」を設定してください。
+					</template>
+				</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">

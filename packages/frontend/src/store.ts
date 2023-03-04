@@ -47,7 +47,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	collapseRenotes: {
 		where: 'account',
-		default: true,
+		default: false,
 	},
 	rememberNoteVisibility: {
 		where: 'account',
@@ -322,10 +322,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	showTimelineOnUserHome: {
 		where: 'device',
 		default: true,
-	},
-	compactRenote: {
-		where: 'device',
-		default: false,
 	},
 	// #endregion
 }));

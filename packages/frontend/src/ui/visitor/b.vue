@@ -57,7 +57,6 @@ import { onMounted, provide } from 'vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import type { ComputedRef } from 'vue';
-import type { PageMetadata } from '@/scripts/page-metadata';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import { instance } from '@/instance';

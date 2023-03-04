@@ -1,7 +1,7 @@
 <template>
 <div class="ipledcug">
 	<div class="_fullinfo">
-		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
+		<img src="https://s3.ap-northeast-1.wasabisys.com/mk-shrimpia/files/not-found.png" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>

@@ -326,6 +326,11 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
+	}, null, {
+		text: '公開範囲設定',
+		type: 'link',
+		icon: 'ti ti-settings',
+		to: '/settings/privacy',
 	}]);
 
 	os.popupMenu(items, renoteButton.value, {
@@ -454,7 +459,7 @@ function showReactions(): void {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	//contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;
@@ -730,7 +735,7 @@ function showReactions(): void {
 	opacity: 0.7;
 
 	&:not(:last-child) {
-		margin-right: 22px;
+		margin-right: 28px;
 	}
 
 	&:hover {
@@ -823,7 +828,8 @@ function showReactions(): void {
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
-			margin-right: 12px;
+				margin-right: 12px;
+			}
 		}
 	}
 }
@@ -837,7 +843,8 @@ function showReactions(): void {
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
-			margin-right: 8px;
+				margin-right: 8px;
+			}
 		}
 	}
 }
