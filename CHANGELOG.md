@@ -10,6 +10,12 @@
 You should also include the user name that made the change.
 -->
 
+## 13.9.1-sh.1（2023/03/05）
+
+* Renoteのデフォルト公開範囲設定へのリンクを、Renoteメニューに追加
+* パクる/数字引用のヘルプをメニューに追加
+* エラーアイコンを差し替え（thanks to [@Or@mk.shrimpia.network](https://mk.shrimpia.network/@Or)）
+
 ## 13.9.1 (2023/03/03)
 
 ### Bugfixes
