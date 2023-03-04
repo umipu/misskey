@@ -23,15 +23,14 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
-import calcAge from 's-age';
+import { defineAsyncComponent, computed, watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import type * as misskey from 'misskey-js';
-import { getScrollPosition } from '@/scripts/scroll';
+import * as misskey from 'misskey-js';
+import { acct as getAcct } from '@/filters/user';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
+import { getScrollPosition } from '@/scripts/scroll';
 import * as os from '@/os';
-import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
@@ -51,8 +50,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 	page: 'home',
 });
-
-const router = useRouter();
 
 let tab = $ref(props.page);
 let user = $ref<null | misskey.entities.UserDetailed>(null);
@@ -97,12 +94,12 @@ const headerTabs = $computed(() => user ? [{
 }] : [], {
 	key: 'clips',
 	title: i18n.ts.clips,
-	icon: 'fas fa-paperclip',
-}, /* {
+	icon: 'ti ti-paperclip',
+}, {
 	key: 'pages',
 	title: i18n.ts.pages,
-	icon: 'fas fa-file-alt',
-},*/ {
+	icon: 'ti ti-news',
+}, {
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
