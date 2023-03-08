@@ -111,6 +111,9 @@
 				<button v-if="appearNote.text" ref="stealButton" :class="$style.footerButton" class="_button" @mousedown="stealMenu(appearNote, stealButton)">
 					<i class="ti ti-swipe"></i>
 				</button>
+				<MkA v-if="defaultStore.state.showNoteActionsOnlyHover" :to="notePage(note)" :class="$style.footerButton" class="_button">
+					<i class="ti ti-info-circle"></i>
+				</MkA>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -163,6 +166,7 @@ import { shownNoteIds } from '@/os';
 import { stealMenu } from '@/scripts/steal-menu';
 import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
