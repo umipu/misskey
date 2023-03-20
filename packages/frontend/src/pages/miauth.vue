@@ -14,18 +14,30 @@
 				<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
 			</div>
 			<div v-else>
-				<div v-if="_permissions.length > 0">
-					<p v-if="name">{{ $t('_auth.permission', { name }) }}</p>
-					<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
-					<ul>
-						<li v-for="p in _permissions" :key="p">{{ $t(`_permissions.${p}`) }}</li>
-					</ul>
-				</div>
-				<div v-if="name">{{ $t('_auth.shareAccess', { name }) }}</div>
-				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
-				<div :class="$style.buttons">
-					<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
-					<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
+				<div :style="{'background-color':'var(--X12)','margin-top':'20%','border-radius':'30px'}">
+					<div v-if="_permissions.length > 0" :style="{'text-align': 'center'}">
+						<div :style="{'margin-top': '10px'}">
+							<MkAvatar class="avatar" :user="$i" :style="{'width': '64px','height': '64px'}"/>
+							<span :style="{'max-width':'200px','width':'100%','display':'inline-block','vertical-align':'bottom','border-bottom':'2px dashed var(--X6)','top':'-25px','position':'relative','margin-right':'-10px'}"></span>
+							<img :src="icon ?? '/static-assets/mi-white.png'" :style="{'width': '68px','height': '68px', 'vertical-align':'bottom', 'border-radius':'100%'}"/>
+						</div>
+						<p :style="{'font-size':'20px'}">{{ name }}</p>
+						<p v-if="name">{{ $t('_auth.permission', { name }) }}</p>
+						<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
+						<div>
+							<ul :style="{'width':'45%','margin-left':'20%'}">
+								<li v-for="p in _permissions" :key="p" :style="{'text-align':'left'}">{{ $t(`_permissions.${p}`) }}</li>
+							</ul>
+						</div>
+					</div>
+					<!--
+					<div v-if="name" :style="{'text-align': 'center'}">{{ $t('_auth.shareAccess', { name }) }}</div>
+					<div v-else :style="{'text-align': 'center'}">{{ i18n.ts._auth.shareAccessAsk }}</div>
+					-->
+					<div :class="$style.buttons" :style="{'text-align': 'center'}">
+						<MkButton inline primary :style="{'width': '51%','left':'24%'}" @click="accept">{{ i18n.ts.accept }}</MkButton>
+						<MkButton inline :style="{'width': '51%','left':'24%','margin-bottom': '10px'}" @click="deny">{{ i18n.ts.cancel }}</MkButton>
+					</div>
 				</div>
 			</div>
 		</div>
