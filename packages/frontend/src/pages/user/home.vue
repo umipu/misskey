@@ -7,7 +7,7 @@
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
-				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
+				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
@@ -101,10 +101,10 @@
 					<XActivity :key="user.id" :user="user"/>
 				</template>
 				<div v-if="!defaultStore.state.showTimelineOnUserHome">
-					<MkNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
+					<MkNotes v-if="!disableNotes" :class="$style.tl" :no-gap="true" :pagination="pagination"/>
 				</div>
 			</div>
-			<div v-if="defaultStore.state.showTimelineOnUserHome">
+			<div v-if="!disableNotes && defaultStore.state.showTimelineOnUserHome">
 				<XUserTimeline :user="user"/>
 			</div>
 		</div>
@@ -144,7 +144,10 @@ const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.UserDetailed;
+	/** Test only; MkNotes currently causes problems in vitest */
+	disableNotes: boolean;
 }>(), {
+	disableNotes: false,
 });
 
 const router = useRouter();

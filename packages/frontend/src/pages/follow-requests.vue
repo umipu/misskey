@@ -34,9 +34,7 @@
 <script lang="ts" setup>
 import { shallowRef, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
-// Shrimpia START
 import MkButton from '@/components/MkButton.vue';
-// Shrimpia END
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -90,15 +88,11 @@ definePageMetadata(computed(() => ({
 			display: flex;
 			width: calc(100% - 54px);
 			position: relative;
-			// Shrimpia START
 			flex-wrap: wrap;
 			gap: 8px;
-			// Shrimpia END
 
 			> .name {
-				// Shrimpia START
 				flex: 1 1 50%;
-				// Shrimpia END
 
 				> .name,
 				> .acct {
