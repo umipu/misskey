@@ -3,15 +3,21 @@
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700">
+			<!-- a -->
 			<div class="_gaps">
-				<div class="_buttons">
-					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
-					<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-				</div>
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :model-value="role" readonly/>
+					<XEditor :model-value="role" v-model="data"/>
+					<div :class="$style.footer">
+						<MkSpacer :content-max="600" :margin-min="16" :margin-max="16">
+							<div class="_buttons">
+								<!-- <MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton> -->
+								<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+								<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+							</div>
+						</MkSpacer>
+					</div>
 				</MkFolder>
 				<MkFolder v-if="role.target === 'manual'" default-open>
 					<template #icon><i class="ti ti-users"></i></template>
@@ -69,6 +75,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { rolesCache } from '@/cache';
 
 const router = useRouter();
 
@@ -89,6 +96,26 @@ let expandedItems = $ref([]);
 const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,
 }));
+
+let data = $ref(null);
+if (props.id) {
+	data = role;
+}
+async function save() {
+	rolesCache.delete();
+	if (role) {
+		os.apiWithDialog('admin/roles/update', {
+			roleId: role.id,
+			...data,
+		});
+		router.push('/admin/roles/' + role.id);
+	} else {
+		const created = await os.apiWithDialog('admin/roles/create', {
+			...data,
+		});
+		router.push('/admin/roles/' + created.id);
+	}
+}
 
 function edit() {
 	router.push('/admin/roles/' + role.id + '/edit');
