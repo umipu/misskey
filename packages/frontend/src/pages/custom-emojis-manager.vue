@@ -92,7 +92,7 @@ const pagination = {
 	endpoint: 'admin/emoji/list' as const,
 	limit: 30,
 	params: computed(() => ({
-		query: (query.value && query.value.replace(";","") !== '') ? query.value.replace(";","") : null,
+		query: (query.value && query.value.replace(";","") !== '') ? query.value : null,
 		extra: (query.value && query.value.indexOf(";") !== -1),
 	})),
 };
@@ -101,7 +101,7 @@ const remotePagination = {
 	endpoint: 'admin/emoji/list-remote' as const,
 	limit: 30,
 	params: computed(() => ({
-		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value.replace(";","") : null,
+		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value : null,
 		extra: (query.value && query.value.indexOf(";") !== -1),
 		host: (host.value && host.value !== '') ? host.value : null,
 	})),
