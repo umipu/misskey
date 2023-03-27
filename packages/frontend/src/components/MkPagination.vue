@@ -69,6 +69,8 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 	offsetMode?: boolean;
 
+	extra?: boolean;
+
 	pageEl?: HTMLElement;
 };
 </script>
@@ -177,6 +179,9 @@ async function init(): Promise<void> {
 		} else {
 			items.value = res;
 			more.value = false;
+		}
+		if (params.extra) {
+			items.value = res.filter(emoji => emoji.name == params.query);
 		}
 		offset.value = res.length;
 		error.value = false;
