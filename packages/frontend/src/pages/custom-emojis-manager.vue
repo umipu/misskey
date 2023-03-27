@@ -92,7 +92,7 @@ const pagination = {
 	endpoint: 'admin/emoji/list' as const,
 	limit: 30,
 	params: computed(() => ({
-		query: (query.value && query.value.replace(";","") !== '') ? query.value : null,
+		query: (query.value && query.value.replace(";","") !== '') ? query.value.replace(";","") : null,
 		extra: (query.value && query.value.indexOf(";") !== -1),
 	})),
 };
