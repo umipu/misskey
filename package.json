@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "13.10.3-pie.1",
+	"version": "13.10.3-pie.2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/grapeapple0/misskey.git"
 	},
 	"packageManager": "pnpm@7.29.3",
 	"workspaces": [
