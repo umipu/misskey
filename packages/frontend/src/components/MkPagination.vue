@@ -181,7 +181,7 @@ async function init(): Promise<void> {
 			more.value = false;
 		}
 		if (params.extra) {
-			items.value = res.filter(emoji => emoji.name == params.query);
+			items.value = items.value.filter(emoji => emoji.name == params.query);
 		}
 		offset.value = res.length;
 		error.value = false;
@@ -257,6 +257,9 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
+		if (params.extra) {
+			items.value = items.value.filter(emoji => emoji.name == params.query);
+		}
 		offset.value += res.length;
 	}, err => {
 		moreFetching.value = false;
@@ -283,6 +286,9 @@ const fetchMoreAhead = async (): Promise<void> => {
 		} else {
 			items.value = items.value.concat(res);
 			more.value = false;
+		}
+		if (params.extra) {
+			items.value = items.value.filter(emoji => emoji.name == params.query);
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
