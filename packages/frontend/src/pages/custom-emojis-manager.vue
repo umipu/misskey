@@ -101,8 +101,8 @@ const remotePagination = {
 	endpoint: 'admin/emoji/list-remote' as const,
 	limit: 30,
 	params: computed(() => ({
-		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value : null,
-		extra: (query.value && query.value.indexOf(";") !== -1),
+		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value.replace(";","") : null,
+		extra: (queryRemote.value && queryRemote.value.indexOf(";") !== -1),
 		host: (host.value && host.value !== '') ? host.value : null,
 	})),
 };
