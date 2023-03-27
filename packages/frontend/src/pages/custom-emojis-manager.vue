@@ -90,7 +90,7 @@ const selectedEmojis = ref<string[]>([]);
 
 const pagination = {
 	endpoint: 'admin/emoji/list' as const,
-	limit: 30,
+	limit: 60,
 	params: computed(() => ({
 		query: (query.value && query.value.replace(";","") !== '') ? query.value.replace(";","") : null,
 		extra: (query.value && query.value.indexOf(";") !== -1),
@@ -99,7 +99,7 @@ const pagination = {
 
 const remotePagination = {
 	endpoint: 'admin/emoji/list-remote' as const,
-	limit: 30,
+	limit: 60,
 	params: computed(() => ({
 		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value.replace(";","") : null,
 		extra: (queryRemote.value && queryRemote.value.indexOf(";") !== -1),
