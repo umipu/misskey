@@ -23,7 +23,7 @@
 	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 	<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 	<MkSwitch v-model="usePostFormWindow">
-		{{ i18n.ts.usePostFormWindow }} <i class="ti ti-flask" v-tooltip="i18n.ts.experimentalFeatures" /> <span class="_beta">Shrimpia</span>
+		投稿フォームをウィンドウとして表示 <i v-tooltip="i18n.ts.experimentalFeatures" class="ti ti-flask"/> <span class="_beta">Shrimpia</span>
 	</MkSwitch>
 
 	<FormSection>

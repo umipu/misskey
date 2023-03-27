@@ -112,12 +112,12 @@
 				<button v-if="appearNote.text" ref="stealButton" :class="$style.footerButton" class="_button" @mousedown="stealMenu(appearNote, stealButton)">
 					<i class="ti ti-swipe"></i>
 				</button>
-				<MkA v-if="defaultStore.state.showNoteActionsOnlyHover" :to="notePage(note)" :class="$style.footerButton" class="_button">
-					<i class="ti ti-info-circle"></i>
-				</MkA>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
+				<MkA v-if="defaultStore.state.showNoteActionsOnlyHover" :to="notePage(note)" :class="$style.footerButton" class="_button">
+					<i class="ti ti-info-circle"></i>
+				</MkA>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -753,6 +753,8 @@ function showReactions(): void {
 }
 
 .footer {
+	display: flex;
+	flex-wrap: wrap;
 	margin-bottom: -14px;
 }
 
@@ -760,9 +762,10 @@ function showReactions(): void {
 	margin: 0;
 	padding: 8px;
 	opacity: 0.7;
+	flex-grow: 1;
+	max-width: 4em;
 
 	&:not(:last-child) {
-		margin-right: 28px;
 	}
 
 	&:hover {
@@ -845,7 +848,6 @@ function showReactions(): void {
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
-				margin-right: 18px;
 			}
 		}
 	}
@@ -855,7 +857,6 @@ function showReactions(): void {
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
-				margin-right: 12px;
 			}
 		}
 	}
@@ -870,7 +871,6 @@ function showReactions(): void {
 	.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
-				margin-right: 8px;
 			}
 		}
 	}
