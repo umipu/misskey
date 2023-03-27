@@ -39,7 +39,7 @@ globalThis.addEventListener('fetch', ev => {
 					<title>Offline</title>
 				</head>
 				<body>
-					<p>Offline. Service Worker @${_VERSION_}<a onclick="window.location.reload(true);">Reload</a></p>
+					<p>Offline. Service Worker @${_VERSION_}<button onclick="window.location.reload(true);">Reload</button></p>
 				</body>
 			</html>
 		`, { status: 200, headers: { 'Content-Type': 'text/html' } })),
