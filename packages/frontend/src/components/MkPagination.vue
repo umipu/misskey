@@ -47,6 +47,7 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
+import { query } from '@/scripts/url';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
@@ -54,6 +55,7 @@ const TOLERANCE = 16;
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
 	limit: number;
+	extra?: boolean;
 	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
 
 	/**
@@ -68,8 +70,6 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 	reversed?: boolean;
 
 	offsetMode?: boolean;
-
-	extra?: boolean;
 
 	pageEl?: HTMLElement;
 };
@@ -180,8 +180,8 @@ async function init(): Promise<void> {
 			items.value = res;
 			more.value = false;
 		}
-		if (params.extra) {
-			items.value = items.value.filter(emoji => emoji.name == params.query);
+		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value = res.length;
 		error.value = false;
@@ -257,8 +257,8 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
-		if (params.extra) {
-			items.value = items.value.filter(emoji => emoji.name == params.query);
+		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
 	}, err => {
@@ -287,8 +287,8 @@ const fetchMoreAhead = async (): Promise<void> => {
 			items.value = items.value.concat(res);
 			more.value = false;
 		}
-		if (params.extra) {
-			items.value = items.value.filter(emoji => emoji.name == params.query);
+		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
 		moreFetching.value = false;

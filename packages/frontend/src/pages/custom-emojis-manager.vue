@@ -9,8 +9,11 @@
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
-					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
+					<MkSwitch v-model="selectMode" style="margin: 8px 0;" :debounce="true">
 						<template #label>Select mode</template>
+					</MkSwitch>
+					<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
+						<template #label>Extra mode</template>
 					</MkSwitch>
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
@@ -45,8 +48,11 @@
 						<MkInput v-model="host" :debounce="true">
 							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
+						<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
+							<template #label>Extra mode</template>
+						</MkSwitch>
 					</FormSplit>
-					<MkPagination :pagination="remotePagination">
+					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
@@ -68,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, shallowRef } from 'vue';
+import { computed, defineAsyncComponent, ref, unref, shallowRef, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -80,32 +86,44 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
-
+const emojisRemotePaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const tab = ref('local');
 const query = ref(null);
 const queryRemote = ref(null);
 const host = ref(null);
 const selectMode = ref(false);
+const extraMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
 const pagination = {
 	endpoint: 'admin/emoji/list' as const,
 	limit: 60,
-	params: computed(() => ({
-		query: (query.value && query.value.replace(";","") !== '') ? query.value.replace(";","") : null,
-		extra: (query.value && query.value.indexOf(";") !== -1),
-	})),
+	params: computed(() => {
+		const query2 = (query.value && query.value !== '') ? query.value : null;
+		return {
+			query: query2,
+			extra: extraMode.value,
+		};
+	}),
 };
 
 const remotePagination = {
 	endpoint: 'admin/emoji/list-remote' as const,
 	limit: 60,
-	params: computed(() => ({
-		query: (queryRemote.value && queryRemote.value.replace(";","") !== '') ? queryRemote.value.replace(";","") : null,
-		extra: (queryRemote.value && queryRemote.value.indexOf(";") !== -1),
-		host: (host.value && host.value !== '') ? host.value : null,
-	})),
+	params: computed(() => {
+		const queryRemote2 = (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null;
+		return {
+			query: queryRemote2,
+			extra: extraMode.value,
+			host: (host.value && host.value !== '') ? host.value : null,
+		};
+	}),
 };
+
+watch(extraMode, (newValue) => {
+	//console.log(extraMode.value);
+	//console.log(emojisPaginationComponent.value?.items.length);
+});
 
 const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
