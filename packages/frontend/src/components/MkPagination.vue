@@ -183,7 +183,8 @@ async function init(): Promise<void> {
 			items.value = res;
 			more.value = false;
 		}
-		if (props.pagination.params.value &&
+		if (props.pagination.params &&
+		props.pagination.params.value &&
 		props.pagination.params.value.extra && 
 		props.pagination.params.value.query && 
 		props.pagination.params.value.extra === true) {
@@ -263,7 +264,11 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
-		if (props.pagination.params && props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+		if (props.pagination.params &&
+		props.pagination.params.value &&
+		props.pagination.params.value.extra && 
+		props.pagination.params.value.query && 
+		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
@@ -293,7 +298,11 @@ const fetchMoreAhead = async (): Promise<void> => {
 			items.value = items.value.concat(res);
 			more.value = false;
 		}
-		if (props.pagination.params && props.pagination.params.value?.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+		if (props.pagination.params &&
+		props.pagination.params.value &&
+		props.pagination.params.value.extra && 
+		props.pagination.params.value.query && 
+		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
