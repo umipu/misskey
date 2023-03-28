@@ -55,7 +55,10 @@ const TOLERANCE = 16;
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
 	limit: number;
-	extra?: boolean;
+	extra?: {
+		type: boolean,
+		default: false,
+	};
 	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
 
 	/**
@@ -180,7 +183,10 @@ async function init(): Promise<void> {
 			items.value = res;
 			more.value = false;
 		}
-		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+		if (props.pagination.params.value &&
+		props.pagination.params.value.extra && 
+		props.pagination.params.value.query && 
+		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value = res.length;
@@ -257,7 +263,7 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
-		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+		if (props.pagination.params && props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
@@ -287,7 +293,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 			items.value = items.value.concat(res);
 			more.value = false;
 		}
-		if (props.pagination.params?.value.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
+		if (props.pagination.params && props.pagination.params.value?.extra && props.pagination.params?.value.query && props.pagination.params?.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
 		offset.value += res.length;
