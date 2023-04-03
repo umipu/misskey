@@ -186,7 +186,6 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
 }>();
-
 const splitRNButton = defaultStore.state.splitRNButton;
 const inChannel = inject('inChannel', null);
 
@@ -371,11 +370,13 @@ function renote(viaKeyboard = false) {
 				os.toast(i18n.ts.renoted);
 			});
 		} else {
+			renoteButton.value.disabled = true;
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
+			setTimeout(() => renoteButton.value.disabled = false, 500);
 		}
 	}
 }
