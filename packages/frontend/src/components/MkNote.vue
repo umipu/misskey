@@ -90,7 +90,7 @@
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button
-					v-if="canRenote"
+					v-if="canRenote && !splitRNButton"
 					ref="renoteButton"
 					:class="$style.footerButton"
 					class="_button"
@@ -99,8 +99,28 @@
 					<i class="ti ti-repeat"></i>
 					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button v-else :class="$style.footerButton" class="_button" disabled>
+				<button v-else-if="!splitRNButton" :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
+				</button>
+				<button
+					v-if="splitRNButton"
+					ref="renoteButton"
+					:class="$style.footerButton"
+					class="_button"
+					@click="renote()"
+				>
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button
+					v-if="splitRNButton"
+					ref="quoteButton"
+					:class="$style.footerButton"
+					class="_button"
+					@click="quoteRenote()"
+				>
+					<i class="ti ti-quote"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
@@ -168,6 +188,7 @@ const props = defineProps<{
 	pinned?: boolean;
 }>();
 
+const splitRNButton = defaultStore.state.splitRNButton;
 const inChannel = inject('inChannel', null);
 
 let note = $ref(deepClone(props.note));
@@ -252,14 +273,57 @@ useTooltip(renoteButton, async (showing) => {
 	}, {}, 'closed');
 });
 
+function quoteRenote() {
+	if (appearNote.channel) {
+		os.post({
+			renote: appearNote,
+			channel: appearNote.channel,
+		});
+	} else {
+		os.post({
+			renote: appearNote,
+		});
+	}
+}
+
 function renote(viaKeyboard = false) {
 	pleaseLogin();
+	if (!splitRNButton) {
+		let items = [] as MenuItem[];
+		if (appearNote.channel) {
+			items = items.concat([{
+				text: i18n.ts.inChannelRenote,
+				icon: 'ti ti-repeat',
+				action: () => {
+					const el = renoteButton.value as HTMLElement | null | undefined;
+					if (el) {
+						const rect = el.getBoundingClientRect();
+						const x = rect.left + (el.offsetWidth / 2);
+						const y = rect.top + (el.offsetHeight / 2);
+						os.popup(MkRippleEffect, { x, y }, {}, 'end');
+					}
+						
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						channelId: appearNote.channelId,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				},
+			}, {
+				text: i18n.ts.inChannelQuote,
+				icon: 'ti ti-quote',
+				action: () => {
+					os.post({
+						renote: appearNote,
+						channel: appearNote.channel,
+					});
+				},
+			}, null]);
+		}
 
-	let items = [] as MenuItem[];
-
-	if (appearNote.channel) {
 		items = items.concat([{
-			text: i18n.ts.inChannelRenote,
+			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
 				const el = renoteButton.value as HTMLElement | null | undefined;
@@ -272,64 +336,39 @@ function renote(viaKeyboard = false) {
 					
 				os.api('notes/create', {
 					renoteId: appearNote.id,
-					channelId: appearNote.channelId,
 				}).then(() => {
 					os.toast(i18n.ts.renoted);
 				});
 			},
 		}, {
-			text: i18n.ts.inChannelQuote,
+			text: i18n.ts.quote,
 			icon: 'ti ti-quote',
 			action: () => {
 				os.post({
 					renote: appearNote,
-					channel: appearNote.channel,
 				});
 			},
-		}, null]);
-	}
+		}]);
 
-	items = items.concat([{
-		text: i18n.ts.renote,
-		icon: 'ti ti-repeat',
-		action: () => {
-			const el = renoteButton.value as HTMLElement | null | undefined;
-			if (el) {
-				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.offsetWidth / 2);
-				const y = rect.top + (el.offsetHeight / 2);
-				os.popup(MkRippleEffect, { x, y }, {}, 'end');
-			}
-				
+		os.popupMenu(items, renoteButton.value, {
+			viaKeyboard,
+		});
+	} else {
+		if (appearNote.channel) {
+			os.api('notes/create', {
+				renoteId: appearNote.id,
+				channelId: appearNote.channelId,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
+			});
+		} else {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
-		},
-	}, {
-		text: i18n.ts.quote,
-		icon: 'ti ti-quote',
-		action: () => {
-			os.post({
-				renote: appearNote,
-			});
-		},
-	}]);
-
-	os.popupMenu(items, renoteButton.value, {
-		viaKeyboard,
-	});
-}
-
-function reply(viaKeyboard = false): void {
-	pleaseLogin();
-	os.post({
-		reply: appearNote,
-		animation: !viaKeyboard,
-	}, () => {
-		focus();
-	});
+		}
+	}
 }
 
 function react(viaKeyboard = false): void {

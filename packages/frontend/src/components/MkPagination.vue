@@ -190,7 +190,7 @@ async function init(): Promise<void> {
 		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
-		offset.value = res.length;
+		offset.value = items.value.length;
 		error.value = false;
 		fetching.value = false;
 	}, err => {
@@ -271,7 +271,7 @@ const fetchMore = async (): Promise<void> => {
 		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
-		offset.value += res.length;
+		offset.value += items.value.length;
 	}, err => {
 		moreFetching.value = false;
 	});

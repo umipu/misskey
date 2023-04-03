@@ -46,6 +46,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: true,
 	},
+	splitRNButton: {
+		where: 'device',
+		default: false,
+	},
 	showFullAcct: {
 		where: 'account',
 		default: false,
