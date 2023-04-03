@@ -272,6 +272,16 @@ useTooltip(renoteButton, async (showing) => {
 	}, {}, 'closed');
 });
 
+function reply(viaKeyboard = false): void {
+	pleaseLogin();
+	os.post({
+		reply: appearNote,
+		animation: !viaKeyboard,
+	}, () => {
+		focus();
+	});
+}
+
 function quoteRenote() {
 	if (appearNote.channel) {
 		os.post({
