@@ -1,6 +1,6 @@
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-//pg.types.setTypeParser(20, Number);
+pg.types.setTypeParser(20, Number);
 
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
@@ -201,7 +201,6 @@ export function createPostgresDataSource(config: Config) {
 		password: config.db.pass,
 		database: config.db.db,
 		extra: {
-			statement_timeout: 1000 * 10,
 			...config.db.extra,
 		},
 		synchronize: process.env.NODE_ENV === 'test',
