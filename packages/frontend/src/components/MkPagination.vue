@@ -270,12 +270,14 @@ const fetchMore = async (): Promise<void> => {
 		props.pagination.params.value.query && 
 		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
+			if (SECOND_FETCH_LIMIT > items.value.length) {
+				more.value = false;
+				moreFetching.value = false;
+			}
+			offset.value += items.value.length;
+		} else { 
+			offset.value += res.length;
 		}
-		if (SECOND_FETCH_LIMIT > items.value.length) {
-			more.value = false;
-			moreFetching.value = false;
-		}
-		offset.value += items.value.length;
 	}, err => {
 		moreFetching.value = false;
 	});
@@ -308,12 +310,14 @@ const fetchMoreAhead = async (): Promise<void> => {
 		props.pagination.params.value.query && 
 		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
+			if (SECOND_FETCH_LIMIT > items.value.length) {
+				more.value = false;
+				moreFetching.value = false;
+			}
+			offset.value = items.value.length;
+		} else {
+			offset.value = res.length;
 		}
-		if (SECOND_FETCH_LIMIT > items.value.length) {
-			more.value = false;
-			moreFetching.value = false;
-		}
-		offset.value = items.value.length;
 		moreFetching.value = false;
 	}, err => {
 		moreFetching.value = false;

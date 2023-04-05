@@ -28,11 +28,11 @@
 					</MkSelect>
 				</div>
 				<div :class="$style.inputs">
-					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:model-value="$refs.users.reload()">
+					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.username }}</template>
 					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:model-value="$refs.users.reload()">
+					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed,watch } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -71,6 +71,7 @@ let state = $ref('all');
 let origin = $ref('local');
 let searchUsername = $ref('');
 let searchHost = $ref('');
+
 const pagination = {
 	endpoint: 'admin/show-users' as const,
 	limit: 10,
