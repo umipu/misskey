@@ -190,6 +190,9 @@ async function init(): Promise<void> {
 		props.pagination.params.value.extra === true) {
 			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
 		}
+		if (res.length < (props.pagination.limit ?? 10)) {
+			more.value = false;
+		}
 		offset.value = items.value.length;
 		error.value = false;
 		fetching.value = false;
