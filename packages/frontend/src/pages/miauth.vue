@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs" /></template>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-if="$i">
 			<div v-if="state == 'waiting'">
@@ -22,18 +22,16 @@
 							<img :src="icon ?? '/static-assets/mi-white.png'" :style="{'width': '68px','height': '68px', 'vertical-align':'bottom', 'border-radius':'100%'}"/>
 						</div>
 						<p :style="{'font-size':'20px'}">{{ name }}</p>
-						<p v-if="name">{{ $t('_auth.permission', { name }) }}</p>
+						<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
 						<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 						<div>
 							<ul :style="{'width':'45%','margin-left':'20%'}">
-								<li v-for="p in _permissions" :key="p" :style="{'text-align':'left'}">{{ $t(`_permissions.${p}`) }}</li>
+								<li v-for="p in _permissions" :key="p" :style="{'text-align':'left'}">{{ i18n.t(`_permissions.${p}`) }}</li>
 							</ul>
 						</div>
 					</div>
-					<!--
-					<div v-if="name" :style="{'text-align': 'center'}">{{ $t('_auth.shareAccess', { name }) }}</div>
+					<div v-if="name" :style="{'text-align': 'center'}">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
 					<div v-else :style="{'text-align': 'center'}">{{ i18n.ts._auth.shareAccessAsk }}</div>
-					-->
 					<div :class="$style.buttons" :style="{'text-align': 'center'}">
 						<MkButton inline primary :style="{'width': '51%','left':'24%'}" @click="accept">{{ i18n.ts.accept }}</MkButton>
 						<MkButton inline :style="{'width': '51%','left':'24%','margin-bottom': '10px'}" @click="deny">{{ i18n.ts.cancel }}</MkButton>
