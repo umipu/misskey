@@ -99,11 +99,8 @@
 					<i class="ti ti-repeat"></i>
 					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button v-else-if="!splitRNButton" :class="$style.footerButton" class="_button" disabled>
-					<i class="ti ti-ban"></i>
-				</button>
 				<button
-					v-if="splitRNButton"
+					v-else-if="canRenote && splitRNButton"
 					ref="renoteButton"
 					:class="$style.footerButton"
 					class="_button"
@@ -112,8 +109,11 @@
 					<i class="ti ti-repeat"></i>
 					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
+				<button v-else :class="$style.footerButton" class="_button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
 				<button
-					v-if="splitRNButton"
+					v-if="canRenote && splitRNButton"
 					ref="quoteButton"
 					:class="$style.footerButton"
 					class="_button"
@@ -166,6 +166,7 @@ import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';
+import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { defaultStore, noteViewInterruptors } from '@/store';

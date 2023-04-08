@@ -9,7 +9,7 @@
 	<header :class="$style.header">
 		<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
 		<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
+			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar" />
 		</button>
 		<div :class="$style.headerRight">
 			<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>
@@ -21,7 +21,6 @@
 				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.previewButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<!-- <button v-tooltip="i18n.ts.emoji" class="_button" :class="$style.emojiButton" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button> -->
 			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -46,7 +45,7 @@
 				<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 			</div>
 		</div>
-		<MkInfo v-if="localOnly && channel == null" warn :class="$style.disableFederationWarn">{{ i18n.ts.disableFederationWarn }}</MkInfo>
+		<MkInfo v-if="warnMfm" warn :class="$style.thisPostMayBeAnnoyingWarn">{{ i18n.ts.thisPostMayBeAnnoying }}<a v-if="visibility == 'public'" style="color: var(--X9)" @click="toHome()">{{ i18n.ts.thisPostMayBeAnnoyingHome }}</a></MkInfo>
 		<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
@@ -110,7 +109,6 @@ import { miLocalStorage } from '@/local-storage';
 import { claimAchievement } from '@/scripts/achievements';
 
 const modal = inject('modal');
-
 const props = withDefaults(defineProps<{
 	reply?: misskey.entities.Note;
 	renote?: misskey.entities.Note;
@@ -142,7 +140,6 @@ const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
 const cwInputEl = $shallowRef<HTMLInputElement | null>(null);
 const hashtagsInputEl = $shallowRef<HTMLInputElement | null>(null);
 const visibilityButton = $shallowRef<HTMLElement | null>(null);
-
 let posting = $ref(false);
 let posted = $ref(false);
 let text = $ref(props.initialText ?? '');
@@ -157,6 +154,7 @@ let useCw = $ref(false);
 let showPreview = $ref(false);
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
+let warnMfm = $ref(false);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
 let visibleUsers = $ref([]);
 if (props.initialVisibleUsers) {
@@ -212,7 +210,6 @@ const submitText = $computed((): string => {
 			? i18n.ts.reply
 			: i18n.ts.note;
 });
-
 const textLength = $computed((): number => {
 	return (text + imeText).trim().length;
 });
@@ -233,6 +230,11 @@ const hashtags = $computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
 watch($$(text), () => {
 	checkMissingMention();
+	warnMfm = text.includes('$[x2') ||
+		text.includes('$[x3') ||
+		text.includes('$[x4') ||
+		text.includes('$[scale') ||
+		text.includes('$[position');
 }, { immediate: true });
 
 watch($$(visibleUsers), () => {
@@ -340,7 +342,6 @@ function checkMissingMention() {
 
 function addMissingMention() {
 	const ast = mfm.parse(text);
-
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.some(u => (u.username === x.username) && (u.host === x.host))) {
 			os.api('users/show', { username: x.username, host: x.host }).then(user => {
@@ -456,6 +457,12 @@ function clear() {
 function onKeydown(ev: KeyboardEvent) {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
 	if (ev.key === 'Escape') emit('esc');
+}
+
+function toHome() {
+	if (visibility == "public") {
+		visibility = "home";
+	}
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
@@ -584,36 +591,6 @@ async function post(ev?: MouseEvent) {
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
 		os.popup(MkRippleEffect, { x, y }, {}, 'end');
-	}
-
-	const annoying =
-		text.includes('$[x2') ||
-		text.includes('$[x3') ||
-		text.includes('$[x4') ||
-		text.includes('$[scale') ||
-		text.includes('$[position');
-	if (annoying) {
-		const { canceled, result } = await os.actions({
-			type: 'warning',
-			text: i18n.ts.thisPostMayBeAnnoying,
-			actions: [{
-				value: 'home',
-				text: i18n.ts.thisPostMayBeAnnoyingHome,
-				primary: true,
-			}, {
-				value: 'cancel',
-				text: i18n.ts.thisPostMayBeAnnoyingCancel,
-			}, {
-				value: 'ignore',
-				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
-			}],
-		});
-
-		if (canceled) return;
-		if (result === 'cancel') return;
-		if (result === 'home') {
-			visibility = 'home';
-		}
 	}
 
 	let postData = {
@@ -768,7 +745,6 @@ onMounted(() => {
 	new Autocomplete(textareaEl, $$(text));
 	new Autocomplete(cwInputEl, $$(cw));
 	new Autocomplete(hashtagsInputEl, $$(hashtags));
-
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
@@ -805,7 +781,6 @@ onMounted(() => {
 			localOnly = init.localOnly;
 			quoteId = init.renote ? init.renote.id : null;
 		}
-
 		nextTick(() => watchForDraft());
 	});
 });
@@ -839,9 +814,9 @@ defineExpose({
 
 .account {
 	height: 100%;
-	aspect-ratio: 1/1;
 	display: inline-flex;
 	vertical-align: bottom;
+	aspect-ratio: v-bind('fixed ? 1: 0');
 }
 
 .avatar {
@@ -855,10 +830,17 @@ defineExpose({
 	top: 0;
 	right: 0;
 }
+@media screen and (max-width: 309px) {
+	.textCount {
+		visibility: hidden;
+	}
+}
 
-.textCount {
-	opacity: 0.7;
-	line-height: 66px;
+@media screen and (min-width:310px) {
+	.textCount {
+		opacity: 0.7;
+		line-height: 66px;
+	}
 }
 
 .visibility {
@@ -967,7 +949,7 @@ defineExpose({
 	background: var(--X4);
 }
 
-.disableFederationWarn {
+.thisPostMayBeAnnoyingWarn {
 	margin: 0 20px 16px 20px;
 }
 
