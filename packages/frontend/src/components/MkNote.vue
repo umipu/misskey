@@ -785,7 +785,7 @@ function showReactions(): void {
 	opacity: 0.7;
 
 	&:not(:last-child) {
-		margin-right: 28px;
+		margin-right: 22px;
 	}
 
 	&:hover {
