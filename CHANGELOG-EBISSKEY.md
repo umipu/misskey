@@ -2,6 +2,12 @@
 
 Ebisskeyとしての変更履歴です。Misskeyのリリースノートは [CHANGELOG](/CHANGELOG.md) を確認してください。
 
+## 未リリース
+
+* 自分用メモのUIを改善
+* fix(frontend): ノートメニューのボタンが崩れるケースがあるのを修正
+*	enhance(frontend): ナビゲーションバーのUIを改善
+
 ## 13.10.3-sh.1
 
 * 自分用メモ機能
