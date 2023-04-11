@@ -763,6 +763,8 @@ function showReactions(): void {
 	opacity: 0.7;
 	flex-grow: 1;
 	max-width: 4em;
+	width: max-content;
+	min-width: max-content;
 
 	&:not(:last-child) {
 	}
