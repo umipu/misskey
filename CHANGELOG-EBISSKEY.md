@@ -2,6 +2,10 @@
 
 Ebisskeyとしての変更履歴です。Misskeyのリリースノートは [CHANGELOG](/CHANGELOG.md) を確認してください。
 
+## Unreleased
+
+* 殆どのEbisskey独自機能を個別に有効化・無効化できるように
+
 ## 13.11.2
 
 > Note: このバージョンから、`master` ブランチをリリースブランチにしました。
