@@ -306,18 +306,38 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	usePostFormWindow: {
-		where: 'device',
-		default: false,
-	},
 
 	// #region Shrimpia
-	showPostFormPreview: {
+	numberQuoteEnabled: {
+		where: 'account',
+		default: false,
+	},
+	stealEnabled: {
+		where: 'account',
+		default: false,
+	},
+	infoButtonForNoteActionsEnabled: {
+		where: 'account',
+		default: true,
+	},
+	rememberPostFormToggleStateEnabled: {
+		where: 'account',
+		default: true,
+	},
+	reactableRemoteReactionEnabled: {
+		where: 'account',
+		default: true,
+	},
+	usePostFormWindow: {
 		where: 'device',
 		default: false,
 	},
 	useDefaultNoteVisibilityOnRenote: {
 		where: 'account',
+		default: false,
+	},
+	showPostFormPreview: {
+		where: 'device',
 		default: false,
 	},
 	defaultRenoteVisibility: {
