@@ -54,6 +54,9 @@
 			<MkSwitch v-model="usePostFormWindow">
 				投稿フォームをウィンドウとして表示
 			</MkSwitch>
+			<MkSwitch v-model="ebiNoteViewEnabled">
+				新しいノートUIを試す
+			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -85,12 +88,14 @@ const infoButtonForNoteActionsEnabled = computed(defaultStore.makeGetterSetter('
 const reactableRemoteReactionEnabled = computed(defaultStore.makeGetterSetter('reactableRemoteReactionEnabled'));
 const rememberPostFormToggleStateEnabled = computed(defaultStore.makeGetterSetter('rememberPostFormToggleStateEnabled'));
 const usePostFormWindow = computed(defaultStore.makeGetterSetter('usePostFormWindow'));
+const ebiNoteViewEnabled = computed(defaultStore.makeGetterSetter('ebiNoteViewEnabledLab'));
 
 watch([
 	numberQuoteEnabled,
 	stealEnabled,
 	infoButtonForNoteActionsEnabled,
 	reactableRemoteReactionEnabled,
+	ebiNoteViewEnabled,
 ], async () => {
 	await reloadAsk();
 });

@@ -308,6 +308,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 
 	// #region Shrimpia
+	// -- Feature
 	numberQuoteEnabled: {
 		where: 'account',
 		default: false,
@@ -316,6 +317,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	// -- Tweak
 	infoButtonForNoteActionsEnabled: {
 		where: 'account',
 		default: true,
@@ -328,10 +330,16 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: true,
 	},
+	// -- Labs
 	usePostFormWindow: {
 		where: 'device',
 		default: false,
 	},
+	ebiNoteViewEnabledLab: {
+		where: 'account',
+		default: false,
+	},
+
 	useDefaultNoteVisibilityOnRenote: {
 		where: 'account',
 		default: false,
