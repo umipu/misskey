@@ -14,6 +14,7 @@
 					</MkSwitch>
 					<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
 						<template #label>Extra mode</template>
+						<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span>
 					</MkSwitch>
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
@@ -50,6 +51,7 @@
 						</MkInput>
 						<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
 							<template #label>Extra mode</template>
+							<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span>
 						</MkSwitch>
 					</FormSplit>
 					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination">
@@ -120,11 +122,6 @@ const remotePagination = {
 	}),
 };
 
-watch(extraMode, (newValue) => {
-	//console.log(extraMode.value);
-	//console.log(emojisPaginationComponent.value?.items.length);
-});
-
 const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
@@ -143,7 +140,6 @@ const toggleSelect = (emoji) => {
 
 const add = async (ev: MouseEvent) => {
 	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
-
 	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 		fileId: file.id,
 	})));
@@ -171,9 +167,14 @@ const edit = (emoji) => {
 };
 
 const im = (emoji) => {
+	console.log(emoji.name);
+	console.log(os.api('emoji', {
+		name: emoji.name,
+	}));
+	/*
 	os.apiWithDialog('admin/emoji/copy', {
 		emojiId: emoji.id,
-	});
+	});*/
 };
 
 const remoteMenu = (emoji, ev: MouseEvent) => {

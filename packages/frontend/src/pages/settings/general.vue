@@ -52,7 +52,7 @@
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
-				<MkSwitch v-model="splitRNButton">{{ i18n.ts.splitRNButton }}</MkSwitch>
+				<MkSwitch v-model="splitRNButton">{{ i18n.ts.splitRNButton }}<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span></MkSwitch>
 				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>

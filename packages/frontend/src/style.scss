@@ -341,6 +341,15 @@ hr {
 	vertical-align: top;
 }
 
+._tips{
+	margin-left: 0.7em;
+	padding: 2px 3px;
+	color: var(--accent);
+	border: solid 1px var(--accent);
+	border-radius: 4px;
+	vertical-align: top;
+}
+
 ._table {
 	> ._row {
 		display: flex;
