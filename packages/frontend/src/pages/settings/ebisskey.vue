@@ -57,6 +57,7 @@
 			<MkSwitch v-model="ebiNoteViewEnabled">
 				新しいノートUIを試す
 			</MkSwitch>
+			<MkNote :note="noteMock" />
 		</div>
 	</FormSection>
 </div>
@@ -71,6 +72,9 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkNote from "@/components/MkNote.vue";
+import {Note, User} from "misskey-js/built/entities";
+import {$i} from "@/account";
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -90,12 +94,31 @@ const rememberPostFormToggleStateEnabled = computed(defaultStore.makeGetterSette
 const usePostFormWindow = computed(defaultStore.makeGetterSetter('usePostFormWindow'));
 const ebiNoteViewEnabled = computed(defaultStore.makeGetterSetter('ebiNoteViewEnabledLab'));
 
+const noteMock: Note = {
+	id: 'abc',
+	createdAt: '2012/3/4T14:10:05.000Z',
+	text: '',
+	cw: null,
+	user: $i as User,
+	userId: $i.id,
+	replyId: '',
+	renoteId: '',
+	files: [],
+	fileIds: [],
+	visibility: 'home',
+	reactions: {},
+	renoteCount: 20,
+	repliesCount: 10,
+	emojis: [],
+	localOnly: true,
+
+};
+
 watch([
 	numberQuoteEnabled,
 	stealEnabled,
 	infoButtonForNoteActionsEnabled,
 	reactableRemoteReactionEnabled,
-	ebiNoteViewEnabled,
 ], async () => {
 	await reloadAsk();
 });

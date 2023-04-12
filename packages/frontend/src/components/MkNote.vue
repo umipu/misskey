@@ -12,7 +12,7 @@
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar v-if="!defaultStore.state.ebiNoteViewEnabledLab" :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar v-if="!defaultStore.reactiveState.ebiNoteViewEnabledLab.value" :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
@@ -40,9 +40,9 @@
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
-		<MkAvatar v-if="!defaultStore.state.ebiNoteViewEnabledLab" :class="$style.avatar" :user="appearNote.user" link preview/>
+		<MkAvatar v-if="!defaultStore.reactiveState.ebiNoteViewEnabledLab.value" :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
-			<template v-if="defaultStore.state.ebiNoteViewEnabledLab">
+			<template v-if="defaultStore.reactiveState.ebiNoteViewEnabledLab.value">
 				<ShNoteHeader :note="appearNote" />
 			</template>
 			<template v-else>
