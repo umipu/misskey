@@ -6,7 +6,7 @@
 		<div class="_gaps_m">
 			<div>Ebisskeyが追加する独自機能を有効・無効にします。</div>
 
-			<MkSwitch v-model="stealEnabled">
+			<MkSwitch v-model="nicknameEnabled">
 				ニックネーム機能
 				<template #caption>
 					ユーザーの名前を任意に変更できるようになります。変更は自分にのみ反映されます。<br>
@@ -86,6 +86,7 @@ async function reloadAsk() {
 	unisonReload();
 }
 
+const nicknameEnabled = computed(defaultStore.makeGetterSetter('nicknameEnabled'));
 const numberQuoteEnabled = computed(defaultStore.makeGetterSetter('numberQuoteEnabled'));
 const stealEnabled = computed(defaultStore.makeGetterSetter('stealEnabled'));
 const infoButtonForNoteActionsEnabled = computed(defaultStore.makeGetterSetter('infoButtonForNoteActionsEnabled'));
@@ -96,8 +97,8 @@ const ebiNoteViewEnabled = computed(defaultStore.makeGetterSetter('ebiNoteViewEn
 
 const noteMock: Note = {
 	id: 'abc',
-	createdAt: '2012/3/4T14:10:05.000Z',
-	text: '',
+	createdAt: new Date().toISOString(),
+	text: '> **エビ**（海老・蝦・魵）は、節足動物門・甲殻亜門・軟甲綱・十脚目（エビ目）のうち、カニ下目（短尾類）とヤドカリ下目（異尾類）以外の全ての種の総称である。すなわち、かつての**長尾類**（長尾亜目 Macrura）にあたる。現在、長尾亜目という分類群は廃止されており、学術的な分類ではなく便宜上の区分である。\n\n出典：https://ja.wikipedia.org/wiki/%E3%82%A8%E3%83%93',
 	cw: null,
 	user: $i as User,
 	userId: $i.id,

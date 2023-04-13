@@ -309,6 +309,10 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	// #region Shrimpia
 	// -- Feature
+	nicknameEnabled: {
+		where: 'account',
+		default: true,
+	},
 	numberQuoteEnabled: {
 		where: 'account',
 		default: false,
@@ -376,6 +380,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	nicknameMap: {
+		where: 'account',
+		default: {} as Record<string, string>,
+	}
 	// #endregion
 }));
 
