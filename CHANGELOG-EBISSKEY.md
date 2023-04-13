@@ -2,12 +2,12 @@
 
 Ebisskeyとしての変更履歴です。Misskeyのリリースノートは [CHANGELOG](/CHANGELOG.md) を確認してください。
 
-## Unreleased
+## 13.11.3
 
-* ニックネーム機能
 * 殆どのEbisskey独自機能を個別に有効化・無効化できるように
+	* 設定 >> Ebisskey から有効化できます。
+* ニックネーム機能
 * 実験的機能：新しいノートUI
-  * 設定 >> Ebisskey から有効化できます。
 
 ## 13.11.2
 
