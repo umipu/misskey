@@ -15,6 +15,7 @@ import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema,
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -346,14 +347,21 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
-				name: instance.name,
-				softwareName: instance.softwareName,
-				softwareVersion: instance.softwareVersion,
-				iconUrl: instance.iconUrl,
-				faviconUrl: instance.faviconUrl,
-				themeColor: instance.themeColor,
-			} : undefined) : undefined,
+			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(async i => {
+				const instance = await this.instancesRepository.findOneBy({ host: user.host });
+				// if (instance) {
+				// 	this.federatedInstanceService.updateCachePartial(user.host, instance);
+				// 	this.federatedInstanceService.federatedInstanceCache.set(user.host, instance);
+				// }
+				return instance ? {
+					name: i?.name ?? instance.name,
+					softwareName: i?.softwareName ?? instance.softwareName,
+					softwareVersion: i?.softwareVersion ?? instance.softwareVersion,
+					iconUrl: i?.iconUrl ?? instance.iconUrl,
+					faviconUrl: i?.faviconUrl ?? instance.faviconUrl,
+					themeColor: i?.themeColor ?? instance.themeColor,
+				} : undefined;
+			}) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			// パフォーマンス上の理由でローカルユーザーのみ
