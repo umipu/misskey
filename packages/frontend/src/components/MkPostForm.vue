@@ -224,6 +224,11 @@ watch($$(text), () => {
 		text.includes('$[scale') ||
 		text.includes('$[position');
 }, { immediate: true });
+
+watch($$(visibility), () => {
+	checkMissingMention();
+}, { immediate: true });
+
 watch($$(visibleUsers), () => {
 	checkMissingMention();
 }, {
@@ -714,17 +719,23 @@ defineExpose({
 	z-index: 1000;
 	height: 66px;
 }
+
+.headerLeft {
+	display: flex;
+	flex: 0 1 100px;
+}
+
 .cancel {
 	padding: 0;
 	font-size: 1em;
-	width: 64px;
-	line-height: 66px;
+	height: 100%;
+	flex: 0 1 50px;
 }
 .account {
 	height: 100%;
 	display: inline-flex;
 	vertical-align: bottom;
-	aspect-ratio: v-bind('fixed ? 1: 0');
+	flex: 0 1 50px;
 }
 .avatar {
 	width: 28px;

@@ -64,7 +64,7 @@ globalThis.addEventListener('push', ev => {
 				return createNotification(data);
 			case 'readAllNotifications':
 				await globalThis.registration.getNotifications()
-					.then(notifications => notifications.forEach(n => n.close()));
+					.then(notifications => notifications.forEach(n => n.tag !== 'read_notification' && n.close()));
 				break;
 		}
 
@@ -141,7 +141,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 				switch (action) {
 					case 'markAllAsRead':
 						await globalThis.registration.getNotifications()
-							.then(notifications => notifications.forEach(n => n.close()));
+							.then(notifications => notifications.forEach(n => n.tag !== 'read_notification' && n.close()));
 						await get('accounts').then(accounts => {
 							return Promise.all(accounts.map(async account => {
 								await swos.sendMarkAllAsRead(account.id);
