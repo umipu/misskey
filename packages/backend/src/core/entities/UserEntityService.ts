@@ -352,18 +352,21 @@ export class UserEntityService implements OnModuleInit {
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(async i => {
-				const instance = await this.instancesRepository.findOneBy({ host: user.host });
+				if (i == null || i.name == null || i.softwareName == null || i.softwareVersion == null || i.iconUrl == null || i.faviconUrl == null || i.themeColor == null) {
+					const instance = await this.instancesRepository.findOneBy({ host: user.host });
+					return instance;
+				}
 				// if (instance) {
 				// 	this.federatedInstanceService.updateCachePartial(user.host, instance);
 				// 	this.federatedInstanceService.federatedInstanceCache.set(user.host, instance);
 				// }
-				return instance ? {
-					name: i?.name ?? instance.name,
-					softwareName: i?.softwareName ?? instance.softwareName,
-					softwareVersion: i?.softwareVersion ?? instance.softwareVersion,
-					iconUrl: i?.iconUrl ?? instance.iconUrl,
-					faviconUrl: i?.faviconUrl ?? instance.faviconUrl,
-					themeColor: i?.themeColor ?? instance.themeColor,
+				return i ? {
+					name: i.name,
+					softwareName: i.softwareName,
+					softwareVersion: i.softwareVersion,
+					iconUrl: i.iconUrl,
+					faviconUrl: i.faviconUrl,
+					themeColor: i.themeColor,
 				} : undefined;
 			}) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
