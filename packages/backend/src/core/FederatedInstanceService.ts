@@ -41,24 +41,23 @@ export class FederatedInstanceService {
 	}
 
 	@bindThis
-	public async fetch(host: string): Promise<Instance> {
+	public async fetch(host: string, force = false): Promise<Instance> {
 		host = this.utilityService.toPuny(host);
 	
 		const cached = await this.federatedInstanceCache.get(host);
-		if (cached) return cached;
+		if (cached && !force) return cached;
 	
-		const index = await this.instancesRepository.findOneBy({ host });
-	
+		const index = await this.instancesRepository.findOneBy({ host: host });
 		if (index == null) {
 			const i = await this.instancesRepository.insert({
 				id: this.idService.genId(),
 				host,
 				firstRetrievedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
-	
 			this.federatedInstanceCache.set(host, i);
 			return i;
 		} else {
+			this.federatedInstanceCache.delete(host);
 			this.federatedInstanceCache.set(host, index);
 			return index;
 		}

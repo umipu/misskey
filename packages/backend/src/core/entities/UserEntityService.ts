@@ -337,7 +337,27 @@ export class UserEntityService implements OnModuleInit {
 		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
 
 		const falsy = opts.detail ? false : undefined;
-
+		const inst = user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(async i =>
+		{
+			if ((i == null || 
+			i.name == null || 
+			i.softwareName == null || 
+			i.softwareVersion == null || 
+			i.iconUrl == null || 
+			i.faviconUrl == null || 
+			i.themeColor == null) && user.host) {
+				return this.federatedInstanceService.fetch(user.host, true);
+			} else {
+				return i ? {
+					name: i.name,
+					softwareName: i.softwareName,
+					softwareVersion: i.softwareVersion,
+					iconUrl: i.iconUrl,
+					faviconUrl: i.faviconUrl,
+					themeColor: i.themeColor,
+				} : undefined;
+			}
+		}) : undefined;
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -347,24 +367,7 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(async i => {
-				if (i == null || i.name == null || i.softwareName == null || i.softwareVersion == null || i.iconUrl == null || i.faviconUrl == null || i.themeColor == null) {
-					const instance = await this.instancesRepository.findOneBy({ host: user.host });
-					return instance;
-				}
-				// if (instance) {
-				// 	this.federatedInstanceService.updateCachePartial(user.host, instance);
-				// 	this.federatedInstanceService.federatedInstanceCache.set(user.host, instance);
-				// }
-				return i ? {
-					name: i.name,
-					softwareName: i.softwareName,
-					softwareVersion: i.softwareVersion,
-					iconUrl: i.iconUrl,
-					faviconUrl: i.faviconUrl,
-					themeColor: i.themeColor,
-				} : undefined;
-			}) : undefined,
+			instance: inst,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			// パフォーマンス上の理由でローカルユーザーのみ

@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { InstancesRepository } from '@/models/index.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
@@ -38,7 +39,7 @@ export class FetchInstanceMetadataService {
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
-
+		private federatedInstanceService: FederatedInstanceService,
 		private appLockService: AppLockService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
@@ -97,7 +98,7 @@ export class FetchInstanceMetadataService {
 			if (themeColor) updates.themeColor = themeColor;
 	
 			await this.instancesRepository.update(instance.id, updates);
-	
+			await this.federatedInstanceService.fetch(instance.host, true);
 			this.logger.succ(`Successfuly updated metadata of ${instance.host}`);
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
