@@ -10,9 +10,7 @@
 
 [本家 Misskey との違い](DIFFERENCE.md)
 
-## 状況
-
-現在、Misskey 13.11.2 に追従しています。Ebisskey固有のリリースノートは [CHANGELOG-EBISSKEY.md](CHANGELOG-EBISSKEY.md)を参照。
+Ebisskey固有のリリースノートは [CHANGELOG-EBISSKEY.md](CHANGELOG-EBISSKEY.md)を参照。
 
 ## サーバー構築方法
 
