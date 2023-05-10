@@ -116,7 +116,7 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
 
-		@Inject(DI.userMemoRepository)
+		@Inject(DI.userMemosRepository)
 		private userMemoRepository: UserMemoRepository,
 
 		//private noteEntityService: NoteEntityService,
