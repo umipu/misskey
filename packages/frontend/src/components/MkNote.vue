@@ -254,7 +254,12 @@ useTooltip(renoteButton, async (showing) => {
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
-	showMovedDialog();
+	os.post({
+		reply: appearNote,
+		animation: !viaKeyboard,
+	}, () => {
+		focus();
+	});
 }
 
 function quoteRenote() {
@@ -336,7 +341,7 @@ function renote(viaKeyboard = false) {
 		os.popupMenu(items, renoteButton.value, {
 			viaKeyboard,
 		});
-	} else {/*
+	} else {
 		if (appearNote.channel) {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
@@ -344,7 +349,7 @@ function renote(viaKeyboard = false) {
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
-		} else {
+		} else if (renoteButton.value) {
 			renoteButton.value.disabled = true;
 			os.api('notes/create', {
 				renoteId: appearNote.id,
@@ -352,7 +357,7 @@ function renote(viaKeyboard = false) {
 				os.toast(i18n.ts.renoted);
 			});
 			setTimeout(() => renoteButton.value.disabled = false, 500);
-		}*/
+		}
 	}
 }
 

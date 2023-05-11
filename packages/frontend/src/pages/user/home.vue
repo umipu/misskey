@@ -132,9 +132,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, watch, ref } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
+import { $$ } from 'vue/macros';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -178,9 +179,7 @@ let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
 let editModerationNote = $ref(false);
 
-watch($$(moderationNote), async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
-});
+watch($$(moderationNote), async () => await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote }));
 
 const pagination = {
 	endpoint: 'users/notes' as const,
