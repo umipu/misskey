@@ -1,12 +1,5 @@
 <template>
-<div
-	v-if="!muted"
-	v-show="!isDeleted"
-	ref="el"
-	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
-	:tabindex="!isDeleted ? '-1' : undefined"
->
+<div v-if="!muted" v-show="!isDeleted" ref="el" v-hotkey="keymap" :class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]" :tabindex="!isDeleted ? '-1' : undefined">
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
@@ -69,7 +62,9 @@
 					</div>
 					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
-					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+					<div v-if="appearNote.renote" :class="$style.quote">
+						<MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/>
+					</div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
@@ -91,36 +86,18 @@
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button
-					v-if="canRenote && !splitRNButton"
-					ref="renoteButton"
-					:class="$style.footerButton"
-					class="_button"
-					@mousedown="renote()"
-				>
+				<button v-if="canRenote && !splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @mousedown="renote()">
 					<i class="ti ti-repeat"></i>
 					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button
-					v-else-if="canRenote && splitRNButton"
-					ref="renoteButton"
-					:class="$style.footerButton"
-					class="_button"
-					@click="renote()"
-				>
+				<button v-else-if="canRenote && splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @click="renote()">
 					<i class="ti ti-repeat"></i>
 					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button
-					v-if="canRenote && splitRNButton"
-					ref="quoteButton"
-					:class="$style.footerButton"
-					class="_button"
-					@click="quoteRenote()"
-				>
+				<button v-if="canRenote && splitRNButton" ref="quoteButton" :class="$style.footerButton" class="_button" @click="quoteRenote()">
 					<i class="ti ti-quote"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
@@ -278,6 +255,7 @@ useTooltip(renoteButton, async (showing) => {
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
+}
 
 function quoteRenote() {
 	if (appearNote.channel) {
@@ -308,7 +286,7 @@ function renote(viaKeyboard = false) {
 						const y = rect.top + (el.offsetHeight / 2);
 						os.popup(MkRippleEffect, { x, y }, {}, 'end');
 					}
-						
+
 					os.api('notes/create', {
 						renoteId: appearNote.id,
 						channelId: appearNote.channelId,
@@ -339,7 +317,6 @@ function renote(viaKeyboard = false) {
 					const y = rect.top + (el.offsetHeight / 2);
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
-					
 				os.api('notes/create', {
 					renoteId: appearNote.id,
 				}).then(() => {
@@ -359,7 +336,7 @@ function renote(viaKeyboard = false) {
 		os.popupMenu(items, renoteButton.value, {
 			viaKeyboard,
 		});
-	} else {
+	} else {/*
 		if (appearNote.channel) {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
@@ -375,7 +352,7 @@ function renote(viaKeyboard = false) {
 				os.toast(i18n.ts.renoted);
 			});
 			setTimeout(() => renoteButton.value.disabled = false, 500);
-		}
+		}*/
 	}
 }
 
@@ -508,7 +485,7 @@ function showReactions(): void {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	//contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;
@@ -532,7 +509,7 @@ function showReactions(): void {
 		}
 	}
 
-	&:hover > .article > .main > .footer > .footerButton {
+	&:hover>.article>.main>.footer>.footerButton {
 		opacity: 1;
 	}
 
@@ -575,7 +552,7 @@ function showReactions(): void {
 	color: #d28a3f;
 }
 
-.tip + .article {
+.tip+.article {
 	padding-top: 8px;
 }
 
@@ -593,11 +570,11 @@ function showReactions(): void {
 	white-space: pre;
 	color: var(--renote);
 
-	& + .article {
+	&+.article {
 		padding-top: 8px;
 	}
 
-	> .colorBar {
+	>.colorBar {
 		height: calc(100% - 6px);
 	}
 }
@@ -737,7 +714,7 @@ function showReactions(): void {
 	height: 64px;
 	background: linear-gradient(0deg, var(--panel), var(--X15));
 
-	&:hover > .collapsedLabel {
+	&:hover>.collapsedLabel {
 		background: var(--panelHighlight);
 	}
 }
