@@ -21,6 +21,9 @@
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+								<button v-if="!isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
+									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+								</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -132,10 +135,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
-import { $$ } from 'vue/macros';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -155,6 +157,7 @@ import { $i, iAmModerator } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
+import { api } from '@/os';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -179,7 +182,9 @@ let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
 let editModerationNote = $ref(false);
 
-watch($$(moderationNote), async () => await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote }));
+watch($$(moderationNote), async () => {
+	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
+});
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -222,6 +227,31 @@ function parallax() {
 	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 }
 
+function showMemoTextarea() {
+	isEditingMemo = true;
+	nextTick(() => {
+		memoTextareaEl?.focus();
+	});
+}
+
+function adjustMemoTextarea() {
+	if (!memoTextareaEl) return;
+	memoTextareaEl.style.height = '0px';
+	memoTextareaEl.style.height = `${memoTextareaEl.scrollHeight}px`;
+}
+
+async function updateMemo() {
+	await api('users/update-memo', {
+		memo: memoDraft,
+		userId: props.user.id,
+	});
+	isEditingMemo = false;
+}
+
+watch([props.user], () => {
+	memoDraft = props.user.memo;
+});
+
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
 	narrow = rootEl!.clientWidth < 1000;
@@ -237,6 +267,9 @@ onMounted(() => {
 			});
 		}
 	}
+	nextTick(() => {
+		adjustMemoTextarea();
+	});
 });
 
 onUnmounted(() => {
@@ -351,6 +384,16 @@ onUnmounted(() => {
 								&.username {
 									font-weight: bold;
 								}
+							}
+
+							> .add-note-button {
+								background: rgba(0, 0, 0, 0.2);
+								color: #fff;
+								-webkit-backdrop-filter: var(--blur, blur(8px));
+								backdrop-filter: var(--blur, blur(8px));
+								border-radius: 24px;
+								padding: 4px 8px;
+								font-size: 80%;
 							}
 						}
 					}

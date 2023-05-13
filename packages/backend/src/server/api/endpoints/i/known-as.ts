@@ -85,8 +85,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				updates.alsoKnownAs = updates.alsoKnownAs?.concat([toUrl]) ?? [toUrl];
 			}
-
-			return await this.accountMoveService.createAlias(me, updates);
+			return null;
+			// return await this.accountMoveService.createAlias(me, updates);
 		});
 	}
 }
