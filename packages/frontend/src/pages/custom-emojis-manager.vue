@@ -172,10 +172,9 @@ const im = (emoji) => {
 	console.log(os.api('emoji', {
 		name: emoji.name,
 	}));
-	/*
 	os.apiWithDialog('admin/emoji/copy', {
 		emojiId: emoji.id,
-	});*/
+	});
 };
 
 const remoteMenu = (emoji, ev: MouseEvent) => {
