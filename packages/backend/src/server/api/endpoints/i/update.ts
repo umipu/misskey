@@ -71,6 +71,30 @@ export const meta = {
 			code: 'TOO_MANY_MUTED_WORDS',
 			id: '010665b1-a211-42d2-bc64-8f6609d79785',
 		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5',
+		},
+
+		uriNull: {
+			message: 'User ActivityPup URI is null.',
+			code: 'URI_NULL',
+			id: 'bf326f31-d430-4f97-9933-5d61e4d48a23',
+		},
+
+		forbiddenToSetYourself: {
+			message: 'You can\'t set yourself as your own alias.',
+			code: 'FORBIDDEN_TO_SET_YOURSELF',
+			id: '25c90186-4ab0-49c8-9bba-a1fa6c202ba4',
+		},
+
+		restrictedByRole: {
+			message: 'This feature is restricted by your role.',
+			code: 'RESTRICTED_BY_ROLE',
+			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
+		},
 	},
 
 	res: {
@@ -110,6 +134,7 @@ export const paramDef = {
 		carefulBot: { type: 'boolean' },
 		autoAcceptFollowed: { type: 'boolean' },
 		noCrawle: { type: 'boolean' },
+		preventAiLearning: { type: 'boolean' },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		showTimelineReplies: { type: 'boolean' },
@@ -205,6 +230,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
+			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
