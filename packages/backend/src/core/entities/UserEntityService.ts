@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
@@ -9,13 +9,11 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { Instance } from '@/models/entities/Instance.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -36,13 +34,13 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 const ajv = new Ajv();
 
 function isLocalUser(user: User): user is LocalUser;
-function isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
+function isLocalUser<T extends { host: User['host'] }>(user: T): user is (T & { host: null; });
 function isLocalUser(user: User | { host: User['host'] }): boolean {
 	return user.host == null;
 }
 
 function isRemoteUser(user: User): user is RemoteUser;
-function isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { host: string; };
+function isRemoteUser<T extends { host: User['host'] }>(user: T): user is (T & { host: string; });
 function isRemoteUser(user: User | { host: User['host'] }): boolean {
 	return !isLocalUser(user);
 }
@@ -114,6 +112,9 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
+		
+		@Inject(DI.userMemosRepository)
+		private userMemosRepository: UserMemoRepository,
 
 		//private noteEntityService: NoteEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -278,9 +279,20 @@ export class UserEntityService implements OnModuleInit {
 		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
+	@bindThis
+	public getUserUri(user: LocalUser | PartialLocalUser | RemoteUser | PartialRemoteUser): string {
+		return this.isRemoteUser(user)
+			? user.uri : this.genLocalUserUri(user.id);
+	}
+
+	@bindThis
+	public genLocalUserUri(userId: string): string {
+		return `${this.config.url}/users/${userId}`;
+	}
+
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id']; } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
@@ -314,6 +326,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
+		const iAmModerator = me ? await this.roleService.isModerator(me as User) : false;
 
 		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')
@@ -337,27 +350,7 @@ export class UserEntityService implements OnModuleInit {
 		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
 
 		const falsy = opts.detail ? false : undefined;
-		const inst = user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(async i =>
-		{
-			if ((i == null || 
-			i.name == null || 
-			i.softwareName == null || 
-			i.softwareVersion == null || 
-			i.iconUrl == null || 
-			i.faviconUrl == null || 
-			i.themeColor == null) && user.host) {
-				return this.federatedInstanceService.fetch(user.host, true);
-			} else {
-				return i ? {
-					name: i.name,
-					softwareName: i.softwareName,
-					softwareVersion: i.softwareVersion,
-					iconUrl: i.iconUrl,
-					faviconUrl: i.faviconUrl,
-					themeColor: i.themeColor,
-				} : undefined;
-			}
-		}) : undefined;
+
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -367,7 +360,14 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: inst,
+			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
+				name: instance.name,
+				softwareName: instance.softwareName,
+				softwareVersion: instance.softwareVersion,
+				iconUrl: instance.iconUrl,
+				faviconUrl: instance.faviconUrl,
+				themeColor: instance.themeColor,
+			} : undefined) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			// パフォーマンス上の理由でローカルユーザーのみ
@@ -380,8 +380,11 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
-				movedToUri: user.movedToUri ? await this.apPersonService.resolvePerson(user.movedToUri) : null,
-				alsoKnownAs: user.alsoKnownAs,
+				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
+				alsoKnownAs: user.alsoKnownAs
+					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
+						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
+					: null,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
@@ -423,6 +426,11 @@ export class UserEntityService implements OnModuleInit {
 					isAdministrator: role.isAdministrator,
 					displayOrder: role.displayOrder,
 				}))),
+				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
+					userId: meId,
+					targetUserId: user.id,
+				}).then(row => row?.memo ?? null),
+				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
 
 			...(opts.detail && isMe ? {
