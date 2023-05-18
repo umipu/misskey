@@ -24,6 +24,10 @@
 		{{ i18n.ts.noCrawle }}
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
 	</MkSwitch>
+	<MkSwitch v-model="preventAiLearning" @update:model-value="save()">
+		{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
+		<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
+	</MkSwitch>
 	<MkSwitch v-model="isExplorable" @update:model-value="save()">
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
@@ -110,6 +114,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 let isLocked = $ref($i.isLocked);
 let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
 let noCrawle = $ref($i.noCrawle);
+let preventAiLearning = $ref($i.preventAiLearning);
 let isExplorable = $ref($i.isExplorable);
 let hideOnlineStatus = $ref($i.hideOnlineStatus);
 let publicReactions = $ref($i.publicReactions);
@@ -133,6 +138,7 @@ function save() {
 		isLocked: !!isLocked,
 		autoAcceptFollowed: !!autoAcceptFollowed,
 		noCrawle: !!noCrawle,
+		preventAiLearning: !!preventAiLearning,
 		isExplorable: !!isExplorable,
 		hideOnlineStatus: !!hideOnlineStatus,
 		publicReactions: !!publicReactions,
