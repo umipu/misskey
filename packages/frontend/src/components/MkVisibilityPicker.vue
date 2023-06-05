@@ -1,6 +1,9 @@
 <template>
-<MkModal ref="modal" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
-	<div class="_popup" :class="$style.root">
+<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
+	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
+		<div :class="[$style.label, $style.item]">
+			{{ i18n.ts.visibility }}
+		</div>
 		<button key="public" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">

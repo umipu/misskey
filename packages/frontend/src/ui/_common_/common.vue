@@ -10,12 +10,20 @@
 <XUpload v-if="uploads.length > 0"/>
 
 <TransitionGroup
-	tag="div" :class="$style.notifications"
-	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	tag="div"
+	:class="[$style.notifications, {
+		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
+		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
+		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
+		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
+		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
+		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
+	}]"
+	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
 	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
 </TransitionGroup>
@@ -38,7 +46,7 @@ import { popups, pendingApiRequestsCount } from '@/os';
 import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
@@ -53,7 +61,7 @@ function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		stream.send('readNotification');
+		useStream().send('readNotification');
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
@@ -69,7 +77,7 @@ function onNotification(notification) {
 }
 
 if ($i) {
-	const connection = stream.useChannel('main', null, 'UI');
+	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 
 	//#region Listen message from SW
@@ -99,28 +107,82 @@ if ($i) {
 	top: 32px;
 	padding: 0 32px;
 	pointer-events: none;
-	container-type: inline-size;
-}
+	display: flex;
 
-.notification {
-	& + .notification {
-		margin-top: 8px;
+	&.notificationsPosition-leftTop {
+		top: var(--margin);
+		left: 0;
 	}
-}
 
-@media (max-width: 500px) {
-	.notifications {
-		top: initial;
+	&.notificationsPosition-rightTop {
+		top: var(--margin);
+		right: 0;
+	}
+
+	&.notificationsPosition-leftBottom {
 		bottom: calc(var(--minBottomSpacing) + var(--margin));
-		padding: 0 var(--margin);
-		display: flex;
-		flex-direction: column-reverse;
+		left: 0;
 	}
 
-	.notification {
-		& + .notification {
-			margin-top: 0;
-			margin-bottom: 8px;
+	&.notificationsPosition-rightBottom {
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		right: 0;
+	}
+
+	&.notificationsStackAxis-vertical {
+		width: 250px;
+
+		&.notificationsPosition-leftTop,
+		&.notificationsPosition-rightTop {
+			flex-direction: column;
+
+			.notification {
+				& + .notification {
+					margin-top: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition-leftBottom,
+		&.notificationsPosition-rightBottom {
+			flex-direction: column-reverse;
+
+			.notification {
+				& + .notification {
+					margin-bottom: 8px;
+				}
+			}
+		}
+	}
+
+	&.notificationsStackAxis-horizontal {
+		width: 100%;
+
+		&.notificationsPosition-leftTop,
+		&.notificationsPosition-leftBottom {
+			flex-direction: row;
+
+			.notification {
+				& + .notification {
+					margin-left: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition-rightTop,
+		&.notificationsPosition-rightBottom {
+			flex-direction: row-reverse;
+
+			.notification {
+				& + .notification {
+					margin-right: 8px;
+				}
+			}
+		}
+
+		.notification {
+			width: 250px;
+			flex-shrink: 0;
 		}
 	}
 }

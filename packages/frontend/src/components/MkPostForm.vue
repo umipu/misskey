@@ -12,16 +12,29 @@
 			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar" />
 		</button>
 		<div :class="$style.headerRight">
-			<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>
-			<span v-if="localOnly" :class="$style.localOnly"><i class="ti ti-world-off"></i></span>
-			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" class="_button" :class="$style.visibility" :disabled="channel != null" @click="setVisibility">
-				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+			<template v-if="!(channel != null && fixed)">
+				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+				</button>
+				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
+					<span><i class="ti ti-device-tv"></i></span>
+					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+				</button>
+			</template>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.previewButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
+				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
+				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
+				<span v-else><i class="ti ti-icons"></i></span>
+			</button>
+			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
@@ -62,6 +75,21 @@
 			</MkSelect>
 		</div>
 		<footer :class="$style.footer">
+	</div>
+	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
+	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
+		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
+	</div>
+	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
+	<div v-if="showingOptions" style="padding: 8px 16px;">
+	</div>
+	<footer :class="$style.footer">
+		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
@@ -386,6 +414,65 @@ function setVisibility() {
 		},
 	}, 'closed');
 }
+
+async function toggleLocalOnly() {
+	if (props.channel) {
+		visibility = 'public';
+		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
+		return;
+	}
+
+	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
+
+	if (!localOnly && neverShowInfo !== 'true') {
+		const confirm = await os.actions({
+			type: 'question',
+			title: i18n.ts.disableFederationConfirm,
+			text: i18n.ts.disableFederationConfirmWarn,
+			actions: [
+				{
+					value: 'yes' as const,
+					text: i18n.ts.disableFederationOk,
+					primary: true,
+				},
+				{
+					value: 'neverShow' as const,
+					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
+					danger: true,
+				},
+				{
+					value: 'no' as const,
+					text: i18n.ts.cancel,
+				},
+			],
+		});
+		if (confirm.canceled) return;
+		if (confirm.result === 'no') return;
+
+		if (confirm.result === 'neverShow') {
+			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
+		}
+	}
+
+	localOnly = !localOnly;
+}
+
+async function toggleReactionAcceptance() {
+	const select = await os.select({
+		title: i18n.ts.reactionAcceptance,
+		items: [
+			{ value: null, text: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+		],
+		default: reactionAcceptance,
+	});
+	if (select.canceled) return;
+	reactionAcceptance = select.result;
+}
+
 function pushVisibleUser(user) {
 	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.push(user);

@@ -57,7 +57,6 @@ function tick() {
 
 if (props.mode === 'relative' || props.mode === 'detail') {
 	tick();
-
 	onUnmounted(() => {
 		window.clearTimeout(tickId);
 	});
