@@ -73,7 +73,6 @@ defineProps<{
 	flex-shrink: 9999999;
 	margin: 0 .5em 0 0;
 	overflow: hidden;
-	word-wrap: anywhere
 	text-overflow: ellipsis;
 }
 
