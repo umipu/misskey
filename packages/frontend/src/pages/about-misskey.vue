@@ -78,10 +78,6 @@
 							<img src="https://avatars.githubusercontent.com/u/7106976?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@EbiseLutica</span>
 						</a>
-						<a href="https://mk.shrimpia.network/@Or" target="_blank" :class="$style.contributor">
-							<img src="https://media.shrimpia.network/mk-shrimpia/files/webpublic-bf1d07c1-c3e9-49bb-91de-b6d18c8f738a.png" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@Or (Error Image)</span>
-						</a>
 					</div>
 				</FormSection>
 				<FormSection>

@@ -35,5 +35,3 @@ Ebisskeyは、通常のMisskeyをベースに次のような改変を施して�
 * ✨ **アピアランス**: 「ユーザータイムラインをホームに表示する」オプションを追加
 * ✨ Koruri をデフォルトのフォントに採用
 * ✨ Dolce テーマを内蔵 (thanks to @L1n4r1A)
-* ✨ エラーアイコンを差し替え（thanks to [@Or@mk.shrimpia.network](https://mk.shrimpia.network/@Or)）
-
