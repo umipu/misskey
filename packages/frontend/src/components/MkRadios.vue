@@ -19,14 +19,14 @@ export default defineComponent({
 		const caption = context.slots.caption && context.slots.caption();
 
 		// なぜかFragmentになることがあるため
-		if (options.length === 1 && options[0].props == null) options = options[0].children;
+		if (options.length === 1 && options[0].props == null) options = options[0].children as VNode[];
 
 		return () => h('div', {
 			class: 'novjtcto',
 		}, [
 			...(label ? [h('div', {
 				class: 'label',
-			}, [label])] : []),
+			}, label)] : []),
 			h('div', {
 				class: 'body',
 			}, options.map(option => h(MkRadio, {
@@ -38,13 +38,20 @@ export default defineComponent({
 			),
 			...(caption ? [h('div', {
 				class: 'caption',
-			}, [caption])] : []),
+			}, caption)] : []),
 		]);
 	},
+});
+</script>
+
+<style lang="scss">
+.novjtcto {
+	> .label {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
 
+		&:empty {
 			display: none;
 		}
 	}

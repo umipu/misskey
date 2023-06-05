@@ -473,6 +473,7 @@ export interface Locale {
     "signinHistory": string;
     "enableAdvancedMfm": string;
     "enableAnimatedMfm": string;
+    "splitRNButton": string;
     "doing": string;
     "category": string;
     "tags": string;

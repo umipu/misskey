@@ -132,6 +132,7 @@
 import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
+import { $computed, $ref } from 'vue/macros';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -260,9 +261,9 @@ function reply(viaKeyboard = false): void {
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
-	}, () => {
+	}, /*, () => {
 		focus();
-	});
+	}*/);
 }
 
 function quoteRenote() {
@@ -340,19 +341,11 @@ function renote(viaKeyboard = false) {
 				});
 			},
 		}]);
-
-	items = items.concat([{
-		text: i18n.ts.renote,
-		icon: 'ti ti-repeat',
-		action: () => {
-			const el = renoteButton.value as HTMLElement | null | undefined;
-			if (el) {
-				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.offsetWidth / 2);
-				const y = rect.top + (el.offsetHeight / 2);
-				os.popup(MkRippleEffect, { x, y }, {}, 'end');
-			}
-
+		os.popupMenu(items, renoteButton.value, {
+			viaKeyboard,
+		});
+	} else {
+		if (appearNote.channel) {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 				channelId: appearNote.channelId,
@@ -366,7 +359,9 @@ function renote(viaKeyboard = false) {
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
-			setTimeout(() => renoteButton.value.disabled = false, 500);
+			if (renoteButton.value) {
+				setTimeout(() => renoteButton.value.disabled = false, 500);
+			}
 		}
 	}
 }
