@@ -1,5 +1,5 @@
 <template>
-<div class="ipledcug">
+<div>
 	<div class="_fullinfo">
 		<img src="https://s3.ap-northeast-1.wasabisys.com/mk-shrimpia/files/not-found.png" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
