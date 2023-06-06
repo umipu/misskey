@@ -86,7 +86,7 @@
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 		<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-		<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
+		<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 		<div v-if="showingOptions" style="padding: 8px 16px;">
 			<MkSelect v-model="reactionAcceptance" small>
 				<template #label>{{ i18n.ts.reactionAcceptance }}</template>
