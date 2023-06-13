@@ -117,7 +117,6 @@ const props = withDefaults(defineProps<{
 	withTime: false,
 	full: false,
 });
-
 const elRef = shallowRef<HTMLElement>(null);
 const reactionRef = ref(null);
 

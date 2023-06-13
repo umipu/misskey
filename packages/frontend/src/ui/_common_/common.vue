@@ -10,22 +10,16 @@
 <XUpload v-if="uploads.length > 0"/>
 
 <TransitionGroup
-	tag="div"
-	:class="[$style.notifications, {
-		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
-		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
-		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
-		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
-		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
-		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
-	}]"
-	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	tag="div" :class="[$style.notifications, $style[`notificationsPosition-${defaultStore.state.notificationPosition}`], $style[`notificationsStackAxis-${defaultStore.state.notificationStackAxis}`]]"
+	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
-	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
+	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
+		<XNotification :notification="notification"/>
+	</div>
 </TransitionGroup>
 
 <XStreamIndicator/>
@@ -59,7 +53,7 @@ let notifications = $ref<misskey.entities.Notification[]>([]);
 
 function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
-
+	
 	if (document.visibilityState === 'visible') {
 		useStream().send('readNotification');
 
@@ -102,10 +96,7 @@ if ($i) {
 .notifications {
 	position: fixed;
 	z-index: 3900000;
-	left: 0;
-	width: 250px;
-	top: 32px;
-	padding: 0 32px;
+	padding: 0 var(--margin);
 	pointer-events: none;
 	display: flex;
 
