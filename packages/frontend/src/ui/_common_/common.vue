@@ -8,9 +8,9 @@
 />
 
 <XUpload v-if="uploads.length > 0"/>
-<!-- , $style[`notificationsPosition-${defaultStore.state.notificationPosition}`], $style[`notificationsStackAxis-${defaultStore.state.notificationStackAxis}`]-->
+<!-- , $style[`notificationsPosition-${defaultStore.state.notificationPosition}`]-->
 <TransitionGroup
-	tag="div" :class="[$style.notifications]"
+	tag="div" :class="[$style.notifications, $style.notificationsPositionLeftTop, $style.notificationsStackAxisVertical]"
 	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
 	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
 	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
@@ -64,7 +64,7 @@ function onNotification(notification) {
 
 		window.setTimeout(() => {
 			notifications = notifications.filter(x => x.id !== notification.id);
-		}, 6000);
+		}, 3000);
 	}
 
 	sound.play('notification');
@@ -100,11 +100,11 @@ if ($i) {
 	pointer-events: none;
 	display: flex;
 
-	&.notificationsPosition-leftTop {
+	&.notificationsPositionLeftTop {
 		top: var(--margin);
 		left: 0;
 	}
-
+/*
 	&.notificationsPosition-rightTop {
 		top: var(--margin);
 		right: 0;
@@ -119,12 +119,13 @@ if ($i) {
 		bottom: calc(var(--minBottomSpacing) + var(--margin));
 		right: 0;
 	}
-
-	&.notificationsStackAxis-vertical {
+*/
+	&.notificationsStackAxisVertical {
 		width: 250px;
 
-		&.notificationsPosition-leftTop,
-		&.notificationsPosition-rightTop {
+		&.notificationsPositionLeftTop {
+		// TODO: 今は動かないので消す
+		//&.notificationsPosition-rightTop {
 			flex-direction: column;
 
 			.notification {
@@ -133,7 +134,7 @@ if ($i) {
 				}
 			}
 		}
-
+		/*
 		&.notificationsPosition-leftBottom,
 		&.notificationsPosition-rightBottom {
 			flex-direction: column-reverse;
@@ -143,9 +144,9 @@ if ($i) {
 					margin-bottom: 8px;
 				}
 			}
-		}
+		}*/
 	}
-
+	/*
 	&.notificationsStackAxis-horizontal {
 		width: 100%;
 
@@ -175,7 +176,7 @@ if ($i) {
 			width: 250px;
 			flex-shrink: 0;
 		}
-	}
+	}*/
 }
 </style>
 

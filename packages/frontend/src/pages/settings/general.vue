@@ -69,6 +69,7 @@
 		</div>
 	</FormSection>
 
+	<!--
 	<FormSection>
 		<template #label>{{ i18n.ts.notificationDisplay }}</template>
 
@@ -88,6 +89,7 @@
 			</MkRadios>
 		</div>
 	</FormSection>
+	-->
 
 	<FormSection>
 		<template #label>{{ i18n.ts.appearance }}</template>
