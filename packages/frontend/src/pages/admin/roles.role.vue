@@ -7,7 +7,10 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :modelValue="role" readonly/>
+					<div class="_gaps">
+						<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+						<XEditor :modelValue="role"/>
+					</div>
 				</MkFolder>
 				<MkFolder v-if="role.target === 'manual'" defaultOpen>
 					<template #icon><i class="ti ti-users"></i></template>
@@ -64,8 +67,9 @@ import { useRouter } from '@/router';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { infoImageUrl } from '@/instance';
+import { rolesCache } from '@/cache';
 
 const router = useRouter();
 
@@ -105,10 +109,6 @@ async function save() {
 		});
 		router.push('/admin/roles/' + created.id);
 	}
-}
-
-function edit() {
-	router.push('/admin/roles/' + role.id + '/edit');
 }
 
 async function del() {

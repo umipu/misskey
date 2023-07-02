@@ -430,8 +430,10 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
+import { $$, $ref, $computed } from 'vue/macros';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -477,7 +479,7 @@ let rolePermission = $computed({
 
 let q = $ref('');
 
-function getPriorityIcon(option) {
+function getPriorityIcon(option): string {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
