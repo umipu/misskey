@@ -52,7 +52,11 @@ export class MockResolver extends Resolver {
 		const r = this._rs.get(value);
 
 		if (!r) {
-			throw new Error('Not registed for mock');
+			throw {
+				name: 'StatusError',
+				statusCode: 404,
+				message: 'Not registed for mock',
+			};
 		}
 
 		const object = JSON.parse(r.content);

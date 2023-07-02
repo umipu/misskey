@@ -190,6 +190,6 @@ function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
 	} catch (e) {
-		throw new Error(`url="${url}" is not a valid URL.`);
+		throw `url="${url}" is not a valid URL.`;
 	}
 }
