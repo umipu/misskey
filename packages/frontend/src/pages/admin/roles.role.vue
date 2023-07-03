@@ -8,7 +8,7 @@
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
 					<div class="_gaps">
-						<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton primary rounded @click="save()"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 						<XEditor :modelValue="role"/>
 					</div>
 				</MkFolder>
@@ -109,20 +109,6 @@ async function save() {
 		});
 		router.push('/admin/roles/' + created.id);
 	}
-}
-
-async function del() {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: role.name }),
-	});
-	if (canceled) return;
-
-	await os.apiWithDialog('admin/roles/delete', {
-		roleId: role.id,
-	});
-
-	router.push('/admin/roles');
 }
 
 async function assign() {
