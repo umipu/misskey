@@ -37,16 +37,8 @@ import { AggregateRetentionProcessorService } from './processors/AggregateRetent
 import { QueueLoggerService } from './QueueLoggerService.js';
 
 @Injectable()
-export class QueueProcessorService implements OnApplicationShutdown {
+export class QueueProcessorService {
 	private logger: Logger;
-	private systemQueueWorker: Bull.Worker;
-	private dbQueueWorker: Bull.Worker;
-	private deliverQueueWorker: Bull.Worker;
-	private inboxQueueWorker: Bull.Worker;
-	private webhookDeliverQueueWorker: Bull.Worker;
-	private relationshipQueueWorker: Bull.Worker;
-	private objectStorageQueueWorker: Bull.Worker;
-	private endedPollNotificationQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
@@ -85,7 +77,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanProcessorService: CleanProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
+	}
 
+	@bindThis
+	public start() {
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
 				return {
@@ -243,38 +238,5 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.queueService.systemQueue.process('aggregateRetention', (job, done) => this.aggregateRetentionProcessorService.process(job, done));
 		this.queueService.systemQueue.process('checkExpiredMutings', (job, done) => this.checkExpiredMutingsProcessorService.process(job, done));
 		this.queueService.systemQueue.process('clean', (job, done) => this.cleanProcessorService.process(job, done));
-	}
-
-	@bindThis
-	public async start(): Promise<void> {
-		await Promise.all([
-			this.systemQueueWorker.run(),
-			this.dbQueueWorker.run(),
-			this.deliverQueueWorker.run(),
-			this.inboxQueueWorker.run(),
-			this.webhookDeliverQueueWorker.run(),
-			this.relationshipQueueWorker.run(),
-			this.objectStorageQueueWorker.run(),
-			this.endedPollNotificationQueueWorker.run(),
-		]);
-	}
-
-	@bindThis
-	public async stop(): Promise<void> {
-		await Promise.all([
-			this.systemQueueWorker.close(),
-			this.dbQueueWorker.close(),
-			this.deliverQueueWorker.close(),
-			this.inboxQueueWorker.close(),
-			this.webhookDeliverQueueWorker.close(),
-			this.relationshipQueueWorker.close(),
-			this.objectStorageQueueWorker.close(),
-			this.endedPollNotificationQueueWorker.close(),
-		]);
-	}
-
-	@bindThis
-	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
-		await this.stop();
 	}
 }
