@@ -44,7 +44,7 @@ const showContent = $ref(false);
 .avatar {
 	flex-shrink: 0;
 	display: block;
-	margin: 0 10px 0 0;
+	margin: 5px 10px 0 0;
 	width: 34px;
 	height: 34px;
 	border-radius: 8px;
