@@ -4,12 +4,11 @@
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :contentMax="700">
 			<div class="_gaps">
-				<MkFolder>
+				<MkFolder defaultOpen>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
 					<div class="_gaps">
-						<MkButton primary rounded @click="save()"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-						<XEditor :modelValue="role"/>
+						<XEdit :id="role.id"/>
 					</div>
 				</MkFolder>
 				<MkFolder v-if="role.target === 'manual'" defaultOpen>
@@ -59,6 +58,7 @@
 import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
+import XEdit from './roles.edit.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -95,9 +95,11 @@ let data = $ref(null);
 if (props.id) {
 	data = role;
 }
+
 async function save() {
 	rolesCache.delete();
 	if (role) {
+		console.log(...data);
 		os.apiWithDialog('admin/roles/update', {
 			roleId: role.id,
 			...data,

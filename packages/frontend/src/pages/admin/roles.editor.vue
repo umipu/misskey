@@ -423,6 +423,16 @@
 					</MkRange>
 				</div>
 			</MkFolder>
+			
+			<MkFolder>
+				<template #label>{{ i18n.ts.delete }}</template>
+				<template #suffix>
+					<span :class="$style.useDefaultLabel">{{ i18n.ts.delete }}</span>
+				</template>
+				<div class="_gaps">
+					<MkButton danger rounded @click="deleteRole"><i class="ti ti-check"></i> {{ i18n.ts.delete  }}</MkButton>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>
@@ -510,6 +520,16 @@ const save = throttle(100, () => {
 
 	emit('update:modelValue', data);
 });
+
+async function deleteRole() {
+	rolesCache.delete();
+	if (role) {
+		os.apiWithDialog('admin/roles/delete', {
+			roleId: role.id,
+		});
+		router.push('/admin/roles');
+	}
+}
 
 watch($$(role), save, { deep: true });
 </script>
