@@ -31,37 +31,6 @@
 			</button>
 		</div>
 	</header>
-	<!-- <div :class="[$style.form]">
-		<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
-		<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-		<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
-		<div v-if="visibility === 'specified'" :class="$style.toSpecified">
-			<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
-			<div :class="$style.visibleUsers">
-				<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
-					<MkAcct :user="u"/>
-					<button class="_button" style="padding: 4px 8px;" @click="removeVisibleUser(u)"><i class="ti ti-x"></i></button>
-				</span>
-				<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
-			</div>
-		</div>
-		<MkInfo v-if="warnMfm" warn :class="$style.thisPostMayBeAnnoyingWarn">{{ i18n.ts.thisPostMayBeAnnoying }}<a v-if="visibility == 'public'" style="color: var(--X9)" @click="toHome()">{{ i18n.ts.thisPostMayBeAnnoyingHome }}</a></MkInfo>
-		<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-		<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-		<textarea ref="textareaEl" v-model="text" :class="[$style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
-		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches v-model="files" :class="$style.attaches" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
-		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-		<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
-		<div v-if="showingOptions" style="padding: 0 16px;">
-			<MkSelect v-model="reactionAcceptance" small>
-				<template #label>{{ i18n.ts.reactionAcceptance }}</template>
-				<option :value="null">{{ i18n.ts.all }}</option>
-				<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
-				<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
-			</MkSelect>
-		</div>
-	</div> -->
 	<div :class="[$style.form]">
 		<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 		<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
@@ -84,7 +53,7 @@
 			<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 		</div>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+		<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 		<div v-if="showingOptions" style="padding: 8px 16px;">
@@ -393,7 +362,11 @@ function updateFileSensitive(file, sensitive) {
 function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
 }
-function upload(file: File, name?: string) {
+function replaceFile(file: misskey.entities.DriveFile, newFile: misskey.entities.DriveFile): void {
+	files[files.findIndex(x => x.id === file.id)] = newFile;
+}
+
+function upload(file: File, name?: string): void {
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
