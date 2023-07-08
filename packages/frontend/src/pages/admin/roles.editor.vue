@@ -522,7 +522,6 @@ const save = throttle(100, () => {
 });
 
 async function deleteRole() {
-	rolesCache.delete();
 	if (role) {
 		os.apiWithDialog('admin/roles/delete', {
 			roleId: role.id,
