@@ -97,6 +97,7 @@ export const paramDef = {
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
+		disposableEmailDomains: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 	},
 	required: [],
@@ -407,6 +408,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.preservedUsernames = ps.preservedUsernames;
 			}
 
+			if (ps.disposableEmailDomains !== undefined) {
+				set.disposableEmailDomains = ps.disposableEmailDomains;
+			}
+			
 			await this.metaService.update(set);
 			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});

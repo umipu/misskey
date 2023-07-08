@@ -29,6 +29,10 @@
 						<template #label>{{ i18n.ts.sensitiveWords }}</template>
 						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
 					</MkTextarea>
+					
+					<MkTextarea v-model="disposableEmailDomains">
+						<template #label>{{ i18n.ts.disposableEmail }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -62,6 +66,7 @@ import FormLink from '@/components/form/link.vue';
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
 let sensitiveWords: string = $ref('');
+let disposableEmailDomains: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
 
@@ -71,6 +76,7 @@ async function init() {
 	emailRequiredForSignup = meta.emailRequiredForSignup;
 	sensitiveWords = meta.sensitiveWords.join('\n');
 	preservedUsernames = meta.preservedUsernames.join('\n');
+	disposableEmailDomains = meta.disposableEmailDomains.join('\n');
 	tosUrl = meta.tosUrl;
 }
 
@@ -81,6 +87,7 @@ function save() {
 		tosUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
 		preservedUsernames: preservedUsernames.split('\n'),
+		disposableEmailDomains: disposableEmailDomains.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

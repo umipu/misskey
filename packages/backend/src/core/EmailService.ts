@@ -163,13 +163,21 @@ export class EmailService {
 			validateDisposable: true, // 捨てアドかどうかチェック
 			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
 		}) : { valid: true, reason: null };
-	
-		const available = exist === 0 && validated.valid;
-	
+		
+		const emailDomain: string = emailAddress.split('@')[1];
+		let manualDisposable = false;
+		manualDisposable = meta.disposableEmailDomains.some(el => {
+			return (emailDomain.endsWith(el) || emailDomain === el);
+		});
+
+		const available = (exist === 0 && validated.valid) && !manualDisposable;
+		this.logger.info(`Available: ${available}`);
+
 		return {
 			available,
 			reason: available ? null :
 			exist !== 0 ? 'used' :
+			manualDisposable ? 'disposable' :
 			validated.reason === 'regex' ? 'format' :
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :
