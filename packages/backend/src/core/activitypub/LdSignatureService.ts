@@ -131,7 +131,7 @@ class LdSignature {
 			{ throwErrorWhenResponseNotOk: false },
 		).then(res => {
 			if (!res.ok) {
-				throw `${res.status} ${res.statusText}`;
+				throw new Error(`${res.status} ${res.statusText}`);
 			} else {
 				return res.json();
 			}

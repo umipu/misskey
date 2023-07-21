@@ -37,6 +37,7 @@ import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import { Queue } from 'bullmq';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -168,7 +169,7 @@ export class ClientServerService {
 				this.dbQueue,
 				this.objectStorageQueue,
 				this.webhookDeliverQueue,
-			].map(q => new BullAdapter(q)),
+			].map(q => new BullAdapter(q as any)),
 			serverAdapter,
 		});
 
