@@ -393,7 +393,12 @@ function updateFileSensitive(file, sensitive) {
 function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
 }
-function upload(file: File, name?: string) {
+
+function replaceFile(file: misskey.entities.DriveFile, newFile: misskey.entities.DriveFile): void {
+	files[files.findIndex(x => x.id === file.id)] = newFile;
+}
+
+function upload(file: File, name?: string): void {
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
@@ -539,7 +544,8 @@ async function onPaste(ev: ClipboardEvent) {
 				insertTextAtCursor(textareaEl, paste);
 				return;
 			}
-			quoteId = paste.substr(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
+
+			quoteId = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
 		});
 	}
 }
@@ -807,7 +813,16 @@ defineExpose({
 }
 .header {
 	z-index: 1000;
-	height: 66px;
+	min-height: 50px;
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 4px;
+	margin-bottom: -10px;
+}
+
+.headerLeft {
+	display: flex;
+	flex: 0 1 100px;
 }
 .cancel {
 	padding: 0;
@@ -904,9 +919,11 @@ defineExpose({
 }
 .preview {
 	padding: 16px 20px 0 20px;
+	max-height: 150px;
+	overflow: auto;
 }
 .targetNote {
-	padding: 0 20px 16px 20px;
+	padding: 10px 20px 16px 20px;
 }
 .withQuote {
 	margin: 0 0 8px 0;

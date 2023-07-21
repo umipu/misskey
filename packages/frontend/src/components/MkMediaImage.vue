@@ -17,13 +17,24 @@
 	>
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :width="image.properties.width" :height="image.properties.height" :cover="false"/>
 	</a>
-	<div :class="$style.indicators">
-		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
-		<div v-if="image.comment" :class="$style.indicator">ALT</div>
-		<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
-	</div>
-	<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click="hide = true"><i class="ti ti-eye-off"></i></button>
-	<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots"></i></button>
+	<template v-if="hide">
+		<div :class="$style.hiddenText">
+			<div :class="$style.hiddenTextWrapper">
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			</div>
+		</div>
+	</template>
+	<template v-else>
+		<div :class="$style.indicators">
+			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
+			<div v-if="image.comment" :class="$style.indicator">ALT</div>
+			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+		</div>
+		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+	</template>
 </div>
 </template>
 
@@ -90,6 +101,21 @@ function showMenu(ev: MouseEvent) {
 	align-items: center;
 }
 
+.hide {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: var(--fg);
+	color: var(--accentLighten);
+	font-size: 12px;
+	opacity: .5;
+	padding: 5px 8px;
+	text-align: center;
+	cursor: pointer;
+	top: 12px;
+	right: 12px;
+}
+
 .hiddenTextWrapper {
 	display: table-cell;
 	text-align: center;
@@ -129,7 +155,8 @@ function showMenu(ev: MouseEvent) {
 	backdrop-filter: var(--blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
-	padding: 6px 8px;
+	width: 28px;
+	height: 28px;
 	text-align: center;
 	bottom: 12px;
 	right: 12px;
