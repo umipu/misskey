@@ -315,14 +315,6 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
-			const visibility = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
-				defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility
-			) : defaultStore.state.defaultRenoteVisibility;
-
-			const localOnly = defaultStore.state.useDefaultNoteVisibilityOnRenote ? (
-				defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly
-			) : defaultStore.state.defaultRenoteLocalOnly;
-
 			const el = renoteButton.value as HTMLElement | null | undefined;
 			if (el) {
 				const rect = el.getBoundingClientRect();
@@ -338,8 +330,6 @@ function renote(viaKeyboard = false) {
 				localOnly,
 				visibility: smallerVisibility(appearNote.visibility, configuredVisibility),
 				renoteId: appearNote.id,
-				visibility: visibility as never,
-				localOnly,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
