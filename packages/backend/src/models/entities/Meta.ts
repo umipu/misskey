@@ -418,7 +418,7 @@ export class Meta {
 	public enableChartsForFederatedInstances: boolean;
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public enableServerMachineStats: boolean;
 

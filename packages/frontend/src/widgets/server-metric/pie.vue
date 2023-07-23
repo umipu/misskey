@@ -14,7 +14,7 @@
 		:stroke-dashoffset="strokeDashoffset"
 		fill="none"
 		stroke-width="0.1"
-		:class="$style.circle"
+		class="circle"
 		:stroke="color"
 	/>
 	<text x="50%" y="50%" dy="0.05" text-anchor="middle">{{ (value * 100).toFixed(0) }}%</text>
