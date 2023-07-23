@@ -47,7 +47,6 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
-import { query } from '@/scripts/url';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
@@ -56,10 +55,6 @@ const APPEAR_MINIMUM_INTERVAL = 600;
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
 	limit: number;
-	extra?: {
-		type: boolean,
-		default: false,
-	};
 	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
 
 	/**
@@ -205,6 +200,7 @@ async function init(): Promise<void> {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
+
 		if (res.length === 0 || props.pagination.noPaging) {
 			concatItems(res);
 			more.value = false;
@@ -213,18 +209,8 @@ async function init(): Promise<void> {
 			concatItems(res);
 			more.value = true;
 		}
-		if (props.pagination.params &&
-		props.pagination.params.value &&
-		props.pagination.params.value.extra &&
-		props.pagination.params.value.query &&
-		props.pagination.params.value.extra === true) {
-			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
-			items.value = new Map();
-			filteredItems.forEach(item => {
-				items.value.set(item.id, item);
-			});
-		}
-		offset.value = items.value.size;
+
+		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
 	}, err => {
@@ -295,24 +281,7 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
-		if (props.pagination.params &&
-		props.pagination.params.value &&
-		props.pagination.params.value.extra &&
-		props.pagination.params.value.query &&
-		props.pagination.params.value.extra === true) {
-			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
-			items.value = new Map();
-			filteredItems.forEach(item => {
-				items.value.set(item.id, item);
-			});
-			if (SECOND_FETCH_LIMIT > items.value.size) {
-				more.value = false;
-				moreFetching.value = false;
-			}
-			offset.value += items.value.size;
-		} else {
-			offset.value += res.length;
-		}
+		offset.value += res.length;
 	}, err => {
 		moreFetching.value = false;
 	});
@@ -338,27 +307,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 			items.value = concatMapWithArray(items.value, res);
 			more.value = true;
 		}
-		if (params.extra) {
-			items.value = items.value.filter(emoji => emoji.name == params.query);
-		}
-		if (props.pagination.params &&
-		props.pagination.params.value &&
-		props.pagination.params.value.extra &&
-		props.pagination.params.value.query &&
-		props.pagination.params.value.extra === true) {
-			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
-			items.value = new Map();
-			filteredItems.forEach(item => {
-				items.value.set(item.id, item);
-			});
-			if (SECOND_FETCH_LIMIT > items.value.size) {
-				more.value = false;
-				moreFetching.value = false;
-			}
-			offset.value += items.value.size;
-		} else {
-			offset.value = res.length;
-		}
+		offset.value += res.length;
 		moreFetching.value = false;
 	}, err => {
 		moreFetching.value = false;

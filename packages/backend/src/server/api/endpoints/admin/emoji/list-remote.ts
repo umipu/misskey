@@ -68,6 +68,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		exactMode: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -93,7 +94,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.query) {
-				q.andWhere('emoji.name like :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
+				if (ps.exactMode) {
+					q.andWhere('emoji.name = :query', { query: ps.query });
+				} else {
+					q.andWhere('emoji.name like :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
+				}
 			}
 
 			const emojis = await q

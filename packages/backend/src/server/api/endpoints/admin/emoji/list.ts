@@ -62,6 +62,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		exactMode: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -90,14 +91,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
 
 				if (queryarry) {
-					emojis = emojis.filter(emoji =>
-						queryarry.includes(`:${emoji.name}:`),
-					);
+					if (ps.exactMode) {
+						emojis = emojis.filter(emoji => ps.query === emoji.name);
+					} else {
+						emojis = emojis.filter(emoji =>
+							queryarry.includes(`:${emoji.name}:`),
+						);
+					}
 				} else {
-					emojis = emojis.filter(emoji =>
-						emoji.name.includes(ps.query!) ||
-						emoji.aliases.some(a => a.includes(ps.query!)) ||
-						emoji.category?.includes(ps.query!));
+					if (!ps.exactMode) {
+						emojis = emojis.filter(emoji =>
+							emoji.name.includes(ps.query!) ||
+							emoji.aliases.some(a => a.includes(ps.query!)) ||
+							emoji.category?.includes(ps.query!));
+					}
 				}
 				emojis.splice(ps.limit + 1);
 			} else {

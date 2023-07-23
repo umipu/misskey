@@ -50,8 +50,8 @@
 						<MkInput v-model="host" :debounce="true">
 							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
-						<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
-							<template #label>Extra mode</template>
+						<MkSwitch v-model="exactMode" style="margin: 8px 0;" :debounce="true">
+							<template #label>Exact mode</template>
 							<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span>
 						</MkSwitch>
 					</FormSplit>
@@ -95,7 +95,7 @@ const query = ref(null);
 const queryRemote = ref(null);
 const host = ref(null);
 const selectMode = ref(false);
-const extraMode = ref(false);
+const exactMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
 const pagination = {
@@ -105,7 +105,7 @@ const pagination = {
 		const query2 = (query.value && query.value !== '') ? query.value : null;
 		return {
 			query: query2,
-			extra: extraMode.value,
+			extra: exactMode.value,
 		};
 	}),
 };
@@ -117,8 +117,8 @@ const remotePagination = {
 		const queryRemote2 = (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null;
 		return {
 			query: queryRemote2,
-			extra: extraMode.value,
 			host: (host.value && host.value !== '') ? host.value : null,
+			exactMode: exactMode.value,
 		};
 	}),
 };
