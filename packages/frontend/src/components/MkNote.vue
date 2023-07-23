@@ -168,6 +168,8 @@ const props = defineProps<{
 	pinned?: boolean;
 }>();
 const splitRNButton = defaultStore.state.splitRNButton;
+const defaultRenoteVisibility = defaultStore.state.defaultRenoteVisibility;
+const defaultRenoteLocalOnly = defaultStore.state.defaultRenoteLocalOnly;
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
 
@@ -323,11 +325,24 @@ function renote(viaKeyboard = false) {
 					const y = rect.top + (el.offsetHeight / 2);
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
-				os.api('notes/create', {
-					renoteId: appearNote.id,
-				}).then(() => {
-					os.toast(i18n.ts.renoted);
-				});
+				if (defaultRenoteVisibility !== 'follow') {
+					if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
+						os.api('notes/create', {
+							renoteId: appearNote.id,
+							visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
+							localOnly: defaultRenoteLocalOnly,
+						}).then(() => {
+							os.toast(i18n.ts.renoted);
+						});
+					}
+				} else {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						localOnly: defaultRenoteLocalOnly,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
 			},
 		}, {
 			text: i18n.ts.quote,
@@ -351,11 +366,24 @@ function renote(viaKeyboard = false) {
 			});
 		} else if (renoteButton.value) {
 			renoteButton.value.disabled = true;
-			os.api('notes/create', {
-				renoteId: appearNote.id,
-			}).then(() => {
-				os.toast(i18n.ts.renoted);
-			});
+			if (defaultRenoteVisibility !== 'follow') {
+				if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
+						localOnly: defaultRenoteLocalOnly,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			} else {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					localOnly: defaultRenoteLocalOnly,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
+				});
+			}
 			if (renoteButton.value) {
 				setTimeout(() => renoteButton.value.disabled = false, 500);
 			}

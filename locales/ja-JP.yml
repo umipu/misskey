@@ -123,6 +123,7 @@ reactions: "リアクション"
 reactionSetting: "ピッカーに表示するリアクション"
 reactionSettingDescription2: "ドラッグして並び替え、クリックして削除、＋を押して追加します。"
 rememberNoteVisibility: "公開範囲を記憶する"
+defaultRenoteVisibility: "リノートの公開範囲"
 attachCancel: "添付取り消し"
 markAsSensitive: "センシティブとして設定"
 unmarkAsSensitive: "センシティブを解除する"
@@ -1853,6 +1854,7 @@ _poll:
   remainingSeconds: "終了まであと{s}秒"
 
 _visibility:
+  follow: "ノートに従う"
   public: "パブリック"
   publicDescription: "全てのユーザーに公開"
   home: "ホーム"

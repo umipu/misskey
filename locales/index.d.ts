@@ -126,6 +126,7 @@ export interface Locale {
     "reactionSetting": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
+    "defaultRenoteVisibility": string;
     "attachCancel": string;
     "markAsSensitive": string;
     "unmarkAsSensitive": string;
@@ -1936,6 +1937,7 @@ export interface Locale {
         "remainingSeconds": string;
     };
     "_visibility": {
+        "follow": string;
         "public": string;
         "publicDescription": string;
         "home": string;

@@ -56,6 +56,30 @@
 		</div>
 	</FormSection>
 
+	<FormSection>
+		<div class="_gaps_m">
+			<MkFolder>
+				<template #label>{{ i18n.ts.defaultRenoteVisibility }}</template>
+				<template v-if="defaultRenoteVisibility === 'follow'" #suffix>{{ i18n.ts._visibility.follow }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+				<template v-else-if="defaultRenoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+
+				<div class="_gaps_m">
+					<MkSelect v-model="defaultRenoteVisibility">
+						<option value="follow">{{ i18n.ts._visibility.follow }}</option>
+						<option value="public">{{ i18n.ts._visibility.public }}</option>
+						<option value="home">{{ i18n.ts._visibility.home }}</option>
+						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
+						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+					</MkSelect>
+					<MkSwitch v-model="defaultRenoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
+				</div>
+			</MkFolder>
+		</div>
+	</FormSection>
+
 	<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
 </div>
 </template>
@@ -85,7 +109,8 @@ let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNote
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
-
+let defaultRenoteVisibility = $computed(defaultStore.makeGetterSetter('defaultRenoteVisibility'));
+let defaultRenoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultRenoteLocalOnly'));
 function save() {
 	os.api('i/update', {
 		isLocked: !!isLocked,
