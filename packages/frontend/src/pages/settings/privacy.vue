@@ -59,7 +59,7 @@
 	<FormSection>
 		<div class="_gaps_m">
 			<MkFolder>
-				<template #label>{{ i18n.ts.defaultRenoteVisibility }}</template>
+				<template #label>{{ i18n.ts.defaultRenoteVisibility }}<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span></template>
 				<template v-if="defaultRenoteVisibility === 'follow'" #suffix>{{ i18n.ts._visibility.follow }}</template>
 				<template v-else-if="defaultRenoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
 				<template v-else-if="defaultRenoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
