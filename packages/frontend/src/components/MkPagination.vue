@@ -215,12 +215,16 @@ async function init(): Promise<void> {
 		}
 		if (props.pagination.params &&
 		props.pagination.params.value &&
-		props.pagination.params.value.extra && 
-		props.pagination.params.value.query && 
+		props.pagination.params.value.extra &&
+		props.pagination.params.value.query &&
 		props.pagination.params.value.extra === true) {
-			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
+			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
+			items.value = new Map();
+			filteredItems.forEach(item => {
+				items.value.set(item.id, item);
+			});
 		}
-		offset.value = items.value.length;
+		offset.value = items.value.size;
 		error.value = false;
 		fetching.value = false;
 	}, err => {
@@ -293,16 +297,20 @@ const fetchMore = async (): Promise<void> => {
 		}
 		if (props.pagination.params &&
 		props.pagination.params.value &&
-		props.pagination.params.value.extra && 
-		props.pagination.params.value.query && 
+		props.pagination.params.value.extra &&
+		props.pagination.params.value.query &&
 		props.pagination.params.value.extra === true) {
-			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
-			if (SECOND_FETCH_LIMIT > items.value.length) {
+			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
+			items.value = new Map();
+			filteredItems.forEach(item => {
+				items.value.set(item.id, item);
+			});
+			if (SECOND_FETCH_LIMIT > items.value.size) {
 				more.value = false;
 				moreFetching.value = false;
 			}
-			offset.value += items.value.length;
-		} else { 
+			offset.value += items.value.size;
+		} else {
 			offset.value += res.length;
 		}
 	}, err => {
@@ -335,15 +343,19 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}
 		if (props.pagination.params &&
 		props.pagination.params.value &&
-		props.pagination.params.value.extra && 
-		props.pagination.params.value.query && 
+		props.pagination.params.value.extra &&
+		props.pagination.params.value.query &&
 		props.pagination.params.value.extra === true) {
-			items.value = items.value.filter(item => item.name === props.pagination.params?.value.query);
-			if (SECOND_FETCH_LIMIT > items.value.length) {
+			let filteredItems = Array.from(items.value.values()).filter(item => item.name === props.pagination.params?.value.query);
+			items.value = new Map();
+			filteredItems.forEach(item => {
+				items.value.set(item.id, item);
+			});
+			if (SECOND_FETCH_LIMIT > items.value.size) {
 				more.value = false;
 				moreFetching.value = false;
 			}
-			offset.value = items.value.length;
+			offset.value += items.value.size;
 		} else {
 			offset.value = res.length;
 		}
