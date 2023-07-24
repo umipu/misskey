@@ -111,11 +111,11 @@ let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNo
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
 let defaultRenoteVisibility = $computed(() => {
 	defaultStore.makeGetterSetter('defaultRenoteVisibility');
-	reloadAsk();
+	// reloadAsk();
 });
 let defaultRenoteLocalOnly = $computed(() => {
 	defaultStore.makeGetterSetter('defaultRenoteLocalOnly');
-	reloadAsk();
+	//
 });
 function save() {
 	os.api('i/update', {
