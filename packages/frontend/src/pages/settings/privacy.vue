@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { watch, ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -96,41 +96,35 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { unisonReload } from '@/scripts/unison-reload';
-let isLocked = $ref($i.isLocked);
-let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
-let noCrawle = $ref($i.noCrawle);
-let preventAiLearning = $ref($i.preventAiLearning);
-let isExplorable = $ref($i.isExplorable);
-let hideOnlineStatus = $ref($i.hideOnlineStatus);
-let publicReactions = $ref($i.publicReactions);
-let ffVisibility = $ref($i.ffVisibility);
+let isLocked = ref($i.isLocked);
+let autoAcceptFollowed = ref($i.autoAcceptFollowed);
+let noCrawle = ref($i.noCrawle);
+let preventAiLearning = ref($i.preventAiLearning);
+let isExplorable = ref($i.isExplorable);
+let hideOnlineStatus = ref($i.hideOnlineStatus);
+let publicReactions = ref($i.publicReactions);
+let ffVisibility = ref($i.ffVisibility);
 
-let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
-let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
-let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
-let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
-let defaultRenoteVisibility = $computed(() => {
-	defaultStore.makeGetterSetter('defaultRenoteVisibility');
-	// reloadAsk();
-});
-let defaultRenoteLocalOnly = $computed(() => {
-	defaultStore.makeGetterSetter('defaultRenoteLocalOnly');
-	//
-});
-function save() {
+let defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+let defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
+let rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
+let keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
+let defaultRenoteVisibility = computed(defaultStore.makeGetterSetter('defaultRenoteVisibility'));
+let defaultRenoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultRenoteLocalOnly'));
+function save(): void {
 	os.api('i/update', {
-		isLocked: !!isLocked,
-		autoAcceptFollowed: !!autoAcceptFollowed,
-		noCrawle: !!noCrawle,
-		preventAiLearning: !!preventAiLearning,
-		isExplorable: !!isExplorable,
-		hideOnlineStatus: !!hideOnlineStatus,
-		publicReactions: !!publicReactions,
-		ffVisibility: ffVisibility,
+		isLocked: !!isLocked.value,
+		autoAcceptFollowed: !!autoAcceptFollowed.value,
+		noCrawle: !!noCrawle.value,
+		preventAiLearning: !!preventAiLearning.value,
+		isExplorable: !!isExplorable.value,
+		hideOnlineStatus: !!hideOnlineStatus.value,
+		publicReactions: !!publicReactions.value,
+		ffVisibility: ffVisibility.value,
 	});
 }
 
-async function reloadAsk() {
+async function reloadAsk(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'info',
 		text: i18n.ts.reloadToApplySetting,
@@ -140,9 +134,9 @@ async function reloadAsk() {
 	unisonReload();
 }
 
-const headerActions = $computed(() => []);
-
-const headerTabs = $computed(() => []);
+watch([defaultRenoteVisibility, defaultRenoteLocalOnly], async () => {
+	await reloadAsk();
+});
 
 definePageMetadata({
 	title: i18n.ts.privacy,
