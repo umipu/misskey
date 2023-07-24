@@ -95,7 +95,7 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-
+import { unisonReload } from '@/scripts/unison-reload';
 let isLocked = $ref($i.isLocked);
 let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
 let noCrawle = $ref($i.noCrawle);
@@ -109,8 +109,14 @@ let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNote
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
-let defaultRenoteVisibility = $computed(defaultStore.makeGetterSetter('defaultRenoteVisibility'));
-let defaultRenoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultRenoteLocalOnly'));
+let defaultRenoteVisibility = $computed(() => {
+	defaultStore.makeGetterSetter('defaultRenoteVisibility');
+	reloadAsk();
+});
+let defaultRenoteLocalOnly = $computed(() => {
+	defaultStore.makeGetterSetter('defaultRenoteLocalOnly');
+	reloadAsk();
+});
 function save() {
 	os.api('i/update', {
 		isLocked: !!isLocked,
@@ -122,6 +128,16 @@ function save() {
 		publicReactions: !!publicReactions,
 		ffVisibility: ffVisibility,
 	});
+}
+
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
 }
 
 const headerActions = $computed(() => []);
