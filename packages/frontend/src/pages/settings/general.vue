@@ -239,6 +239,7 @@ watch([
 	instanceTicker,
 	overridedDeviceKind,
 	splitRNButton,
+	mediaListWithOneImageAppearance,
 ], async () => {
 	await reloadAsk();
 });
