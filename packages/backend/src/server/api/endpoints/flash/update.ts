@@ -43,7 +43,9 @@ export const paramDef = {
 		script: { type: 'string' },
 		permissions: { type: 'array', items: {
 			type: 'string',
-		} },
+		},
+		},
+		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified', 'private'] },
 	},
 	required: ['flashId', 'title', 'summary', 'script', 'permissions'],
 } as const;

@@ -56,4 +56,19 @@ export class Flash {
 		default: 0,
 	})
 	public likedCount: number;
+
+	/**
+	 * public ... 公開
+	 * followers ... フォロワーのみ
+	 * specified ... visibleUserIds で指定したユーザーのみ
+	 */
+	@Column('enum', { enum: ['public', 'followers', 'specified'] })
+	public visibility: 'public' | 'followers' | 'specified';
+
+	@Index()
+	@Column({
+		...id(),
+		array: true, default: '{}',
+	})
+	public visibleUserIds: User['id'][];
 }
