@@ -12,9 +12,9 @@
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;" :debounce="true">
 						<template #label>Select mode</template>
 					</MkSwitch>
-					<MkSwitch v-model="extraMode" style="margin: 8px 0;" :debounce="true">
-						<template #label>Extra mode</template>
-						<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span>
+					<MkSwitch v-model="exactMode" style="margin: 8px 0;">
+						<template #label>Exact mode</template>
+						<span class="_tips"><Mfm text="🥧"/></span>
 					</MkSwitch>
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
@@ -52,7 +52,7 @@
 						</MkInput>
 						<MkSwitch v-model="exactMode" style="margin: 8px 0;" :debounce="true">
 							<template #label>Exact mode</template>
-							<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span>
+							<span class="_tips"><Mfm text="🥧"/></span>
 						</MkSwitch>
 					</FormSplit>
 					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination">
