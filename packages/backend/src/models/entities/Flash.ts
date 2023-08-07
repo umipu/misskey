@@ -62,13 +62,6 @@ export class Flash {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	@Column('enum', { enum: ['public', 'followers', 'specified'] })
-	public visibility: 'public' | 'followers' | 'specified';
-
-	@Index()
-	@Column({
-		...id(),
-		array: true, default: '{}',
-	})
-	public visibleUserIds: User['id'][];
+	@Column('enum', { enum: ['public', 'private'] })
+	public visibility: 'public' | 'private';
 }

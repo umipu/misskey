@@ -45,7 +45,7 @@ export const paramDef = {
 			type: 'string',
 		},
 		},
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified', 'private'] },
+		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
 	required: ['flashId', 'title', 'summary', 'script', 'permissions'],
 } as const;
