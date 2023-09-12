@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
 	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode"/>
@@ -40,7 +45,7 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -50,7 +55,7 @@ import * as os from '@/os';
 import { iAmModerator } from '@/account';
 
 const props = defineProps<{
-	image: misskey.entities.DriveFile;
+	image: Misskey.entities.DriveFile;
 	raw?: boolean;
 }>();
 

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
@@ -46,28 +51,24 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import { nextTick } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n';
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
 const props = withDefaults(defineProps<{
-	currentVisibility: typeof misskey.noteVisibilities[number];
-	currentLocalOnly: boolean;
+	currentVisibility: typeof Misskey.noteVisibilities[number];
+	localOnly: boolean;
 	src?: HTMLElement;
 }>(), {
 });
 const emit = defineEmits<{
-	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
-	(ev: 'changeLocalOnly', v: boolean): void;
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'closed'): void;
 }>();
 let v = $ref(props.currentVisibility);
-let localOnly = $ref(props.currentLocalOnly);
-watch($$(localOnly), () => {
-	emit('changeLocalOnly', localOnly);
-});
-function choose(visibility: typeof misskey.noteVisibilities[number]): void {
+
+function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {

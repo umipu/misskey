@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 
@@ -802,4 +807,5 @@ const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	};
 });
 
+// eslint-disable-next-line import/no-default-export
 export default endpoints;
