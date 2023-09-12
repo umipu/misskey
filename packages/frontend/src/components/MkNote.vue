@@ -320,17 +320,24 @@ function renote(viaKeyboard = false) {
 					const y = rect.top + (el.offsetHeight / 2);
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
-
-				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-
-				os.api('notes/create', {
-					localOnly,
-					visibility: smallerVisibility(appearNote.visibility, configuredVisibility),
-					renoteId: appearNote.id,
-				}).then(() => {
-					os.toast(i18n.ts.renoted);
-				});
+				if (defaultRenoteVisibility !== 'follow') {
+					if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
+						os.api('notes/create', {
+							renoteId: appearNote.id,
+							visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
+							localOnly: defaultRenoteLocalOnly,
+						}).then(() => {
+							os.toast(i18n.ts.renoted);
+						});
+					}
+				} else {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						localOnly: defaultRenoteLocalOnly,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
 			},
 		}, {
 			text: i18n.ts.quote,
@@ -341,10 +348,41 @@ function renote(viaKeyboard = false) {
 				});
 			},
 		}]);
-
 		os.popupMenu(items, renoteButton.value, {
 			viaKeyboard,
 		});
+	} else {
+		if (appearNote.channel) {
+			os.api('notes/create', {
+				renoteId: appearNote.id,
+				channelId: appearNote.channelId,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
+			});
+		} else if (renoteButton.value) {
+			renoteButton.value.disabled = true;
+			if (defaultRenoteVisibility !== 'follow') {
+				if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
+					os.api('notes/create', {
+						renoteId: appearNote.id,
+						visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
+						localOnly: defaultRenoteLocalOnly,
+					}).then(() => {
+						os.toast(i18n.ts.renoted);
+					});
+				}
+			} else {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					localOnly: defaultRenoteLocalOnly,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
+				});
+			}
+			if (renoteButton.value) {
+				setTimeout(() => renoteButton.value.disabled = false, 500);
+			}
+		}
 	}
 }
 
