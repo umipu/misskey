@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 
-import { User } from '@/models/entities/User.js';
+import { MiUser } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (!ps.alsoKnownAs) throw new ApiError(meta.errors.noSuchUser);
 
 			let unfiltered = ps.alsoKnownAs;
-			const updates = {} as Partial<User>;
+			const updates = {} as Partial<MiUser>;
 
 			if (!unfiltered) {
 				updates.alsoKnownAs = null;

@@ -5,10 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { FlashsRepository } from '@/models/index.js';
+import { MiFlash } from '@/models/entities/Flash.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { IsNull } from 'typeorm';
 
 export const meta = {
 	tags: ['flashs'],
@@ -43,7 +45,8 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	usersRepository: any; // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
@@ -51,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private flashEntityService: FlashEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let flash: Flash | null = null;
+			let flash: MiFlash | null = null;
 			if (ps.flashId) {
 				flash = await this.flashsRepository.findOneBy({ id: ps.flashId });
 			}
