@@ -156,10 +156,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
-			<div v-if="!repliesLoaded" style="padding: 16px">
+			<MkPagination :pagination="repliesPagination">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
+			<!-- <div v-if="!repliesLoaded" style="padding: 16px">
 				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
 			</div>
-			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/> -->
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination">
@@ -303,6 +308,15 @@ const renotesPagination = $computed(() => ({
 
 const reactionsPagination = $computed(() => ({
 	endpoint: 'notes/reactions',
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+		type: reactionTabType,
+	},
+}));
+
+const repliesPagination = $computed(() => ({
+	endpoint: 'notes/replies',
 	limit: 10,
 	params: {
 		noteId: appearNote.id,
