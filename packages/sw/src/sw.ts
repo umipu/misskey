@@ -39,19 +39,18 @@ globalThis.addEventListener('fetch', ev => {
 	} else if (ev.request.url.endsWith('/')) {
 		isHTMLRequest = true;
 	}
+
 	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
-			.catch(() => new Response(`
-			<html>
-				<head>
-					<title>Offline</title>
-				</head>
-				<body>
-					<p>Offline. Service Worker @${_VERSION_}<button onclick="window.location.reload(true);">Reload</button></p>
-				</body>
-			</html>
-		`, { status: 200, headers: { 'Content-Type': 'text/html' } })),
+			.catch(() => {
+				return new Response(offlineContentHTML(), {
+					status: 200,
+					headers: {
+						'content-type': 'text/html',
+					},
+				});
+			}),
 	);
 });
 

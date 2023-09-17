@@ -111,6 +111,18 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public app192IconUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public app512IconUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public serverErrorImageUrl: string | null;
 
 	@Column('varchar', {
@@ -423,7 +435,7 @@ export class MiMeta {
 	public enableChartsForFederatedInstances: boolean;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public enableServerMachineStats: boolean;
 
@@ -445,11 +457,10 @@ export class MiMeta {
 	public serverRules: string[];
 
 	@Column('varchar', {
-		length: 280,
-		array: true,
+		length: 8192,
 		default: '{}',
 	})
-	public disposableEmailDomains: string[];
+	public manifestJsonOverride: string;
 
 	@Column('varchar', {
 		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',

@@ -15,7 +15,7 @@ import type { LoggerService } from '@/core/LoggerService.js';
 import type { MetaService } from '@/core/MetaService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 
 type MockResponse = {
 	type: string;
@@ -68,11 +68,7 @@ export class MockResolver extends Resolver {
 		const r = this.#responseMap.get(value);
 
 		if (!r) {
-			throw {
-				name: 'StatusError',
-				statusCode: 404,
-				message: 'Not registed for mock',
-			};
+			throw new Error('Not registed for mock');
 		}
 
 		const object = JSON.parse(r.content);

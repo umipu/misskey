@@ -10,7 +10,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -169,20 +169,12 @@ export class EmailService {
 			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
 		}) : { valid: true, reason: null };
 
-		const emailDomain: string = emailAddress.split('@')[1];
-		let manualDisposable = false;
-		manualDisposable = meta.disposableEmailDomains.some(el => {
-			return (emailDomain.endsWith(el) || emailDomain === el);
-		});
-
-		const available = (exist === 0 && validated.valid) && !manualDisposable;
-		this.logger.info(`Available: ${available}`);
+		const available = exist === 0 && validated.valid;
 
 		return {
 			available,
 			reason: available ? null :
 			exist !== 0 ? 'used' :
-			manualDisposable ? 'disposable' :
 			validated.reason === 'regex' ? 'format' :
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :

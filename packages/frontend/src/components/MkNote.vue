@@ -4,35 +4,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div v-if="!muted" v-show="!isDeleted" ref="el" v-hotkey="keymap" :class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]" :tabindex="!isDeleted ? '-1' : undefined">
-		<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo" />
-		<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-		<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
-		<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
-		<div v-if="isRenote" :class="$style.renote">
-			<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-			<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview />
-			<i class="ti ti-repeat" style="margin-right: 4px;"></i>
-			<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
-				<template #user>
-					<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
-						<MkUserName :user="note.user" />
-					</MkA>
-				</template>
-			</I18n>
-			<div :class="$style.renoteInfo">
-				<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
-					<i class="ti ti-dots" :class="$style.renoteMenu"></i>
-					<MkTime :time="note.createdAt" />
-				</button>
-				<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
-					<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
-					<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
-					<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-				</span>
-				<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
-				<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
-			</div>
+<div
+	v-if="!muted"
+	v-show="!isDeleted"
+	ref="el"
+	v-hotkey="keymap"
+	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
+	:tabindex="!isDeleted ? '-1' : undefined"
+>
+	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
+	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
+	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
+	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
+	<div v-if="isRenote" :class="$style.renote">
+		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
+		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
+			<template #user>
+				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+					<MkUserName :user="note.user"/>
+				</MkA>
+			</template>
+		</I18n>
+		<div :class="$style.renoteInfo">
+			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
+				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
+				<MkTime :time="note.createdAt"/>
+			</button>
+			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
+				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			</span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti ti-world-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 		<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 			<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview />

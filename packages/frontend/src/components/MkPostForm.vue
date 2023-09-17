@@ -94,8 +94,6 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
-import * as Acct from 'misskey-js/built/acct';
-import MkSelect from './MkSelect.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -572,6 +570,8 @@ function onDrop(ev): void {
 	//#endregion
 }
 function saveDraft() {
+	if (props.instant) return;
+
 	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 	draftData[draftKey] = {
 		updatedAt: new Date(),
