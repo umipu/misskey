@@ -127,6 +127,7 @@ export interface Locale {
     "reactionSetting": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
+    "defaultRenoteVisibility": string;
     "attachCancel": string;
     "markAsSensitive": string;
     "unmarkAsSensitive": string;
@@ -485,6 +486,7 @@ export interface Locale {
     "signinHistory": string;
     "enableAdvancedMfm": string;
     "enableAnimatedMfm": string;
+    "splitRNButton": string
     "doing": string;
     "category": string;
     "tags": string;
@@ -1013,6 +1015,7 @@ export interface Locale {
     "nonSensitiveOnlyForLocalLikeOnlyForRemote": string;
     "rolesAssignedToMe": string;
     "resetPasswordConfirm": string;
+    "disposableEmail": string;
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;
@@ -1982,6 +1985,7 @@ export interface Locale {
         "remainingSeconds": string;
     };
     "_visibility": {
+      "follow": string;
         "public": string;
         "publicDescription": string;
         "home": string;
