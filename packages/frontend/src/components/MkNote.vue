@@ -137,6 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</I18n>
 	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
