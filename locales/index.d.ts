@@ -486,7 +486,7 @@ export interface Locale {
     "signinHistory": string;
     "enableAdvancedMfm": string;
     "enableAnimatedMfm": string;
-    "splitRNButton": string
+    "splitRNButton": string;
     "doing": string;
     "category": string;
     "tags": string;
@@ -1985,7 +1985,7 @@ export interface Locale {
         "remainingSeconds": string;
     };
     "_visibility": {
-      "follow": string;
+        "follow": string;
         "public": string;
         "publicDescription": string;
         "home": string;
