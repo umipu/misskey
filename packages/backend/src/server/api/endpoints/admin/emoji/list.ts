@@ -10,6 +10,7 @@ import type { MiEmoji } from '@/models/entities/Emoji.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { QueryExpressionMap } from 'typeorm/query-builder/QueryExpressionMap.js';
 //import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
@@ -96,14 +97,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (queryarry) {
 					if (ps.exactMode) {
-						emojis = emojis.filter(emoji => ps.query === emoji.name);
+						emojis = emojis.filter(emoji =>
+							queryarry.every(q => q === `:${emoji.name}:`),
+						);
 					} else {
 						emojis = emojis.filter(emoji =>
 							queryarry.includes(`:${emoji.name}:`),
 						);
 					}
 				} else {
-					if (!ps.exactMode) {
+					if (ps.exactMode) {
+						emojis = emojis.filter(emoji => ps.query === emoji.name);
+					} else {
 						emojis = emojis.filter(emoji =>
 							emoji.name.includes(ps.query!) ||
 							emoji.aliases.some(a => a.includes(ps.query!)) ||

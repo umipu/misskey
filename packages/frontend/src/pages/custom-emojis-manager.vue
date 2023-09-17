@@ -107,10 +107,11 @@ const pagination = {
 	endpoint: 'admin/emoji/list' as const,
 	limit: 60,
 	params: computed(() => {
+		console.log(exactMode.value);
 		const query2 = (query.value && query.value !== '') ? query.value : null;
 		return {
 			query: query2,
-			extra: exactMode.value,
+			exactMode: exactMode.value,
 		};
 	}),
 };
