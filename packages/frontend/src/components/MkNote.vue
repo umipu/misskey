@@ -4,139 +4,132 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div
-	v-if="!muted"
-	v-show="!isDeleted"
-	ref="el"
-	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
-	:tabindex="!isDeleted ? '-1' : undefined"
->
-	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
+<div v-if="!muted" v-show="!isDeleted" ref="el" v-hotkey="keymap" :class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]" :tabindex="!isDeleted ? '-1' : undefined">
+	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo" />
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview />
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
-					<MkUserName :user="note.user"/>
+					<MkUserName :user="note.user" />
 				</MkA>
 			</template>
 		</I18n>
 		<div :class="$style.renoteInfo">
 			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
-				<MkTime :time="note.createdAt"/>
+				<MkTime :time="note.createdAt" />
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
-		<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-			<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview />
-			<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false" />
-		</div>
-		<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
-			<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-			<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview />
-			<div :class="$style.main">
-				<MkNoteHeader :note="appearNote" :mini="true" />
-				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" />
-				<div style="container-type: inline-size;">
-					<p v-if="appearNote.cw != null" :class="$style.cw">
-						<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i" />
-						<MkCwButton v-model="showContent" :note="appearNote" />
-					</p>
-					<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
-						<div :class="$style.text">
-							<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-							<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-							<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis" />
-							<div v-if="translating || translation" :class="$style.translation">
-								<MkLoading v-if="translating" mini />
-								<div v-else>
-									<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-									<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis" />
-								</div>
+	</div>
+	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
+		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview />
+		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false" />
+	</div>
+	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview />
+		<div :class="$style.main">
+			<MkNoteHeader :note="appearNote" :mini="true" />
+			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" />
+			<div style="container-type: inline-size;">
+				<p v-if="appearNote.cw != null" :class="$style.cw">
+					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i" />
+					<MkCwButton v-model="showContent" :note="appearNote" />
+				</p>
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
+					<div :class="$style.text">
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis" />
+						<div v-if="translating || translation" :class="$style.translation">
+							<MkLoading v-if="translating" mini />
+							<div v-else>
+								<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis" />
 							</div>
 						</div>
-						<div v-if="appearNote.files.length > 0">
-							<MkMediaList :mediaList="appearNote.files" />
-						</div>
-						<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll" />
-						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview" />
-						<div v-if="appearNote.renote" :class="$style.quote">
-							<MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote" />
-						</div>
-						<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
-							<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
-						</button>
-						<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
-							<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
-						</button>
 					</div>
-					<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+					<div v-if="appearNote.files.length > 0">
+						<MkMediaList :mediaList="appearNote.files" />
+					</div>
+					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll" />
+					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview" />
+					<div v-if="appearNote.renote" :class="$style.quote">
+						<MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote" />
+					</div>
+					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
+						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
+					</button>
+					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
+						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+					</button>
 				</div>
-				<MkReactionsViewer :note="appearNote" :maxNumber="16">
-					<template #more>
-						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-							{{ i18n.ts.more }}
-						</button>
-					</template>
-				</MkReactionsViewer>
-				<footer :class="$style.footer">
-					<button :class="$style.footerButton" class="_button" @click="reply()">
-						<i class="ti ti-arrow-back-up"></i>
-						<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
-					</button>
-					<button v-if="canRenote && !splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @mousedown="renote()">
-						<i class="ti ti-repeat"></i>
-						<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
-					</button>
-					<button v-else-if="canRenote && splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @click="renote()">
-						<i class="ti ti-repeat"></i>
-						<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
-					</button>
-					<button v-else :class="$style.footerButton" class="_button" disabled>
-						<i class="ti ti-ban"></i>
-					</button>
-					<button v-if="canRenote && splitRNButton" ref="quoteButton" :class="$style.footerButton" class="_button" @click="quoteRenote()">
-						<i class="ti ti-quote"></i>
-					</button>
-					<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
-						<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-						<i v-else class="ti ti-plus"></i>
-					</button>
-					<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
-						<i class="ti ti-minus"></i>
-					</button>
-					<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
-						<i class="ti ti-paperclip"></i>
-					</button>
-					<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
-						<i class="ti ti-dots"></i>
-					</button>
-				</footer>
+				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-		</article>
-	</div>
-	<div v-else :class="$style.muted" @click="muted = false">
-		<I18n :src="i18n.ts.userSaysSomething" tag="small">
-			<template #name>
-				<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-					<MkUserName :user="appearNote.user" />
-				</MkA>
-			</template>
-		</I18n>
-	</div>
+			<MkReactionsViewer :note="appearNote" :maxNumber="16">
+				<template #more>
+					<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+						{{ i18n.ts.more }}
+					</button>
+				</template>
+			</MkReactionsViewer>
+			<footer :class="$style.footer">
+				<button :class="$style.footerButton" class="_button" @click="reply()">
+					<i class="ti ti-arrow-back-up"></i>
+					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
+				</button>
+				<button v-if="canRenote && !splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @mousedown="renote()">
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else-if="canRenote && splitRNButton" ref="renoteButton" :class="$style.footerButton" class="_button" @click="renote()">
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else :class="$style.footerButton" class="_button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
+				<button v-if="canRenote && splitRNButton" ref="quoteButton" :class="$style.footerButton" class="_button" @click="quoteRenote()">
+					<i class="ti ti-quote"></i>
+				</button>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
+				</button>
+				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
+					<i class="ti ti-minus"></i>
+				</button>
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
+					<i class="ti ti-paperclip"></i>
+				</button>
+				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
+					<i class="ti ti-dots"></i>
+				</button>
+			</footer>
+		</div>
+	</article>
+</div>
+<div v-else :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user" />
+			</MkA>
+		</template>
+	</I18n>
 </div>
 </template>
 

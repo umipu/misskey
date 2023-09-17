@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick } from 'vue';
+import { nextTick, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n';
@@ -64,9 +64,14 @@ const props = withDefaults(defineProps<{
 });
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
+	(ev: 'changeLocalOnly', v: boolean): void;
 	(ev: 'closed'): void;
 }>();
 let v = $ref(props.currentVisibility);
+let localOnly = $ref(props.currentLocalOnly);
+watch($$(localOnly), () => {
+	emit('changeLocalOnly', localOnly);
+});
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v = visibility;
