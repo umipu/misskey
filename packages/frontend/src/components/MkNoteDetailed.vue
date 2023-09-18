@@ -200,7 +200,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef } from 'vue';
+import { watch, computed, inject, onMounted, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -292,7 +292,7 @@ const keymap = {
 };
 
 let tab = $ref('replies');
-let reactionTabType = $ref(null);
+let reactionTabType = $ref(Object.keys(appearNote.reactions)[0]);
 
 const renotesPagination = $computed(() => ({
 	endpoint: 'notes/renotes',
@@ -302,23 +302,26 @@ const renotesPagination = $computed(() => ({
 	},
 }));
 
-const reactionsPagination = $computed(() => ({
+const reactionsPagination: Paging = {
 	endpoint: 'notes/reactions',
 	limit: 10,
-	params: {
+	params: computed(() => ({
 		noteId: appearNote.id,
 		type: reactionTabType,
-	},
-}));
+	})),
+};
 
 const repliesPagination = $computed(() => ({
 	endpoint: 'notes/replies',
 	limit: 10,
 	params: {
 		noteId: appearNote.id,
-		type: reactionTabType,
 	},
 }));
+
+watch($$(reactionTabType), () => {
+	console.log(reactionsPagination);
+});
 
 useNoteCapture({
 	rootEl: el,
