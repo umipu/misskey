@@ -58,7 +58,7 @@ import { i18n } from '@/i18n';
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
-	localOnly: boolean;
+	currentLocalOnly: boolean;
 	src?: HTMLElement;
 }>(), {
 });
@@ -69,6 +69,7 @@ const emit = defineEmits<{
 }>();
 let v = $ref(props.currentVisibility);
 let localOnly = $ref(props.currentLocalOnly);
+
 watch($$(localOnly), () => {
 	emit('changeLocalOnly', localOnly);
 });
