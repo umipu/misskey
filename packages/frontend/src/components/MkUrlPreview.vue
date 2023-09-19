@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			allow="fullscreen;web-share"
 			sandbox="allow-popups allow-scripts allow-same-origin"
 			scrolling="no"
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
+			:style="{ position: 'relative', width: `${tweetWidth}px`, height: `${tweetHeight}px`, border: 0, borderRadius: '13px', }"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
@@ -128,6 +128,7 @@ let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 let tweetHeight = $ref(150);
+let tweetWidth = $ref(550);
 let unknownUrl = $ref(false);
 
 const requestUrl = new URL(props.url);
@@ -179,6 +180,8 @@ function adjustTweetHeight(message: any) {
 	if (embed?.id !== embedId) return;
 	const height = embed?.params[0]?.height;
 	if (height) tweetHeight = height;
+	const width = embed?.params[0]?.width;
+	if (width) tweetWidth = width;
 }
 
 const openPlayer = (): void => {
