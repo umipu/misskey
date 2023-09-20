@@ -491,7 +491,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
-			
+
 			<MkFolder>
 				<template #label>{{ i18n.ts.delete }}</template>
 				<template #suffix>
@@ -520,13 +520,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { ROLE_POLICIES } from '@/const';
-import { instance } from '@/instance';
-import { deepClone } from '@/scripts/clone';
-import { rolesCache } from '@/cache';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { ROLE_POLICIES } from '@/const.js';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/scripts/clone.js';
+import { rolesCache } from '@/cache.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
