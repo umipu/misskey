@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 
-import { MiUser } from '@/models/entities/User.js';
+import { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
