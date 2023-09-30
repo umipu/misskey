@@ -196,7 +196,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'history'" :class="$style.tab_history">
 			<div style="display: grid;">
-				<div v-for="text in appearNote.noteEditHistory.reverse()" :key="text">
+				<div v-for="text in appearNote.noteEditHistory" :key="text">
 					<MkNotePreview :class="$style.historyNote" :text="text"/>
 				</div>
 			</div>
