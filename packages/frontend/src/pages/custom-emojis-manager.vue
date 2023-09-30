@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
-					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
+					<MkPagination ref="emojisPaginationComponent" :pagination="pagination" :disableAutoLoad="true">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span class="_tips"><Mfm text="🥧"/></span>
 						</MkSwitch>
 					</FormSplit>
-					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination">
+					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination" :disableAutoLoad="true">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
