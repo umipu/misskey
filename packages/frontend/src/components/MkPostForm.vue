@@ -133,7 +133,6 @@ const props = withDefaults(defineProps<{
 	fixed?: boolean;
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
-	updateMode?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
@@ -614,7 +613,6 @@ async function post(ev?: MouseEvent) {
 		visibility: visibility,
 		visibleUserIds: visibility === 'specified' ? visibleUsers.map(u => u.id) : undefined,
 		reactionAcceptance,
-		noteId: props.updateMode ? props.initialNote?.id : undefined,
 	};
 	if (withHashtags && hashtags && hashtags.trim() !== '') {
 		const hashtags_ = hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
@@ -632,7 +630,7 @@ async function post(ev?: MouseEvent) {
 		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
 	}
 	posting = true;
-	os.api(props.updateMode ? 'notes/update' : 'notes/create', postData, token).then(() => {
+	os.api('notes/create', postData, token).then(() => {
 		if (props.freezeAfterPosted) {
 			posted = true;
 		} else {

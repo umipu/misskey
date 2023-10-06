@@ -177,8 +177,6 @@ export type GalleryPost = {
 export type Note = {
 	id: ID;
 	createdAt: DateString;
-	updatedAt?: DateString | null;
-	noteEditHistory: string[];
 	text: string | null;
 	cw: string | null;
 	user: User;

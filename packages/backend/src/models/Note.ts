@@ -18,23 +18,10 @@ export class MiNote {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index()
 	@Column('timestamp with time zone', {
 		comment: 'The created date of the Note.',
 	})
 	public createdAt: Date;
-
-	@Column('timestamp with time zone', {
-		default: null,
-	})
-	public updatedAt: Date | null;
-
-	@Column('varchar', {
-		length: 3000,
-		array: true,
-		default: '{}',
-	})
-	public noteEditHistory: string[];
 
 	@Index()
 	@Column({
@@ -163,7 +150,6 @@ export class MiNote {
 	})
 	public fileIds: MiDriveFile['id'][];
 
-	@Index()
 	@Column('varchar', {
 		length: 256, array: true, default: '{}',
 	})
