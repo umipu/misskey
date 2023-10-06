@@ -59,6 +59,7 @@ import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
 import { ClipService } from './ClipService.js';
+import { FeaturedService } from './FeaturedService.js';
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
@@ -185,6 +186,7 @@ const $UtilityService: Provider = { provide: 'UtilityService', useExisting: Util
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
+const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -315,6 +317,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		SearchService,
 		ClipService,
+		FeaturedService,
 		ChartLoggerService,
 		FederationChart,
 		NotesChart,
@@ -438,6 +441,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FileInfoService,
 		$SearchService,
 		$ClipService,
+		$FeaturedService,
 		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
@@ -562,6 +566,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		SearchService,
 		ClipService,
+		FeaturedService,
 		FederationChart,
 		NotesChart,
 		UsersChart,
@@ -684,6 +689,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FileInfoService,
 		$SearchService,
 		$ClipService,
+		$FeaturedService,
 		$FederationChart,
 		$NotesChart,
 		$UsersChart,
