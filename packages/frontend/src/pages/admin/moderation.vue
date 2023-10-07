@@ -25,6 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.tosUrl }}</template>
 					</MkInput>
 
+					<MkInput v-model="privacyPolicyUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
+					</MkInput>
+
 					<MkTextarea v-model="preservedUsernames">
 						<template #label>{{ i18n.ts.preservedUsernames }}</template>
 						<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
@@ -74,6 +79,7 @@ let sensitiveWords: string = $ref('');
 let disposableEmailDomains: string = $ref('');
 let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
+let privacyPolicyUrl: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -83,6 +89,7 @@ async function init() {
 	preservedUsernames = meta.preservedUsernames.join('\n');
 	disposableEmailDomains = meta.disposableEmailDomains.join('\n');
 	tosUrl = meta.tosUrl;
+	privacyPolicyUrl = meta.privacyPolicyUrl;
 }
 
 function save() {
@@ -90,6 +97,7 @@ function save() {
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
 		tosUrl,
+		privacyPolicyUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
 		preservedUsernames: preservedUsernames.split('\n'),
 		disposableEmailDomains: disposableEmailDomains.split('\n'),
