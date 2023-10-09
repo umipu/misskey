@@ -55,7 +55,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.moderationNote }}</template>
 				</MkTextarea>
 
-				<!--
 				<FormSection>
 					<template #label>ActivityPub</template>
 
@@ -89,7 +88,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</div>
 				</FormSection>
-			-->
 
 				<FormSection>
 					<div class="_gaps">
