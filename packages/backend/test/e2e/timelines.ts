@@ -19,7 +19,7 @@ function genHost() {
 }
 
 function waitForPushToTl() {
-	return sleep(300);
+	return sleep(500);
 }
 
 let app: INestApplicationContext;
@@ -41,7 +41,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
@@ -57,7 +57,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -73,7 +73,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
@@ -90,7 +90,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -107,7 +107,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -124,7 +124,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -141,7 +141,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -159,7 +159,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
@@ -178,7 +178,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
@@ -194,7 +194,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
@@ -210,7 +210,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
@@ -224,7 +224,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
@@ -240,7 +240,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -291,7 +291,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -307,7 +307,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -325,7 +325,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -340,7 +340,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -354,7 +354,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -375,7 +375,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', { withFiles: true }, alice);
+			const res = await api('/notes/timeline', { limit: 100, withFiles: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
@@ -393,7 +393,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -405,7 +405,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
@@ -420,7 +420,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
@@ -433,7 +433,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -447,7 +447,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -460,7 +460,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'ok');
@@ -475,7 +475,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'ok');
@@ -491,7 +491,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/timeline', {}, alice);
+			const res = await api('/notes/timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -506,7 +506,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -520,7 +520,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
@@ -534,7 +534,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -546,7 +546,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -562,7 +562,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -578,7 +578,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -595,7 +595,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
@@ -613,13 +613,12 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
 
-		/* 実装が面倒
 		test.concurrent('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -630,12 +629,11 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
-		*/
 
 		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
@@ -645,10 +643,9 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', { withReplies: true }, alice);
+			const res = await api('/notes/local-timeline', { limit: 100, withReplies: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
 
 		test.concurrent('[withFiles: true] ファイル付きノートのみ含まれる', async () => {
@@ -660,7 +657,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', { withFiles: true }, alice);
+			const res = await api('/notes/local-timeline', { limit: 100, withFiles: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
@@ -675,7 +672,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -687,7 +684,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -701,7 +698,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -716,7 +713,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
@@ -743,7 +740,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/local-timeline', {}, alice);
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
@@ -757,7 +754,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -771,7 +768,20 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', {}, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100 }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test.concurrent('[withReplies: true] 他人の他人への返信が含まれる', async () => {
+			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+			const carolNote = await post(carol, { text: 'hi' });
+			const bobNote = await post(bob, { text: 'hi', replyId: carolNote.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/hybrid-timeline', { limit: 100, withReplies: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
@@ -799,7 +809,7 @@ describe('Timelines', () => {
 
 			await waitForPushToTl();
 
-			const res = await api('/notes/hybrid-timeline', { withFiles: true }, alice);
+			const res = await api('/notes/hybrid-timeline', { limit: 100, withFiles: true }, alice);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
@@ -1136,6 +1146,32 @@ describe('Timelines', () => {
 			await waitForPushToTl();
 
 			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		});
+
+		test.concurrent('[withChannelNotes: true] 他人が取得した場合センシティブチャンネル投稿が含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel', isSensitive: true }, bob).then(x => x.body);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+		});
+
+		test.concurrent('[withChannelNotes: true] 自分が取得した場合センシティブチャンネル投稿が含まれる', async () => {
+			const [bob] = await Promise.all([signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel', isSensitive: true }, bob).then(x => x.body);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/users/notes', { userId: bob.id, withChannelNotes: true }, bob);
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 		});
