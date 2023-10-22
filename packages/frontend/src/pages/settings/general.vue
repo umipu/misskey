@@ -96,6 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
 				<MkSwitch v-model="highlightSensitiveMedia">{{ i18n.ts.highlightSensitiveMedia }}</MkSwitch>
 				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
+				<MkSwitch v-model="showAvatarDecorations">{{ i18n.ts.showAvatarDecorations }}</MkSwitch>
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
@@ -179,7 +180,7 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { globalEvents } from '@/events';
+import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
@@ -225,6 +226,7 @@ const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 const splitRNButton = computed(defaultStore.makeGetterSetter('splitRNButton'));
+const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));

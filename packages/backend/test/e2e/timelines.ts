@@ -526,6 +526,20 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 		});
 
+		test.concurrent('他人のその人自身への返信が含まれる', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote1 = await post(bob, { text: 'hi' });
+			const bobNote2 = await post(bob, { text: 'hi', replyId: bobNote1.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/local-timeline', { limit: 100 }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote1.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote2.id), true);
+		});
+
 		test.concurrent('チャンネル投稿が含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -959,6 +973,38 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			assert.strictEqual(res.body.find((note: any) => note.id === bobNote.id).text, 'hi');
+		});
+
+		test.concurrent('リスインしている自分の visibility: followers なノートが含まれる', async () => {
+			const [alice] = await Promise.all([signup(), signup()]);
+
+			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('/users/lists/push', { listId: list.id, userId: alice.id }, alice);
+			await sleep(1000);
+			const aliceNote = await post(alice, { text: 'hi', visibility: 'followers' });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
+			assert.strictEqual(res.body.find((note: any) => note.id === aliceNote.id).text, 'hi');
+		});
+
+		test.concurrent('リスインしているユーザーのチャンネルノートが含まれない', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const channel = await api('/channels/create', { name: 'channel' }, bob).then(x => x.body);
+			const list = await api('/users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('/users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await sleep(1000);
+			const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+			await waitForPushToTl();
+
+			const res = await api('/notes/user-list-timeline', { listId: list.id }, alice);
+
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		});
 
 		test.concurrent('[withFiles: true] リスインしているユーザーのファイル付きノートのみ含まれる', async () => {
