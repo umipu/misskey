@@ -1193,6 +1193,7 @@ export interface Locale {
         "manifestJsonOverride": string;
         "shortName": string;
         "shortNameDescription": string;
+        "fanoutTimelineDescription": string;
     };
     "_accountMigration": {
         "moveFrom": string;

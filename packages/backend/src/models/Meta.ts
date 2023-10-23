@@ -495,6 +495,11 @@ export class MiMeta {
 		default: '{}',
 	})
 	public disposableEmailDomains: string[];
+	@Column('boolean', {
+		default: true,
+	})
+	public enableFanoutTimeline: boolean;
+
 	@Column('integer', {
 		default: 300,
 	})
