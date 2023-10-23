@@ -153,13 +153,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quote' }]" @click="tab = 'quote'"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
-			<div v-if="!repliesLoaded" style="padding: 16px">
-				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
-			</div>
-			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+			<MkPagination :pagination="repliesPagination">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
@@ -188,6 +190,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 			</MkPagination>
+		</div>
+		<div v-if="tab === 'quote'" :class="$style.tab_quotes">
+			<div v-if="!quotesLoaded" style="padding: 16px">
+				<MkButton style="margin: 0 auto;" primary rounded @click="loadQuotes">{{ i18n.ts.showMore }}</MkButton>
+			</div>
+			<MkNoteSub v-for="note in quotes" :key="note.id" :note="note" :class="$style.quote" :detail="true"/>
 		</div>
 	</div>
 </div>
@@ -281,7 +289,7 @@ const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
-const replies = ref<Misskey.entities.Note[]>([]);
+const quotes = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 const splitRNButton = defaultStore.state.splitRNButton;
 const defaultRenoteVisibility = defaultStore.state.defaultRenoteVisibility;
@@ -588,14 +596,15 @@ function blur() {
 	el.value.blur();
 }
 
-const repliesLoaded = ref(false);
-function loadReplies() {
-	repliesLoaded.value = true;
+const quotesLoaded = ref(false);
+function loadQuotes() {
+	quotesLoaded.value = true;
 	os.api('notes/children', {
 		noteId: appearNote.id,
 		limit: 30,
 	}).then(res => {
-		replies.value = res;
+		res.filter(item => item.renoteId != null)
+		quotes.value = res;
 	});
 }
 
@@ -812,6 +821,10 @@ function loadConversation() {
 	border-top: solid 0.5px var(--divider);
 }
 
+.quote:not(:first-child) {
+	border-top: solid 0.5px var(--divider);
+}
+
 .tabs {
 	border-top: solid 0.5px var(--divider);
 	border-bottom: solid 0.5px var(--divider);
@@ -829,11 +842,19 @@ function loadConversation() {
 	border-bottom: solid 2px var(--accent);
 }
 
+.tab_replies {
+	padding: 16px;
+}
+
 .tab_renotes {
 	padding: 16px;
 }
 
 .tab_reactions {
+	padding: 16px;
+}
+
+.tab_quotes {
 	padding: 16px;
 }
 
