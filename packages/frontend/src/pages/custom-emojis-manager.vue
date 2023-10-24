@@ -14,13 +14,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
-					<MkSwitch v-model="selectMode" style="margin: 8px 0;" :debounce="true">
-						<template #label>Select mode</template>
-					</MkSwitch>
-					<MkSwitch v-model="exactMode" style="margin: 8px 0;">
-						<template #label>Exact mode</template>
-						<span class="_tips"><Mfm text="🥧"/></span>
-					</MkSwitch>
+					<div class="_buttons">
+						<MkSwitch v-model="selectMode" style="margin: 8px 0;" :debounce="true">
+							<template #label>Select mode</template>
+						</MkSwitch>
+						<MkSwitch v-model="exactMode" style="margin: 8px 0;">
+							<template #label>Exact mode</template>
+							<span class="_tips"><Mfm text="🥧"/></span>
+						</MkSwitch>
+						<MkSwitch v-model="extentMode" style="margin: 8px 0;">
+							<template #label>Extent mode</template>
+							<span class="_tips"><Mfm text="🥧"/></span>
+						</MkSwitch>
+					</div>
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
@@ -30,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
-					<MkPagination ref="emojisPaginationComponent" :pagination="pagination" :disableAutoLoad="true">
+					<MkPagination v-if="!extentMode" ref="emojisPaginationComponent" :pagination="pagination">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
@@ -44,8 +50,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</template>
 					</MkPagination>
+					<MkPagination v-else ref="emojisPaginationComponent" :pagination="pagination">
+						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
+						<template #default="{items}">
+							<div class="ldhffamy">
+								<MkEmojiEditor v-for="emoji in items" :key="emoji.id" :emoji="emoji"/>
+							</div>
+						</template>
+					</MkPagination>
 				</div>
-
 				<div v-else-if="tab === 'remote'" class="remote">
 					<FormSplit>
 						<MkInput v-model="queryRemote" :debounce="true" type="search">
@@ -60,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span class="_tips"><Mfm text="🥧"/></span>
 						</MkSwitch>
 					</FormSplit>
-					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination" :disableAutoLoad="true">
+					<MkPagination ref="emojisRemotePaginationComponent" :pagination="remotePagination">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
@@ -84,6 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkEmojiEditor from '@/components/MkEmojiEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -101,6 +115,7 @@ const queryRemote = ref(null);
 const host = ref(null);
 const selectMode = ref(false);
 const exactMode = ref(false);
+const extentMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
 const pagination = {
@@ -337,6 +352,13 @@ definePageMetadata(computed(() => ({
 	> .local {
 		.empty {
 			margin: var(--margin);
+		}
+
+		.ldhffamy {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			grid-gap: 12px;
+			margin: var(--margin) 0;
 		}
 
 		.ldhfsamy {
