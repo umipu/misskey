@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhffamy">
-								<MkEmojiEditor v-for="emoji in items" :key="emoji.id" :emoji="emoji"/>
+								<MkEmojiEditor v-for="emoji in items" :key="emoji.id" :emoji="emoji" @done="((result) => updatePagination(result,emoji))"/>
 							</div>
 						</template>
 					</MkPagination>
@@ -340,6 +340,17 @@ const headerTabs = $computed(() => [{
 	key: 'remote',
 	title: i18n.ts.remote,
 }]);
+
+function updatePagination(result, emoji) {
+	if (result.updated) {
+		emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+			...oldEmoji,
+			...result.updated,
+		}));
+	} else if (result.deleted) {
+		emojisPaginationComponent.value.removeItem(emoji.id);
+	}
+}
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
