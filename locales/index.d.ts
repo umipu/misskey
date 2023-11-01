@@ -1156,6 +1156,10 @@ export interface Locale {
     "angle": string;
     "flip": string;
     "showAvatarDecorations": string;
+    "releaseToRefresh": string;
+    "refreshing": string;
+    "pullDownToRefresh": string;
+    "disableStreamingTimeline": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1712,6 +1716,7 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "projectMembers": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;

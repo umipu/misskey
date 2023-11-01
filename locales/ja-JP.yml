@@ -1153,6 +1153,10 @@ detach: "外す"
 angle: "角度"
 flip: "反転"
 showAvatarDecorations: "アイコンのデコレーションを表示"
+releaseToRefresh: "離してリロード"
+refreshing: "リロード中"
+pullDownToRefresh: "引っ張ってリロード"
+disableStreamingTimeline: "タイムラインのリアルタイム更新を無効にする"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -1622,13 +1626,14 @@ _registry:
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
-  contributors: "主なコントリビューター"
+  contributors: "コントリビューター"
   allContributors: "全てのコントリビューター"
   source: "ソースコード"
   translation: "Misskeyを翻訳"
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
+  projectMembers: "プロジェクトメンバー"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"
