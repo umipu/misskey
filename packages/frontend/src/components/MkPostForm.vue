@@ -313,6 +313,7 @@ if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
 	useCw = true;
 	cw = props.reply.cw;
 }
+
 function watchForDraft() {
 	watch($$(text), () => saveDraft());
 	watch($$(useCw), () => saveDraft());
@@ -322,6 +323,7 @@ function watchForDraft() {
 	watch($$(visibility), () => saveDraft());
 	watch($$(localOnly), () => saveDraft());
 }
+
 function checkMissingMention() {
 	if (visibility === 'specified') {
 		const ast = mfm.parse(text);
@@ -334,6 +336,7 @@ function checkMissingMention() {
 		hasNotSpecifiedMentions = false;
 	}
 }
+
 function addMissingMention() {
 	const ast = mfm.parse(text);
 	for (const x of extractMentions(ast)) {
@@ -344,6 +347,7 @@ function addMissingMention() {
 		}
 	}
 }
+
 function togglePoll() {
 	if (poll) {
 		poll = null;
@@ -356,15 +360,18 @@ function togglePoll() {
 		};
 	}
 }
+
 function addTag(tag: string) {
 	insertTextAtCursor(textareaEl, ` #${tag} `);
 }
+
 function focus() {
 	if (textareaEl) {
 		textareaEl.focus();
 		textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
 	}
 }
+
 function chooseFileFrom(ev) {
 	if (props.mock) return;
 
@@ -374,15 +381,18 @@ function chooseFileFrom(ev) {
 		}
 	});
 }
+
 function detachFile(id) {
 	files = files.filter(x => x.id !== id);
 }
+
 function updateFileSensitive(file, sensitive) {
 	if (props.mock) {
 		emit('fileChangeSensitive', file.id, sensitive);
 	}
 	files[files.findIndex(x => x.id === file.id)].isSensitive = sensitive;
 }
+
 function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
 }
@@ -398,6 +408,7 @@ function upload(file: File, name?: string): void {
 		files.push(res);
 	});
 }
+
 function setVisibility() {
 	if (props.channel) {
 		// TODO: information dialog
@@ -487,6 +498,7 @@ function pushVisibleUser(user) {
 		visibleUsers.push(user);
 	}
 }
+
 function addVisibleUser() {
 	os.selectUser().then(user => {
 		pushVisibleUser(user);
@@ -495,30 +507,37 @@ function addVisibleUser() {
 		}
 	});
 }
+
 function removeVisibleUser(user) {
 	visibleUsers = erase(user, visibleUsers);
 }
+
 function clear() {
 	text = '';
 	files = [];
 	poll = null;
 	quoteId = null;
 }
+
 function onKeydown(ev: KeyboardEvent) {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
 	if (ev.key === 'Escape') emit('esc');
 }
+
 function toHome() {
 	if (visibility == 'public') {
 		visibility = 'home';
 	}
 }
+
 function onCompositionUpdate(ev: CompositionEvent) {
 	imeText = ev.data;
 }
+
 function onCompositionEnd(ev: CompositionEvent) {
 	imeText = '';
 }
+
 async function onPaste(ev: ClipboardEvent) {
 	if (props.mock) return;
 
@@ -546,6 +565,7 @@ async function onPaste(ev: ClipboardEvent) {
 		});
 	}
 }
+
 function onDragover(ev) {
 	if (!ev.dataTransfer.items[0]) return;
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
@@ -571,12 +591,15 @@ function onDragover(ev) {
 		}
 	}
 }
+
 function onDragenter(ev) {
 	draghover = true;
 }
+
 function onDragleave(ev) {
 	draghover = false;
 }
+
 function onDrop(ev): void {
 	draghover = false;
 	// ファイルだったら
@@ -594,6 +617,7 @@ function onDrop(ev): void {
 	}
 	//#endregion
 }
+
 function saveDraft() {
 	if (props.instant || props.mock) return;
 
@@ -612,11 +636,13 @@ function saveDraft() {
 	};
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
+
 function deleteDraft() {
 	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 	delete draftData[draftKey];
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
+
 async function post(ev?: MouseEvent) {
 	if (useCw && (cw == null || cw.trim() === '')) {
 		os.alert({
@@ -726,17 +752,21 @@ async function post(ev?: MouseEvent) {
 		});
 	});
 }
+
 function cancel() {
 	emit('cancel');
 }
+
 function insertMention() {
 	os.selectUser().then(user => {
 		insertTextAtCursor(textareaEl, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }
+
 async function insertEmoji(ev: MouseEvent) {
 	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
 }
+
 function showActions(ev) {
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
@@ -770,6 +800,7 @@ function openAccountMenu(ev: MouseEvent) {
 		},
 	}, ev);
 }
+
 onMounted(() => {
 	if (props.autofocus) {
 		focus();
