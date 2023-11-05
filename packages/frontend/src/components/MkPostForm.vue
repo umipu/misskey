@@ -416,8 +416,7 @@ function setVisibility() {
 	}
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility,
-		isSilenced: $i?.isSilenced,
-		localOnly: localOnly,
+		currentLocalOnly: localOnly,
 		src: visibilityButton,
 	}, {
 		changeVisibility: v => {
