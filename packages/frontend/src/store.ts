@@ -393,7 +393,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	sound_masterVolume: {
 		where: 'device',
-		default: 0.3,
+		default: 0,
 	},
 	sound_note: {
 		where: 'device',
