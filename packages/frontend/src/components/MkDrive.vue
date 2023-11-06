@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
 				<XFile
@@ -207,9 +207,9 @@ function onDragover(ev: DragEvent): any {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -566,6 +566,28 @@ async function fetch() {
 	fetching.value = false;
 }
 
+function fetchMoreFolders() {
+	fetching.value = true;
+
+	const max = 30;
+
+	os.api('drive/folders', {
+		folderId: folder.value ? folder.value.id : null,
+		type: props.type,
+		untilId: folders.value.at(-1)?.id,
+		limit: max + 1,
+	}).then(folders => {
+		if (folders.length === max + 1) {
+			moreFolders.value = true;
+			folders.pop();
+		} else {
+			moreFolders.value = false;
+		}
+		for (const x of folders) appendFolder(x);
+		fetching.value = false;
+	});
+}
+
 function fetchMoreFiles() {
 	fetching.value = true;
 
@@ -575,7 +597,7 @@ function fetchMoreFiles() {
 	os.api('drive/files', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		untilId: files.value[files.value.length - 1].id,
+		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
 	}).then(files => {
 		if (files.length === max + 1) {

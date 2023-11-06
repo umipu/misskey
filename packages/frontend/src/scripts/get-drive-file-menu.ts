@@ -124,4 +124,16 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		danger: true,
 		action: () => deleteFile(file),
 	}];
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		}]);
+	}
+
+	return menu;
 }
