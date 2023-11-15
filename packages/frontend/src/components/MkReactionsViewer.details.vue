@@ -84,7 +84,7 @@ function getReactionName(reaction: string): string {
 .user {
 	line-height: 24px;
 	white-space: nowrap;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
 
 	&:not(:last-child) {
