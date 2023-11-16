@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 						<div v-if="$i" class="actions">
 							<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
-							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+							<MkFollowButton v-if="$i.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
 					<MkAvatar class="avatar" :user="user" indicator/>
@@ -59,10 +59,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>Moderation note</template>
+							<template #label>{{ i18n.ts.moderationNote }}</template>
 						</MkTextarea>
 						<div v-else>
-							<MkButton small @click="editModerationNote = true">Add moderation note</MkButton>
+							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
 						</div>
 					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div class="description">
 						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" :i="$i"/>
+							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user"/>
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 						</MkOmit>
 					</div>
@@ -102,7 +102,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<Mfm :text="field.name" :plain="true" :colored="false"/>
 							</dt>
 							<dd class="value">
-								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
+								<Mfm :text="field.value" :author="user" :colored="false"/>
+								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 							</dd>
 						</dl>
 					</div>
@@ -129,19 +130,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
-					<XPhotos :key="user.id" :user="user"/>
+					<XFiles :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
 				<div v-if="!defaultStore.state.showTimelineOnUserHome">
+					<div style="margin-bottom: 8px;">{{ i18n.ts.featured }}</div>
 					<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination"/>
 				</div>
 			</div>
 			<div v-if="!disableNotes && defaultStore.state.showTimelineOnUserHome">
-				<XUserTimeline :user="user"/>
+				<MkUserTimeline :user="user"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XPhotos :key="user.id" :user="user"/>
+			<XFiles :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user"/>
 		</div>
 	</div>
@@ -150,9 +152,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import calcAge from 's-age';
-import * as misskey from 'misskey-js';
-import XUserTimeline from './index.timeline.vue';
+import * as Misskey from 'misskey-js';
+import MkUserTimeline from '@/pages/user/index.timeline.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -161,27 +162,42 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@/scripts/scroll';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import number from '@/filters/number';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { useRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { $i, iAmModerator } from '@/account';
-import { dateString } from '@/filters/date';
-import { confetti } from '@/scripts/confetti';
+import { getScrollPosition } from '@/scripts/scroll.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import number from '@/filters/number.js';
+import { userPage } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
+import { $i, iAmModerator } from '@/account.js';
+import { dateString } from '@/filters/date.js';
+import { confetti } from '@/scripts/confetti.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { defaultStore } from '@/store';
-import { editNickname } from '@/scripts/edit-nickname';
-import { api } from '@/os';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+import { defaultStore } from '@/store.js';
+import { editNickname } from '@/scripts/edit-nickname.js';
+import { api } from '@/os.js';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
-const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
+function calcAge(birthdate: string): number {
+	const date = new Date(birthdate);
+	const now = new Date();
+
+	let yearDiff = now.getFullYear() - date.getFullYear();
+	const monthDiff = now.getMonth() - date.getMonth();
+	const pastDate = now.getDate() < date.getDate();
+
+	if (monthDiff < 0 || (monthDiff === 0 && pastDate)) {
+		yearDiff--;
+	}
+
+	return yearDiff;
+}
+
+const XFiles = defineAsyncComponent(() => import('./index.files.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 	/** Test only; MkNotes currently causes problems in vitest */
 	disableNotes: boolean;
 }>(), {
@@ -190,6 +206,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
+let user = $ref(props.user);
 let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
 let rootEl = $ref<null | HTMLElement>(null);
@@ -205,7 +222,7 @@ watch($$(moderationNote), async () => {
 });
 
 const pagination = {
-	endpoint: 'users/notes' as const,
+	endpoint: 'users/featured-notes' as const,
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
@@ -224,7 +241,8 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
+	const { menu, cleanup } = getUserMenu(user, router);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 function parallaxLoop() {
@@ -683,7 +701,12 @@ onUnmounted(() => {
 <style lang="scss" module>
 .tl {
 	background: var(--bg);
-    border-radius: var(--radius);
-    overflow: clip;
+	border-radius: var(--radius);
+	overflow: clip;
+}
+
+.verifiedLink {
+	margin-left: 4px;
+	color: var(--success);
 }
 </style>

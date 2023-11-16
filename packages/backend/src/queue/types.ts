@@ -4,10 +4,10 @@
  */
 
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { User } from '@/models/entities/User.js';
-import type { Webhook } from '@/models/entities/Webhook.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiWebhook } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type httpSignature from '@peertube/http-signature';
 
@@ -32,6 +32,7 @@ export type RelationshipJobData = {
 	to: ThinUser;
 	silent?: boolean;
 	requestId?: string;
+	withReplies?: boolean;
 }
 
 export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
@@ -78,7 +79,8 @@ export type DbUserDeleteJobData = {
 
 export type DbUserImportJobData = {
 	user: ThinUser;
-	fileId: DriveFile['id'];
+	fileId: MiDriveFile['id'];
+	withReplies?: boolean;
 };
 
 export type DBAntennaImportJobData = {
@@ -89,6 +91,7 @@ export type DBAntennaImportJobData = {
 export type DbUserImportToDbJobData = {
 	user: ThinUser;
 	target: string;
+	withReplies?: boolean;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;
@@ -98,14 +101,14 @@ export type ObjectStorageFileJobData = {
 };
 
 export type EndedPollNotificationJobData = {
-	noteId: Note['id'];
+	noteId: MiNote['id'];
 };
 
 export type WebhookDeliverJobData = {
 	type: string;
 	content: unknown;
-	webhookId: Webhook['id'];
-	userId: User['id'];
+	webhookId: MiWebhook['id'];
+	userId: MiUser['id'];
 	to: string;
 	secret: string;
 	createdAt: number;
@@ -113,5 +116,5 @@ export type WebhookDeliverJobData = {
 };
 
 export type ThinUser = {
-	id: User['id'];
+	id: MiUser['id'];
 };

@@ -12,7 +12,7 @@ import fastifyStatic from '@fastify/static';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -73,7 +73,7 @@ export class ServerService implements OnApplicationShutdown {
 	public async launch(): Promise<void> {
 		const fastify = Fastify({
 			trustProxy: true,
-			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
+			logger: false,
 		});
 		this.#fastify = fastify;
 
@@ -199,10 +199,10 @@ export class ServerService implements OnApplicationShutdown {
 					includeSecrets: true,
 				}));
 
-				reply.code(200);
-				return 'Verify succeeded!';
+				reply.code(200).send('Verification succeeded! メールアドレスの認証に成功しました。');
+				return;
 			} else {
-				reply.code(404);
+				reply.code(404).send('Verification failed. Please try again. メールアドレスの認証に失敗しました。もう一度お試しください');
 				return;
 			}
 		});
