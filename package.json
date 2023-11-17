@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2023.11.1-beta.2-pie-2.9.6",
+	"version": "2023.11.1-pie-2.9.7",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
