@@ -57,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="medium">{{ i18n.ts.medium }}</option>
 					<option value="large">{{ i18n.ts.large }}</option>
 				</MkRadios>
+				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
 			</div>
 
 			<MkSelect v-model="instanceTicker">
@@ -201,6 +202,7 @@ const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serve
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
+const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
@@ -268,6 +270,7 @@ watch([
 	splitRNButton,
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
+	limitWidthOfReaction,
 	highlightSensitiveMedia,
 	keepScreenOn,
 	disableStreamingTimeline,
