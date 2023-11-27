@@ -204,16 +204,12 @@ export async function common(createVue: () => App<Element>) {
 
 	if (defaultStore.state.keepScreenOn) {
 		if ('wakeLock' in navigator) {
-			navigator.wakeLock.request('screen')
-			.then(() => {
-				document.addEventListener('visibilitychange', async () => {
-					if (document.visibilityState === 'visible') {
-						navigator.wakeLock.request('screen');
-					}
-				});
-			})
-			.catch(() => {
-				// If Permission fails on an AppleDevice such as Safari
+			navigator.wakeLock.request('screen');
+
+			document.addEventListener('visibilitychange', async () => {
+				if (document.visibilityState === 'visible') {
+					navigator.wakeLock.request('screen');
+				}
 			});
 		}
 	}
