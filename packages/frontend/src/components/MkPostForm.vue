@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
 				<span v-else><i class="ti ti-icons"></i></span>
 			</button>
+			<button v-click-anime v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.headerRightItem, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
 			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -86,10 +87,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 		</div>
-		<div :class="$style.footerRight">
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
-		</div>
+		<!--div :class="$style.footerRight">
+			<<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>>
+		</div-->
 	</footer>
 	<datalist id="hashtags">
 		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -453,13 +453,19 @@ function setVisibility() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility,
 		isSilenced: $i?.isSilenced,
-		localOnly: localOnly,
+		currentLocalOnly: localOnly,
 		src: visibilityButton,
 	}, {
 		changeVisibility: v => {
 			visibility = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('visibility', visibility);
+			}
+		},
+		changeLocalOnly: v => {
+			localOnly = v;
+			if (defaultStore.state.rememberNoteVisibility) {
+				defaultStore.set('localOnly', localOnly);
 			}
 		},
 	}, 'closed');
@@ -471,39 +477,6 @@ async function toggleLocalOnly() {
 		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
 	}
-
-	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
-
-	if (!localOnly && neverShowInfo !== 'true') {
-		const confirm = await os.actions({
-			type: 'question',
-			title: i18n.ts.disableFederationConfirm,
-			text: i18n.ts.disableFederationConfirmWarn,
-			actions: [
-				{
-					value: 'yes' as const,
-					text: i18n.ts.disableFederationOk,
-					primary: true,
-				},
-				{
-					value: 'neverShow' as const,
-					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
-					danger: true,
-				},
-				{
-					value: 'no' as const,
-					text: i18n.ts.cancel,
-				},
-			],
-		});
-		if (confirm.canceled) return;
-		if (confirm.result === 'no') return;
-
-		if (confirm.result === 'neverShow') {
-			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
-		}
-	}
-
 	localOnly = !localOnly;
 }
 
