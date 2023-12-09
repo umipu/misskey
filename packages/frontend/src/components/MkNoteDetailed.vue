@@ -137,13 +137,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@click="quoteRenote()">
 				<i class="ti ti-quote"></i>
 			</button>
-			<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.noteFooterButton" class="_button"
-				@mousedown="react()">
+			<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
 				<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
 			</button>
-			<button v-if="appearNote.myReaction != null" ref="reactButton" class="_button"
-				:class="[$style.noteFooterButton, $style.reacted]" @click="undoReact(appearNote)">
+			<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
 				<i class="ti ti-minus"></i>
 			</button>
 			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button"
@@ -160,7 +158,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quote' }]" @click="tab = 'quote'"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
@@ -198,11 +195,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-		<div v-if="tab === 'quote'" :class="$style.tab_quotes">
-			<div v-if="!quotesLoaded" style="padding: 16px">
-				<MkButton style="margin: 0 auto;" primary rounded @click="loadQuotes">{{ i18n.ts.showMore }}</MkButton>
-			</div>
-			<MkNoteSub v-for="note in quotes" :key="note.id" :note="note" :class="$style.quote" :detail="true"/>
+		<div v-if="tab === 'quotes'" :class="$style.tab_quotes">
+			<MkPagination :pagination="quotesPagination" :disableAutoLoad="true">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
 		</div>
 	</div>
 </div>
@@ -261,7 +259,7 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-const note = ref(deepClone(props.note));
+const note = shallowRef({...props.note});
 
 // plugin
 if (noteViewInterruptors.length > 0) {
@@ -279,7 +277,7 @@ if (noteViewInterruptors.length > 0) {
 const isRenote = (
 	note.value.renote != null &&
 	note.value.text == null &&
-	note.value.fileIds.length === 0 &&
+	note.value.fileIds?.length === 0 &&
 	note.value.poll == null
 );
 
@@ -293,10 +291,10 @@ const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entiti
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);
-const muted = ref($i ? checkWordMute(appearNote.value, $i, $i.mutedWords) : false);
+const muted = ref($i ? checkWordMute(appearNote?.value, $i, $i.mutedWords) : false);
 const translation = ref(null);
 const translating = ref(false);
-const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
+const parsed = appearNote?.value?.text ? mfm.parse(appearNote.value.text as string) : null;
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);

@@ -152,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, provide, readonly } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, provide, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -197,7 +197,7 @@ const props = withDefaults(defineProps<{
 });
 
 provide('mock', props.mock);
-
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
 	(ev: 'removeReaction', emoji: string): void;
@@ -208,16 +208,19 @@ const defaultRenoteLocalOnly = defaultStore.state.defaultRenoteLocalOnly;
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
-const note = ref(deepClone(props.note));
+const note = shallowRef({...props.note});
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note.value);
+		let result: Misskey.entities.Note | null = {...props.note};
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result);
+			result = (await interruptor.handler(result) as Misskey.entities.Note | null);
 
-			if (result === null) return isDeleted.value = true;
+			if (result === null) {
+				isDeleted.value = true;
+				return;
+			}
 		}
 		note.value = result;
 	});
@@ -226,7 +229,7 @@ if (noteViewInterruptors.length > 0) {
 const isRenote = (
 	note.value.renote != null &&
 	note.value.text == null &&
-	note.value.fileIds.length === 0 &&
+	note.value.fileIds?.length === 0 &&
 	note.value.poll == null
 );
 
@@ -264,7 +267,7 @@ function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | strin
 const keymap = {
 	'r': () => reply(true),
 	'e|a|plus': () => react(true),
-	'q': () => renoteButton.value.renote(true),
+	'q': () => renote(true),
 	'up|k|shift+tab': focusBefore,
 	'down|j|tab': focusAfter,
 	'esc': blur,
@@ -272,16 +275,29 @@ const keymap = {
 	's': () => showContent.value !== showContent.value,
 };
 
-useNoteCapture({
-	rootEl: el,
-	note: readonly(appearNote),
-	pureNote: note,
-	isDeletedRef: isDeleted,
+provide('react', (reaction: string) => {
+	os.api('notes/reactions/create', {
+		noteId: appearNote.value.id,
+		reaction: reaction,
+	});
 });
+
+if (props.mock) {
+	watch(() => props.note, (to) => {
+		note.value = deepClone(to);
+	}, { deep: true });
+} else {
+	useNoteCapture({
+		rootEl: el,
+		note: appearNote,
+		pureNote: note,
+		isDeletedRef: isDeleted,
+	});
+}
 
 useTooltip(renoteButton, async (showing) => {
 	const renotes = await os.api('notes/renotes', {
-		noteId: appearNote.id,
+		noteId: appearNote.value.id,
 		limit: 11,
 	});
 
@@ -292,12 +308,12 @@ useTooltip(renoteButton, async (showing) => {
 	os.popup(MkUsersTooltip, {
 		showing,
 		users,
-		count: appearNote.renoteCount,
+		count: appearNote.value.renoteCount,
 		targetElement: renoteButton.value,
 	}, {}, 'closed');
 });
 
-function smallerVisibility(a: ['public', 'home', 'followers', 'specified'] | string, b: ['public', 'home', 'followers', 'specified'] | string): ['public', 'home', 'followers', 'specified'] {
+function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
 	if (a === 'specified' || b === 'specified') return 'specified';
 	if (a === 'followers' || b === 'followers') return 'followers';
 	if (a === 'home' || b === 'home') return 'home';
@@ -330,7 +346,7 @@ function renote(viaKeyboard = false) {
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-			let visibility: ['public', 'home', 'followers', 'specified'] = appearNote?.value?.visibility;
+			let visibility: Visibility = appearNote?.value?.visibility as Visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
 			if (appearNote?.value?.channel?.isSensitive) {
 				visibility = smallerVisibility(visibility, 'home');
@@ -374,8 +390,6 @@ function reply(viaKeyboard = false): void {
 		reply: appearNote.value,
 		channel: appearNote.value.channel,
 		animation: !viaKeyboard,
-	}, () => {
-		focus();
 	});
 }
 function react(viaKeyboard = false): void {
@@ -527,6 +541,14 @@ function readPromo() {
 		noteId: appearNote.value.id,
 	});
 	isDeleted.value = true;
+}
+
+function emitUpdReaction(emoji: string, delta: number) {
+	if (delta < 0) {
+		emit('removeReaction', emoji);
+	} else if (delta > 0) {
+		emit('reaction', emoji);
+	}
 }
 </script>
 
