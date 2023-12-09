@@ -456,7 +456,7 @@ function setVisibility() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
 		isSilenced: $i?.isSilenced,
-		localOnly: localOnly.value,
+		currentlocalOnly: localOnly.value,
 		src: visibilityButton.value,
 	}, {
 		changeVisibility: v => {
@@ -466,9 +466,9 @@ function setVisibility() {
 			}
 		},
 		changeLocalOnly: v => {
-			localOnly = v;
+			localOnly.value = v;
 			if (defaultStore.state.rememberNoteVisibility) {
-				defaultStore.set('localOnly', localOnly);
+				defaultStore.set('localOnly', localOnly.value);
 			}
 		},
 	}, 'closed');
@@ -480,7 +480,7 @@ async function toggleLocalOnly() {
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
 	}
-	localOnly = !localOnly;
+	localOnly.value = !localOnly.value;
 }
 
 async function toggleReactionAcceptance() {
