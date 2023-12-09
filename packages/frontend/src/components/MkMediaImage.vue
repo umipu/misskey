@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
@@ -73,10 +73,10 @@ const props = withDefaults(defineProps<{
 	controls: true,
 });
 
-let hide = $ref(true);
-let darkMode: boolean = $ref(defaultStore.state.darkMode);
+const hide = ref(true);
+const darkMode = ref<boolean>(defaultStore.state.darkMode);
 
-const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
+const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
@@ -84,21 +84,30 @@ const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 );
 
 function onclick() {
-	if (hide) {
-		hide = false;
+	if (!props.controls) {
+		return;
+	}
+	if (hide.value) {
+		hide.value = false;
 	}
 }
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
+	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
 }, {
 	deep: true,
 	immediate: true,
 });
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu([...(iAmModerator ? [{
+	os.popupMenu([{
+		text: i18n.ts.hide,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			hide.value = true;
+		},
+	}, ...(iAmModerator ? [{
 		text: i18n.ts.markAsSensitive,
 		icon: 'ti ti-eye-off',
 		action: () => {
@@ -116,7 +125,7 @@ function showMenu(ev: MouseEvent) {
 
 .sensitive {
 	position: relative;
-	
+
 	&::after {
 		content: "";
 		position: absolute;

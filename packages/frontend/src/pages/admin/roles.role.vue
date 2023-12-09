@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import XEdit from './roles.edit.vue';
@@ -89,7 +89,7 @@ const usersPagination = {
 	})),
 };
 
-let expandedItems = $ref([]);
+const expandedItems = ref([]);
 
 const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,
@@ -163,16 +163,16 @@ async function unassign(user, ev) {
 }
 
 async function toggleItem(item) {
-	if (expandedItems.includes(item.id)) {
-		expandedItems = expandedItems.filter(x => x !== item.id);
+	if (expandedItems.value.includes(item.id)) {
+		expandedItems.value = expandedItems.value.filter(x => x !== item.id);
 	} else {
-		expandedItems.push(item.id);
+		expandedItems.value.push(item.id);
 	}
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.role + ': ' + role.name,

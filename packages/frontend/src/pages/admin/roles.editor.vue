@@ -278,7 +278,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
-			
+
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchNotes, 'canSearchNotes'])">
 				<template #label>{{ i18n.ts._role._options.canSearchNotes }}</template>
 				<template #suffix>
@@ -547,8 +547,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { $$, $ref, $computed } from 'vue/macros';
+import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -579,12 +578,12 @@ const props = defineProps<{
 	readonly?: boolean;
 }>();
 
-let role = $ref(deepClone(props.modelValue));
+const role = ref(deepClone(props.modelValue));
 
 // fill missing policy
 for (const ROLE_POLICY of ROLE_POLICIES) {
-	if (role.policies[ROLE_POLICY] == null) {
-		role.policies[ROLE_POLICY] = {
+	if (role.value.policies[ROLE_POLICY] == null) {
+		role.value.policies[ROLE_POLICY] = {
 			useDefault: true,
 			priority: 0,
 			value: instance.policies[ROLE_POLICY],
@@ -592,15 +591,15 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 	}
 }
 
-let rolePermission = $computed({
-	get: () => role.isAdministrator ? 'administrator' : role.isModerator ? 'moderator' : 'normal',
+const rolePermission = computed({
+	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
 	set: (val) => {
-		role.isAdministrator = val === 'administrator';
-		role.isModerator = val === 'moderator';
+		role.value.isAdministrator = val === 'administrator';
+		role.value.isModerator = val === 'moderator';
 	},
 });
 
-let q = $ref('');
+const q = ref('');
 
 function getPriorityIcon(option): string {
 	if (option.priority === 2) return 'ti ti-arrows-up';
@@ -609,26 +608,26 @@ function getPriorityIcon(option): string {
 }
 
 function matchQuery(keywords: string[]): boolean {
-	if (q.trim().length === 0) return true;
-	return keywords.some(keyword => keyword.toLowerCase().includes(q.toLowerCase()));
+	if (q.value.trim().length === 0) return true;
+	return keywords.some(keyword => keyword.toLowerCase().includes(q.value.toLowerCase()));
 }
 
 const save = throttle(100, () => {
 	const data = {
-		name: role.name,
-		description: role.description,
-		color: role.color === '' ? null : role.color,
-		iconUrl: role.iconUrl === '' ? null : role.iconUrl,
-		displayOrder: role.displayOrder,
-		target: role.target,
-		condFormula: role.condFormula,
-		isAdministrator: role.isAdministrator,
-		isModerator: role.isModerator,
-		isPublic: role.isPublic,
-		isExplorable: role.isExplorable,
-		asBadge: role.asBadge,
-		canEditMembersByModerator: role.canEditMembersByModerator,
-		policies: role.policies,
+		name: role.value.name,
+		description: role.value.description,
+		color: role.value.color === '' ? null : role.value.color,
+		iconUrl: role.value.iconUrl === '' ? null : role.value.iconUrl,
+		displayOrder: role.value.displayOrder,
+		target: role.value.target,
+		condFormula: role.value.condFormula,
+		isAdministrator: role.value.isAdministrator,
+		isModerator: role.value.isModerator,
+		isPublic: role.value.isPublic,
+		isExplorable: role.value.isExplorable,
+		asBadge: role.value.asBadge,
+		canEditMembersByModerator: role.value.canEditMembersByModerator,
+		policies: role.value.policies,
 	};
 
 	emit('update:modelValue', data);
@@ -644,7 +643,7 @@ async function deleteRole() {
 	}
 }
 
-watch($$(role), save, { deep: true });
+watch(role, save, { deep: true });
 </script>
 
 <style lang="scss" module>
