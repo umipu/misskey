@@ -297,7 +297,7 @@ useTooltip(renoteButton, async (showing) => {
 	}, {}, 'closed');
 });
 
-function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
+function smallerVisibility(a: ['public', 'home', 'followers', 'specified'] | string, b: ['public', 'home', 'followers', 'specified'] | string): ['public', 'home', 'followers', 'specified'] {
 	if (a === 'specified' || b === 'specified') return 'specified';
 	if (a === 'followers' || b === 'followers') return 'followers';
 	if (a === 'home' || b === 'home') return 'home';
@@ -308,14 +308,14 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
-	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
+	const { menu } = getRenoteMenu({ note: appearNote.value, renoteButton, mock: props.mock });
 
 	if (!splitRNButton) {
 		os.popupMenu(menu, renoteButton.value, {
 			viaKeyboard,
 		});
 	} else {
-		if (appearNote.value.channel) {
+		if (appearNote?.value?.channel) {
 			if (!props.mock) {
 				os.api('notes/create', {
 					renoteId: appearNote.value.id,
@@ -325,20 +325,21 @@ function renote(viaKeyboard = false) {
 				});
 			}
 		}
+
 		if (!appearNote?.value?.channel || appearNote.value.channel.allowRenoteToExternal) {
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-			let visibility = appearNote.value.visibility;
+			let visibility: ['public', 'home', 'followers', 'specified'] = appearNote?.value?.visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
-			if (appearNote.value.channel?.isSensitive) {
+			if (appearNote?.value?.channel?.isSensitive) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
 			if (!props.mock) {
 				os.api('notes/create', {
 					localOnly,
 					visibility,
-					renoteId: appearNote.value.id,
+					renoteId: appearNote?.value?.id,
 				}).then(() => {
 					os.toast(i18n.ts.renoted);
 				});

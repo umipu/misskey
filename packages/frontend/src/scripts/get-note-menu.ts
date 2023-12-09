@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, Ref } from 'vue';
+import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { claimAchievement } from './achievements.js';
 import { $i } from '@/account.js';
@@ -19,6 +19,7 @@ import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { Note } from 'misskey-js/built/entities.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -434,7 +435,7 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 
 export function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
-	renoteButton: Ref<HTMLElement>;
+	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
 }) {
 	const isRenote = (
@@ -501,7 +502,7 @@ export function getRenoteMenu(props: {
 				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-				let visibility = appearNote.visibility;
+				let visibility: Visibility = appearNote.visibility as Visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
 				if (appearNote.channel?.isSensitive) {
 					visibility = smallerVisibility(visibility, 'home');
