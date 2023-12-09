@@ -339,7 +339,7 @@ const reactionsPagination = computed(() => ({
 		noteId: appearNote.id,
 		type: reactionTabType,
 	})),
-};
+}));
 
 const repliesPagination = $computed(() => ({
 	endpoint: 'notes/replies',
