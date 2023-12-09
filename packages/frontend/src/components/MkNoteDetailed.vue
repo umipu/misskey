@@ -181,13 +181,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-		<div v-if="tab === 'quotes'" :class="$style.tab_replies">
-			<MkPagination :pagination="quotesPagination">
-				<template #default="{ items }">
-					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
-				</template>
-			</MkPagination>
-		</div>
 		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
 			<div :class="$style.reactionTabs">
 				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = reaction">
@@ -225,7 +218,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
+import { watch, computed, inject, onMounted, provide, ref, shallowRef, Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -344,7 +337,7 @@ const reactionsPagination = computed(() => ({
 	endpoint: 'notes/reactions',
 	limit: 10,
 	params: computed(() => ({
-		noteId: appearNote.id,
+		noteId: appearNote.value.id,
 		type: reactionTabType,
 	})),
 }));
@@ -362,7 +355,7 @@ const quotesPagination = computed(() => ({
 	endpoint: 'notes/quotes',
 	limit: 10,
 	params: {
-		noteId: appearNote.id,
+		noteId:  appearNote.value.id,
 	},
 }));
 
@@ -391,138 +384,68 @@ useTooltip(renoteButton, async (showing) => {
 	}, {}, 'closed');
 });
 
+function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
+	if (a === 'specified' || b === 'specified') return 'specified';
+	if (a === 'followers' || b === 'followers') return 'followers';
+	if (a === 'home' || b === 'home') return 'home';
+	// if (a === 'public' || b === 'public')
+	return 'public';
+}
+
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
+	const { menu } = getRenoteMenu({ note: note, renoteButton });
 
 	if (!splitRNButton) {
-		let items = [] as MenuItem[];
-		if (appearNote.channel) {
-			items = items.concat([{
-				text: i18n.ts.inChannelRenote,
-				icon: 'ti ti-repeat',
-				action: () => {
-					const el = renoteButton.value as HTMLElement | null | undefined;
-					if (el) {
-						const rect = el.getBoundingClientRect();
-						const x = rect.left + (el.offsetWidth / 2);
-						const y = rect.top + (el.offsetHeight / 2);
-						os.popup(MkRippleEffect, { x, y }, {}, 'end');
-					}
-
-					os.api('notes/create', {
-						renoteId: appearNote.id,
-						channelId: appearNote.channelId,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				},
-			}, {
-				text: i18n.ts.inChannelQuote,
-				icon: 'ti ti-quote',
-				action: () => {
-					os.post({
-						renote: appearNote,
-						channel: appearNote.channel,
-					});
-				},
-			}, null]);
-		}
-
-		items = items.concat([{
-			text: i18n.ts.renote,
-			icon: 'ti ti-repeat',
-			action: () => {
-				const el = renoteButton.value as HTMLElement | null | undefined;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				if (defaultRenoteVisibility !== 'follow') {
-					if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
-						os.api('notes/create', {
-							renoteId: appearNote.id,
-							visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
-							localOnly: defaultRenoteLocalOnly,
-						}).then(() => {
-							os.toast(i18n.ts.renoted);
-						});
-					}
-				} else {
-					os.api('notes/create', {
-						renoteId: appearNote.id,
-						localOnly: defaultRenoteLocalOnly,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				}
-			},
-		}, {
-			text: i18n.ts.quote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-				});
-			},
-		}]);
-		os.popupMenu(items, renoteButton.value, {
+		os.popupMenu(menu, renoteButton.value, {
 			viaKeyboard,
 		});
 	} else {
-		if (appearNote.channel) {
+		if (appearNote.value.channel) {
 			os.api('notes/create', {
-				renoteId: appearNote.id,
-				channelId: appearNote.channelId,
+				renoteId: appearNote.value.id,
+				channelId: appearNote.value.channelId,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
-		} else if (renoteButton.value) {
-			renoteButton.value.disabled = true;
-			if (defaultRenoteVisibility !== 'follow') {
-				if (['public', 'home', 'followers', 'specified'].includes(defaultRenoteVisibility)) {
-					os.api('notes/create', {
-						renoteId: appearNote.id,
-						visibility: defaultRenoteVisibility as 'public' | 'home' | 'followers' | 'specified',
-						localOnly: defaultRenoteLocalOnly,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				}
-			} else {
-				os.api('notes/create', {
-					renoteId: appearNote.id,
-					localOnly: defaultRenoteLocalOnly,
-				}).then(() => {
-					os.toast(i18n.ts.renoted);
-				});
+		}
+		if (!appearNote?.value?.channel || appearNote.value.channel.allowRenoteToExternal) {
+			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+
+			let visibility = appearNote.value.visibility;
+			visibility = smallerVisibility(visibility, configuredVisibility);
+			if (appearNote.value.channel?.isSensitive) {
+				visibility = smallerVisibility(visibility, 'home');
 			}
-			if (renoteButton.value) {
-				setTimeout(() => renoteButton.value!.disabled = false, 500);
-			}
+
+			os.api('notes/create', {
+				localOnly,
+				visibility,
+				renoteId: appearNote.value.id,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
+			});
 		}
 	}
 }
 
 function quoteRenote() {
-	if (appearNote.channel) {
+	if (note.value.channel) {
 		os.post({
-			renote: appearNote,
-			channel: appearNote.channel,
+			renote: appearNote.value,
+			channel: appearNote.value.channel,
 		});
 	} else {
 		os.post({
-			renote: appearNote,
+			renote: appearNote.value,
 		});
 	}
 }
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
-	showMovedDialog();
 	os.post({
 		reply: appearNote.value,
 		channel: appearNote.value.channel,
