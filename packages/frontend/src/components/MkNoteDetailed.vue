@@ -223,7 +223,6 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
-import MkNotePreview from '@/components/MkNotePreview.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -261,16 +260,19 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-const note = ref(deepClone(props.note));
+const note = shallowRef({...props.note});
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note.value);
+		let result: Misskey.entities.Note | null = {...props.note};
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result);
+			result = (await interruptor.handler(result) as Misskey.entities.Note | null);
 
-			if (result === null) return isDeleted.value = true;
+			if (result === null) {
+				isDeleted.value = true;
+				return;
+			}
 		}
 		note.value = result;
 	});
@@ -279,7 +281,7 @@ if (noteViewInterruptors.length > 0) {
 const isRenote = (
 	note.value.renote != null &&
 	note.value.text == null &&
-	note.value.fileIds.length === 0 &&
+	note.value.fileIds?.length === 0 &&
 	note.value.poll == null
 );
 
