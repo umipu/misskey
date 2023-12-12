@@ -85,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} else {
 				const nameQuery = this.usersRepository.createQueryBuilder('user')
 					.where(new Brackets(qb => {
-						qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
+						qb.where('user.name &@~ :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 						// Also search username if it qualifies as username
 						if (this.userEntityService.validateLocalUsername(ps.query)) {
@@ -114,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (users.length < ps.limit) {
 					const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
 						.select('prof.userId')
-						.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
+						.where('prof.description &@~ :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 					if (ps.origin === 'local') {
 						profQuery.andWhere('prof.userHost IS NULL');
