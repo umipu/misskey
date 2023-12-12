@@ -160,7 +160,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
-		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quote' }]" @click="tab = 'quote'"><i class="ti ti-quote"></i> {{ i18n.ts.quote }}</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
@@ -181,6 +180,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
+		<div v-if="tab === 'quotes'" :class="$style.tab_quotes">
+			<MkPagination :pagination="quotesPagination">
+				<template #default="{ items }">
+					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+				</template>
+			</MkPagination>
+		</div>
 		<div v-else-if="tab === 'reactions'" :class="$style.tab_reactions">
 			<div :class="$style.reactionTabs">
 				<button v-for="reaction in Object.keys(appearNote.reactions)" :key="reaction" :class="[$style.reactionTab, { [$style.reactionTabActive]: reactionTabType === reaction }]" class="_button" @click="reactionTabType = reaction">
@@ -197,12 +203,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 			</MkPagination>
-		</div>
-		<div v-if="tab === 'quote'" :class="$style.tab_quotes">
-			<div v-if="!quotesLoaded" style="padding: 16px">
-				<MkButton style="margin: 0 auto;" primary rounded @click="loadQuotes">{{ i18n.ts.showMore }}</MkButton>
-			</div>
-			<MkNoteSub v-for="note in quotes" :key="note.id" :note="note" :class="$style.quote" :detail="true"/>
 		</div>
 	</div>
 </div>
@@ -340,7 +340,7 @@ const reactionsPagination = computed(() => ({
 	limit: 10,
 	params: computed(() => ({
 		noteId: appearNote.value.id,
-		type: reactionTabType,
+		type: reactionTabType.value,
 	})),
 }));
 
@@ -349,7 +349,6 @@ const repliesPagination = computed(() => ({
 	limit: 10,
 	params: {
 		noteId: appearNote.value.id,
-		type: reactionTabType.value,
 	},
 }));
 
