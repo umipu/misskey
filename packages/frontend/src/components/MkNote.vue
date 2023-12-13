@@ -344,8 +344,6 @@ function renote(viaKeyboard = false) {
 
 		if (!appearNote?.value?.channel || appearNote.value.channel.allowRenoteToExternal) {
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-
 			let visibility: Visibility = appearNote?.value?.visibility as Visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
 			if (appearNote?.value?.channel?.isSensitive) {
@@ -353,7 +351,6 @@ function renote(viaKeyboard = false) {
 			}
 			if (!props.mock) {
 				os.api('notes/create', {
-					localOnly,
 					visibility,
 					renoteId: appearNote?.value?.id,
 				}).then(() => {
