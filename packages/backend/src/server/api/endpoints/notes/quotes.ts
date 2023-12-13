@@ -56,14 +56,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							qb
 								.where('note.text IS NOT NULL')
 								.orWhere('note.fileIds != \'{}\'')
-								.orWhere('note.hasPoll = TRUE')
-								.orWhere('note.replyId IS NULL');
-						}));
+								.orWhere('note.hasPoll = TRUE');
+						}))
+						.andWhere('note.replyId IS NULL');
 				}))
 				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
