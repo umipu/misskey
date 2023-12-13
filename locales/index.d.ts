@@ -265,6 +265,7 @@ export interface Locale {
     "removeAreYouSure": string;
     "deleteAreYouSure": string;
     "resetAreYouSure": string;
+    "areYouSure": string;
     "saved": string;
     "messaging": string;
     "upload": string;
@@ -1164,6 +1165,7 @@ export interface Locale {
     "avatarDecorations": string;
     "attach": string;
     "detach": string;
+    "detachAll": string;
     "angle": string;
     "flip": string;
     "showAvatarDecorations": string;
@@ -1177,6 +1179,7 @@ export interface Locale {
     "doReaction": string;
     "code": string;
     "reloadRequiredToApplySettings": string;
+    "remainingN": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1705,6 +1708,7 @@ export interface Locale {
             "canHideAds": string;
             "canSearchNotes": string;
             "canUseTranslator": string;
+            "avatarDecorationLimit": string;
         };
         "_condition": {
             "isLocal": string;
@@ -2186,6 +2190,7 @@ export interface Locale {
         "changeAvatar": string;
         "changeBanner": string;
         "verifiedLinkDescription": string;
+        "avatarDecorationMax": string;
     };
     "_exportOrImport": {
         "allNotes": string;

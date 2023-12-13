@@ -62,7 +62,7 @@ export async function getNoteClipMenu(props: {
 				},
 			);
 		},
-	})), null, {
+	})), { type: 'divider' }, {
 		icon: 'ti ti-plus',
 		text: i18n.ts.createNew,
 		action: async () => {
@@ -95,7 +95,7 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
-export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-exclamation-circle',
 		text,
@@ -109,7 +109,7 @@ export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): Men
 	};
 }
 
-export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): MenuItem {
+export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): MenuItem {
 	return {
 		icon: 'ti ti-link',
 		text,
@@ -265,7 +265,7 @@ export function getNoteMenu(props: {
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
-				}, null] : []
+				}, { type: 'divider' }] : []
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
@@ -292,7 +292,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
-			null,
+			{ type: 'divider' },
 			statePromise.then(state => state.isFavorited ? {
 				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
@@ -339,7 +339,7 @@ export function getNoteMenu(props: {
 			},
 			/*
 		...($i.isModerator || $i.isAdmin ? [
-			null,
+			{ type: 'divider' },
 			{
 				icon: 'ti ti-speakerphone',
 				text: i18n.ts.promote,
@@ -348,13 +348,13 @@ export function getNoteMenu(props: {
 			: []
 		),*/
 			...(appearNote.userId !== $i.id ? [
-				null,
+				{ type: 'divider' },
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
 			]
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
-				null,
+				{ type: 'divider' },
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
@@ -528,10 +528,9 @@ export function getRenoteMenu(props: {
 		}]);
 	}
 
-	// nullを挟むことで区切り線を出せる
 	const renoteItems = [
 		...normalRenoteItems,
-		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [null] : [],
+		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [{ type: 'divider' }] : [],
 		...channelRenoteItems,
 	];
 
