@@ -95,7 +95,7 @@ const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,
 }));
 
-let data = $ref(null);
+let data = ref(null);
 if (props.id) {
 	data = role;
 }

@@ -567,7 +567,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { watch, ref, computed, shallowRef } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -598,7 +598,7 @@ const props = defineProps<{
 	readonly?: boolean;
 }>();
 
-const role = ref(deepClone(props.modelValue));
+const role = shallowRef( { ...props.modelValue } );
 
 // fill missing policy
 for (const ROLE_POLICY of ROLE_POLICIES) {
@@ -655,9 +655,14 @@ const save = throttle(100, () => {
 
 async function deleteRole() {
 	rolesCache.delete();
-	if (role) {
+	if (role.value) {
+		const confirm = await os.confirm({
+			type: 'warning',
+			text: i18n.t('removeAreYouSure', { x: role.value.name }),
+		});
+		if (confirm.canceled) return;
 		os.apiWithDialog('admin/roles/delete', {
-			roleId: role.id,
+			roleId: role.value.id,
 		});
 		router.push('/admin/roles');
 	}
