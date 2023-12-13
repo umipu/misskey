@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
 			</template>
+			<span v-if="localOnly"><i class="ti ti-world-off"></i></span>
 			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
 				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
@@ -61,6 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="warnMfm" warn :class="$style.thisPostMayBeAnnoyingWarn">{{ i18n.ts.thisPostMayBeAnnoying }}<a v-if="visibility == 'public'" style="color: var(--X9)" @click="toHome()">{{ i18n.ts.thisPostMayBeAnnoyingHome }}</a></MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
@@ -189,6 +191,7 @@ const autocomplete = ref(null);
 const draghover = ref(false);
 const quoteId = ref(null);
 const hasNotSpecifiedMentions = ref(false);
+const warnMfm = ref(false);
 const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 const imeText = ref('');
 const showingOptions = ref(false);
@@ -256,6 +259,12 @@ const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
 watch(text, () => {
 	checkMissingMention();
+	warnMfm.value =
+		text.value.includes('$[x2') ||
+		text.value.includes('$[x3') ||
+		text.value.includes('$[x4') ||
+		text.value.includes('$[scale') ||
+		text.value.includes('$[position');
 }, { immediate: true });
 
 watch(visibility, () => {
@@ -448,11 +457,10 @@ function setVisibility() {
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
 	}
-
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
 		isSilenced: $i?.isSilenced,
-		currentlocalOnly: localOnly.value,
+		currentLocalOnly: localOnly.value,
 		src: visibilityButton.value,
 	}, {
 		changeVisibility: v => {
@@ -669,37 +677,6 @@ async function post(ev?: MouseEvent) {
 	}
 
 	if (props.mock) return;
-
-	const annoying =
-		text.value.includes('$[x2') ||
-		text.value.includes('$[x3') ||
-		text.value.includes('$[x4') ||
-		text.value.includes('$[scale') ||
-		text.value.includes('$[position');
-
-	if (annoying && visibility.value === 'public') {
-		const { canceled, result } = await os.actions({
-			type: 'warning',
-			text: i18n.ts.thisPostMayBeAnnoying,
-			actions: [{
-				value: 'home',
-				text: i18n.ts.thisPostMayBeAnnoyingHome,
-				primary: true,
-			}, {
-				value: 'cancel',
-				text: i18n.ts.thisPostMayBeAnnoyingCancel,
-			}, {
-				value: 'ignore',
-				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
-			}],
-		});
-
-		if (canceled) return;
-		if (result === 'cancel') return;
-		if (result === 'home') {
-			visibility.value = 'home';
-		}
-	}
 
 	let postData = {
 		text: text.value === '' ? null : text.value,
