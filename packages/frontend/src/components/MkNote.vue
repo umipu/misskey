@@ -324,14 +324,13 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
-	const { menu } = getRenoteMenu({ note: appearNote.value, renoteButton, mock: props.mock });
 
 	if (!splitRNButton) {
-		os.popupMenu(menu, renoteButton.value, {
+		os.popupMenu(getRenoteMenu({ note: appearNote.value, renoteButton, mock: props.mock }), renoteButton.value, {
 			viaKeyboard,
 		});
 	} else {
-		if (appearNote?.value?.channel) {
+		if (appearNote.value.channel) {
 			if (!props.mock) {
 				os.api('notes/create', {
 					renoteId: appearNote.value.id,
@@ -342,17 +341,18 @@ function renote(viaKeyboard = false) {
 			}
 		}
 
-		if (!appearNote?.value?.channel || appearNote.value.channel.allowRenoteToExternal) {
-			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-			let visibility: Visibility = appearNote?.value?.visibility as Visibility;
+		if (!appearNote.value.channel || appearNote.value.channel.allowRenoteToExternal) {
+			const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.value?.visibility) as Visibility;
+			let visibility: Visibility = appearNote.value.visibility as Visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
-			if (appearNote?.value?.channel?.isSensitive) {
+			if (appearNote.value.channel?.isSensitive) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
 			if (!props.mock) {
 				os.api('notes/create', {
+					localOnly: defaultStore.state.defaultRenoteLocalOnly,
 					visibility,
-					renoteId: appearNote?.value?.id,
+					renoteId: appearNote.value.id,
 				}).then(() => {
 					os.toast(i18n.ts.renoted);
 				});
@@ -389,6 +389,7 @@ function reply(viaKeyboard = false): void {
 		animation: !viaKeyboard,
 	});
 }
+
 function react(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
