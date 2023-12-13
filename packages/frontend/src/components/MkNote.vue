@@ -324,9 +324,9 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
-
+	const { menu } = getRenoteMenu({ note: appearNote.value, renoteButton });
 	if (!splitRNButton) {
-		os.popupMenu(getRenoteMenu({ note: appearNote.value, renoteButton, mock: props.mock }), renoteButton.value, {
+		os.popupMenu(menu, renoteButton.value, {
 			viaKeyboard,
 		});
 	} else {
