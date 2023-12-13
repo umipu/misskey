@@ -86,11 +86,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkFolder>
 		<template #icon><i class="ti ti-sparkles"></i></template>
 		<template #label>{{ i18n.ts.avatarDecorations }}</template>
-		<MkSwitch v-model="extentMode" style="margin: 8px 0;">
-			<template #label>Extent mode</template>
-			<span class="_tips"><Mfm text="🥧"/></span>
-		</MkSwitch>
-
 		<div class="_gaps">
 			<MkInfo>{{ i18n.t('_profile.avatarDecorationMax', { max: $i?.policies.avatarDecorationLimit }) }} ({{ i18n.t('remainingN', { n: $i?.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
 
@@ -107,22 +102,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: avatarDecoration.url }]" forceShowDecoration/>
 					<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
 				</div>
-			</div>
-		</div>
-		<div v-else style="display: grid; grid-gap: 12px;">
-			<div
-				v-for="avatarDecoration in avatarDecorations"
-				:key="avatarDecoration.id"
-				:class="[$style.avatarDecoration, { [$style.avatarDecorationActive]: $i.avatarDecorations.some(x => x.id === avatarDecoration.id) }]"
-				style="display: flex;"
-				@click="openDecoration(avatarDecoration)"
-			>
-				<MkAvatar style="width: 50px; height: 50px; margin: 12px 60px 0 12px;" :user="$i" :decoration="{ url: avatarDecoration.url }" forceShowDecoration/>
-				<div>
-					<div :class="$style.avatarDecorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-					<p>{{ avatarDecoration.description }}</p>
-				</div>
-				<i v-if="avatarDecoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => avatarDecoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.avatarDecorationLock" class="ti ti-lock"></i>
 			</div>
 		</div>
 	</MkFolder>
