@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
+import { defineAsyncComponent, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { claimAchievement } from './achievements.js';
 import { $i } from '@/account.js';
@@ -19,7 +19,6 @@ import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
-import { Note } from 'misskey-js/built/entities.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -435,7 +434,7 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 
 export function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
-	renoteButton: ShallowRef<HTMLElement | undefined>;
+	renoteButton: Ref<HTMLElement>;
 	mock?: boolean;
 }) {
 	const isRenote = (
@@ -499,9 +498,10 @@ export function getRenoteMenu(props: {
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
 
-				const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.value?.visibility) as Visibility;
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-				let visibility: Visibility = appearNote.visibility as Visibility;
+				let visibility = appearNote.visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
 				if (appearNote.channel?.isSensitive) {
 					visibility = smallerVisibility(visibility, 'home');
@@ -509,7 +509,7 @@ export function getRenoteMenu(props: {
 
 				if (!props.mock) {
 					os.api('notes/create', {
-						localOnly: defaultStore.state.defaultRenoteLocalOnly,
+						localOnly,
 						visibility,
 						renoteId: appearNote.id,
 					}).then(() => {
