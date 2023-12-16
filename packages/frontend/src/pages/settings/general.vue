@@ -274,7 +274,7 @@ const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enabl
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
-	miLocalStorage.removeItem('localeVersion');
+  miLocalStorage.removeItem('localeVersion');
 });
 
 watch(fontSize, () => {
