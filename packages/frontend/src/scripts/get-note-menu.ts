@@ -498,10 +498,8 @@ export function getRenoteMenu(props: {
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
 
-				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-
-				let visibility = appearNote.visibility;
+				const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.visibility) as Visibility;
+				let visibility = appearNote.visibility as Visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
 				if (appearNote.channel?.isSensitive) {
 					visibility = smallerVisibility(visibility, 'home');
@@ -509,7 +507,7 @@ export function getRenoteMenu(props: {
 
 				if (!props.mock) {
 					os.api('notes/create', {
-						localOnly,
+						localOnly: defaultStore.state.defaultRenoteLocalOnly,
 						visibility,
 						renoteId: appearNote.id,
 					}).then(() => {
