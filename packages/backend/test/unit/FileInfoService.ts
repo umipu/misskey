@@ -14,7 +14,6 @@ import { describe, beforeAll, afterAll, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';
-import { AiService } from '@/core/AiService.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -34,7 +33,6 @@ describe('FileInfoService', () => {
 				GlobalModule,
 			],
 			providers: [
-				AiService,
 				FileInfoService,
 			],
 		})
