@@ -71,7 +71,7 @@
 		"v-code-diff": "1.8.0",
 		"vite": "5.0.10",
 		"vue": "3.3.13",
-		"vuedraggable": "^2.24.3"
+		"vuedraggable": "4.1.0"
 	},
 	"devDependencies": {
 		"@storybook/addon-actions": "7.6.6",
