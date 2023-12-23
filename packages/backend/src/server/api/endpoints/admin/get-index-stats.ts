@@ -13,6 +13,16 @@ export const meta = {
 	requireAdmin: true,
 
 	tags: ['admin'],
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				tablename: { type: 'string' },
+				indexname: { type: 'string' },
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

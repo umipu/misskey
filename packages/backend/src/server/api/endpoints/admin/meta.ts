@@ -143,7 +143,7 @@ export const meta = {
 					type: 'string',
 				},
 			},
-			disposableEmailDomains: {
+			bannedEmailDomains: {
 				type: 'array',
 				optional: true, nullable: false,
 				items: {
@@ -520,6 +520,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				disposableEmailDomains: instance.disposableEmailDomains,
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
+				bannedEmailDomains: instance.bannedEmailDomains,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
