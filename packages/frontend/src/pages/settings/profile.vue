@@ -112,6 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import XAvatarDecoration from './profile.avatar-decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
