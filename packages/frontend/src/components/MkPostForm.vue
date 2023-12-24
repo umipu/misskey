@@ -274,9 +274,9 @@ watch(visibleUsers, () => {
 });
 
 // #region Shrimpia
-watch($$(showPreview), () => {
+watch(showPreview, () => {
 	if (!defaultStore.state.rememberPostFormToggleStateEnabled) return;
-	defaultStore.set('showPostFormPreview', showPreview);
+	defaultStore.set('showPostFormPreview', showPreview.value);
 });
 // #endregion
 

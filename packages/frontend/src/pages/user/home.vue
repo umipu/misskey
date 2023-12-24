@@ -143,9 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkLazy>
 				</div>
 			</div>
-			<div v-if="!disableNotes && defaultStore.state.showTimelineOnUserHome">
-				<MkUserTimeline :user="user"/>
-			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 			<XFiles :key="user.id" :user="user"/>
