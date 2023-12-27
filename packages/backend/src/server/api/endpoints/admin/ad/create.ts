@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
 	res: {
 		type: 'object',
 		optional: false,

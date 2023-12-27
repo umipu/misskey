@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:meta',
 
 	res: {
 		type: 'object',
@@ -376,6 +377,10 @@ export const meta = {
 				optional: false, nullable: true,
 			},
 			name: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			shortName: {
 				type: 'string',
 				optional: false, nullable: true,
 			},

@@ -15,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'read:admin:account',
 
 	errors: {
 		userNotFound: {

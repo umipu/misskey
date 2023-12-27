@@ -14,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:user-ips',
 	res: {
 		type: 'array',
 		optional: false,
@@ -32,7 +33,7 @@ export const meta = {
 				},
 			},
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
