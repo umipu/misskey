@@ -208,7 +208,7 @@ const defaultRenoteLocalOnly = defaultStore.state.defaultRenoteLocalOnly;
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
-const note = shallowRef({...props.note});
+const note = ref(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
@@ -390,6 +390,7 @@ function reply(viaKeyboard = false): void {
 	});
 }
 
+
 function react(viaKeyboard = false): void {
 	pleaseLogin();
 	showMovedDialog();
@@ -437,6 +438,12 @@ function react(viaKeyboard = false): void {
 function undoReact(note): void {
 	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
+
+	if (props.mock) {
+		emit('removeReaction', oldReaction);
+		return;
+	}
+
 	os.api('notes/reactions/delete', {
 		noteId: note.id,
 	});

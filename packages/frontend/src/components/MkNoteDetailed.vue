@@ -259,7 +259,7 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-const note = shallowRef({...props.note});
+const note = ref(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
@@ -396,7 +396,6 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 	const { menu } = getRenoteMenu({ note: appearNote.value, renoteButton });
-
 	if (!splitRNButton) {
 		os.popupMenu(menu, renoteButton.value, {
 			viaKeyboard,
@@ -410,18 +409,16 @@ function renote(viaKeyboard = false) {
 				os.toast(i18n.ts.renoted);
 			});
 		}
-		if (!appearNote?.value?.channel || appearNote.value.channel.allowRenoteToExternal) {
-			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
-			let visibility = appearNote.value.visibility;
+		if (!appearNote.value.channel || appearNote.value.channel.allowRenoteToExternal) {
+			const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.value?.visibility) as Visibility;
+			let visibility: Visibility = appearNote.value.visibility as Visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
 			if (appearNote.value.channel?.isSensitive) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
-
 			os.api('notes/create', {
-				localOnly,
+				localOnly: defaultStore.state.defaultRenoteLocalOnly,
 				visibility,
 				renoteId: appearNote.value.id,
 			}).then(() => {
