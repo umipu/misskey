@@ -17,11 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div :class="$style.form">
 			<FormSplit :minWidth="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput v-model="username" :autofocus="true" @change="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput v-model="host" :datalist="[hostname]" @change="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -96,7 +96,9 @@ const search = () => {
 		limit: 10,
 		detail: false,
 	}).then(_users => {
-		users.value = _users;
+		os.api('i').then(me => {
+			users.value = [me, ..._users];
+		});
 	});
 };
 

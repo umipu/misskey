@@ -10,6 +10,7 @@ import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
@@ -59,8 +60,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private followingsRepository: FollowingsRepository,
 
 		private userEntityService: UserEntityService,
+
+		private remoteUserResolveService: RemoteUserResolveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			console.log(ps.host);
 			const setUsernameAndHostQuery = (query = this.usersRepository.createQueryBuilder('user')) => {
 				if (ps.username) {
 					query.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });
@@ -121,6 +125,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					users = users.concat(otherUsers);
 				}
 			} else {
+				const query = setUsernameAndHostQuery()
+					.andWhere('user.isSuspended = FALSE')
+					.andWhere('user.updatedAt IS NOT NULL');
+
+				users = await query
+					.orderBy('user.updatedAt', 'DESC')
+					.limit(ps.limit - users.length)
+					.getMany();
+			}
+
+			if (users.length === 0 && ps.username && ps.host) {
+				await this.remoteUserResolveService.resolveUser(ps.username, ps.host).catch();
+
 				const query = setUsernameAndHostQuery()
 					.andWhere('user.isSuspended = FALSE')
 					.andWhere('user.updatedAt IS NOT NULL');

@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<MkInfo v-if="warnMfm" warn :class="$style.thisPostMayBeAnnoyingWarn">{{ i18n.ts.thisPostMayBeAnnoying }}<a v-if="visibility == 'public'" style="color: var(--X9)" @click="toHome()">{{ i18n.ts.thisPostMayBeAnnoyingHome }}</a></MkInfo>
-	<MkInfo ref="hasNotSpecifiedMentionsEl" v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="hasNotSpecifiedMentions" ref="hasNotSpecifiedMentionsEl" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
