@@ -219,7 +219,8 @@ if (!mock) {
 }
 
 .limitWidth {
-	max-width: 150px;
+	max-width: 70px;
+	object-fit: contain;
 }
 
 .count {
