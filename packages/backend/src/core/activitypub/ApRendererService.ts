@@ -311,7 +311,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderNote(note: MiNote, dive = true): Promise<IPost> {
+	public async renderNote(note: MiNote, dive = true, updated = false): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -432,6 +432,7 @@ export class ApRendererService {
 			attributedTo,
 			summary: summary ?? undefined,
 			content: content ?? undefined,
+			updated: updated ? note.updatedAt?.toISOString() : undefined,
 			_misskey_content: text,
 			source: {
 				content: text,
