@@ -314,17 +314,6 @@ if (!props.mock) {
 			targetElement: renoteButton.value,
 		}, {}, 'closed');
 	});
-
-	const users = renotes.map(x => x.user);
-
-	if (users.length < 1) return;
-
-	os.popup(MkUsersTooltip, {
-		showing,
-		users,
-		count: appearNote.value.renoteCount,
-		targetElement: renoteButton.value,
-	}, {}, 'closed');
 }
 
 function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
@@ -403,7 +392,6 @@ function reply(viaKeyboard = false): void {
 		animation: !viaKeyboard,
 	});
 }
-
 
 function react(viaKeyboard = false): void {
 	pleaseLogin();
