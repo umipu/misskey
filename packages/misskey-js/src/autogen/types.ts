@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.389Z
+ * version: 2023.12.2-pie-3.0.9
+ * generatedAt: 2024-01-07T05:01:14.184Z
  */
 
 /**
@@ -40,7 +40,6 @@ export type paths = {
      * admin/accounts/create
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *No*
      */
     post: operations['admin/accounts/create'];
@@ -2527,6 +2526,15 @@ export type paths = {
      */
     post: operations['notes/delete'];
   };
+  '/notes/update': {
+    /**
+     * notes/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    post: operations['notes/update'];
+  };
   '/notes/favorites/create': {
     /**
      * notes/favorites/create
@@ -2614,6 +2622,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:votes*
      */
     post: operations['notes/polls/vote'];
+  };
+  '/notes/quotes': {
+    /**
+     * notes/quotes
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['notes/quotes'];
   };
   '/notes/reactions': {
     /**
@@ -3757,6 +3774,8 @@ export type components = {
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
+      updatedAt?: string | null;
+      /** Format: date-time */
       deletedAt?: string | null;
       text: string | null;
       cw?: string | null;
@@ -3782,7 +3801,7 @@ export type components = {
       fileIds?: string[];
       files?: components['schemas']['DriveFile'][];
       tags?: string[];
-      poll?: Record<string, unknown> | null;
+      poll?: unknown;
       /**
        * Format: id
        * @example xxxxxxxxxx
@@ -3804,7 +3823,7 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
-      myReaction?: Record<string, unknown> | null;
+      myReaction?: unknown;
     };
     NoteReaction: {
       /**
@@ -4620,7 +4639,6 @@ export type operations = {
    * admin/accounts/create
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *No*
    */
   'admin/accounts/create': {
@@ -6291,6 +6309,8 @@ export type operations = {
           sinceId?: string;
           /** Format: misskey:id */
           untilId?: string;
+          /** @default false */
+          exactMode?: boolean;
         };
       };
     };
@@ -6360,6 +6380,8 @@ export type operations = {
           sinceId?: string;
           /** Format: misskey:id */
           untilId?: string;
+          /** @default false */
+          exactMode?: boolean;
         };
       };
     };
@@ -19732,6 +19754,66 @@ export type operations = {
     };
   };
   /**
+   * notes/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notes*
+   */
+  'notes/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          noteId: string;
+          text: string;
+          cw: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * notes/favorites/create
    * @description No description provided.
    *
@@ -20242,6 +20324,66 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/quotes
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'notes/quotes': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          noteId: string;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** @default 10 */
+          limit?: number;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['Note'][];
+        };
       };
       /** @description Client error */
       400: {
@@ -21141,8 +21283,6 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
-          /** @default false */
-          allowPartial?: boolean;
           /** @default true */
           includeMyRenotes?: boolean;
           /** @default true */
@@ -22040,7 +22180,8 @@ export type operations = {
       content: {
         'application/json': {
           /** Format: misskey:id */
-          flashId: string;
+          flashId?: string;
+          username?: string;
         };
       };
     };

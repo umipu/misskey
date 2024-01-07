@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.0
- * generatedAt: 2023-12-26T23:35:09.489Z
+ * version: 2023.12.2-pie-3.0.9
+ * generatedAt: 2024-01-07T05:01:14.335Z
  */
 
 import { operations } from './types.js';
@@ -394,6 +394,7 @@ export type NotesConversationResponse = operations['notes/conversation']['respon
 export type NotesCreateRequest = operations['notes/create']['requestBody']['content']['application/json'];
 export type NotesCreateResponse = operations['notes/create']['responses']['200']['content']['application/json'];
 export type NotesDeleteRequest = operations['notes/delete']['requestBody']['content']['application/json'];
+export type NotesUpdateRequest = operations['notes/update']['requestBody']['content']['application/json'];
 export type NotesFavoritesCreateRequest = operations['notes/favorites/create']['requestBody']['content']['application/json'];
 export type NotesFavoritesDeleteRequest = operations['notes/favorites/delete']['requestBody']['content']['application/json'];
 export type NotesFeaturedRequest = operations['notes/featured']['requestBody']['content']['application/json'];
@@ -409,6 +410,8 @@ export type NotesMentionsResponse = operations['notes/mentions']['responses']['2
 export type NotesPollsRecommendationRequest = operations['notes/polls/recommendation']['requestBody']['content']['application/json'];
 export type NotesPollsRecommendationResponse = operations['notes/polls/recommendation']['responses']['200']['content']['application/json'];
 export type NotesPollsVoteRequest = operations['notes/polls/vote']['requestBody']['content']['application/json'];
+export type NotesQuotesRequest = operations['notes/quotes']['requestBody']['content']['application/json'];
+export type NotesQuotesResponse = operations['notes/quotes']['responses']['200']['content']['application/json'];
 export type NotesReactionsRequest = operations['notes/reactions']['requestBody']['content']['application/json'];
 export type NotesReactionsResponse = operations['notes/reactions']['responses']['200']['content']['application/json'];
 export type NotesReactionsCreateRequest = operations['notes/reactions/create']['requestBody']['content']['application/json'];
