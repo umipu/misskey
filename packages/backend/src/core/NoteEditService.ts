@@ -719,7 +719,7 @@ export class NoteEditService implements OnApplicationShutdown {
 
 		const content = data.renote && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
-			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
+			: this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), note);
 
 		return this.apRendererService.addContext(content);
 	}
