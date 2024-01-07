@@ -123,13 +123,15 @@ import FormSlot from '@/components/form/slot.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
 import { langmap } from '@/scripts/langmap.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+
+const $i = signinRequired();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -141,8 +143,8 @@ const profile = reactive({
 	location: $i.location,
 	birthday: $i.birthday,
 	lang: $i.lang,
-	isBot: $i.isBot,
-	isCat: $i.isCat,
+	isBot: $i.isBot ?? false,
+	isCat: $i.isCat ?? false,
 });
 
 watch(() => profile, () => {
@@ -151,7 +153,7 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
 const extentMode = ref(false);
 

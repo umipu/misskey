@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2-pie-3.0.9
- * generatedAt: 2024-01-07T05:01:14.332Z
+ * version: 2023.12.2-pie-3.1.0
+ * generatedAt: 2024-01-07T11:50:54.382Z
  */
 
 import { components } from './types.js';

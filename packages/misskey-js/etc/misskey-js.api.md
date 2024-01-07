@@ -1034,6 +1034,18 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'signup': {
+        req: SignupRequest;
+        res: SignupResponse;
+    };
+    'signup-pending': {
+        req: SignupPendingRequest;
+        res: SignupPendingResponse;
+    };
+    'signin': {
+        req: SigninRequest;
+        res: SigninResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1053,6 +1065,12 @@ declare namespace entities {
         EmojiUpdated,
         EmojiDeleted,
         AnnouncementCreated,
+        SignupRequest,
+        SignupResponse,
+        SignupPendingRequest,
+        SignupPendingResponse,
+        SigninRequest,
+        SigninResponse,
         EmptyRequest,
         EmptyResponse,
         AdminMetaResponse,
@@ -1441,6 +1459,7 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
+        NotesUpdateRequest,
         NotesFavoritesCreateRequest,
         NotesFavoritesDeleteRequest,
         NotesFeaturedRequest,
@@ -1456,6 +1475,8 @@ declare namespace entities {
         NotesPollsRecommendationRequest,
         NotesPollsRecommendationResponse,
         NotesPollsVoteRequest,
+        NotesQuotesRequest,
+        NotesQuotesResponse,
         NotesReactionsRequest,
         NotesReactionsResponse,
         NotesReactionsCreateRequest,
@@ -2367,6 +2388,12 @@ type NotesPollsRecommendationResponse = operations['notes/polls/recommendation']
 type NotesPollsVoteRequest = operations['notes/polls/vote']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesQuotesRequest = operations['notes/quotes']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesQuotesResponse = operations['notes/quotes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesReactionsCreateRequest = operations['notes/reactions/create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2440,6 +2467,9 @@ type NotesTranslateResponse = operations['notes/translate']['responses']['200'][
 
 // @public (undocumented)
 type NotesUnrenoteRequest = operations['notes/unrenote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUpdateRequest = operations['notes/update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesUserListTimelineRequest = operations['notes/user-list-timeline']['requestBody']['content']['application/json'];
@@ -2614,6 +2644,47 @@ type ServerStatsLog = string[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
+
+// @public (undocumented)
+type SigninRequest = {
+    username: string;
+    password: string;
+    token?: string;
+};
+
+// @public (undocumented)
+type SigninResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupPendingRequest = {
+    code: string;
+};
+
+// @public (undocumented)
+type SignupPendingResponse = {
+    id: User['id'];
+    i: string;
+};
+
+// @public (undocumented)
+type SignupRequest = {
+    username: string;
+    password: string;
+    host?: string;
+    invitationCode?: string;
+    emailAddress?: string;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+};
+
+// @public (undocumented)
+type SignupResponse = MeDetailed & {
+    token: string;
+};
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];

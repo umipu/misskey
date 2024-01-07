@@ -171,6 +171,7 @@ import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import * as sound from '@/scripts/sound.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, noteViewInterruptors } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
@@ -276,7 +277,7 @@ const keymap = {
 };
 
 provide('react', (reaction: string) => {
-	os.api('notes/reactions/create', {
+	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
 		reaction: reaction,
 	});
@@ -295,10 +296,23 @@ if (props.mock) {
 	});
 }
 
-useTooltip(renoteButton, async (showing) => {
-	const renotes = await os.api('notes/renotes', {
-		noteId: appearNote.value.id,
-		limit: 11,
+if (!props.mock) {
+	useTooltip(renoteButton, async (showing) => {
+		const renotes = await misskeyApi('notes/renotes', {
+			noteId: appearNote.value.id,
+			limit: 11,
+		});
+
+		const users = renotes.map(x => x.user);
+
+		if (users.length < 1) return;
+
+		os.popup(MkUsersTooltip, {
+			showing,
+			users,
+			count: appearNote.value.renoteCount,
+			targetElement: renoteButton.value,
+		}, {}, 'closed');
 	});
 
 	const users = renotes.map(x => x.user);
@@ -311,7 +325,7 @@ useTooltip(renoteButton, async (showing) => {
 		count: appearNote.value.renoteCount,
 		targetElement: renoteButton.value,
 	}, {}, 'closed');
-});
+}
 
 function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
 	if (a === 'specified' || b === 'specified') return 'specified';
@@ -332,7 +346,7 @@ function renote(viaKeyboard = false) {
 	} else {
 		if (appearNote.value.channel) {
 			if (!props.mock) {
-				os.api('notes/create', {
+				misskeyApi('notes/create', {
 					renoteId: appearNote.value.id,
 					channelId: appearNote.value.channelId,
 				}).then(() => {
@@ -349,7 +363,7 @@ function renote(viaKeyboard = false) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
 			if (!props.mock) {
-				os.api('notes/create', {
+				misskeyApi('notes/create', {
 					localOnly: defaultStore.state.defaultRenoteLocalOnly,
 					visibility,
 					renoteId: appearNote.value.id,
@@ -401,7 +415,7 @@ function react(viaKeyboard = false): void {
 			return;
 		}
 
-		os.api('notes/reactions/create', {
+		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
 			reaction: '❤️',
 		});
@@ -422,7 +436,7 @@ function react(viaKeyboard = false): void {
 				return;
 			}
 
-			os.api('notes/reactions/create', {
+			misskeyApi('notes/reactions/create', {
 				noteId: appearNote.value.id,
 				reaction: reaction,
 			});
@@ -444,7 +458,7 @@ function undoReact(note): void {
 		return;
 	}
 
-	os.api('notes/reactions/delete', {
+	misskeyApi('notes/reactions/delete', {
 		noteId: note.id,
 	});
 }
@@ -496,7 +510,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 			icon: 'ti ti-trash',
 			danger: true,
 			action: () => {
-				os.api('notes/delete', {
+				misskeyApi('notes/delete', {
 					noteId: note.value.id,
 				});
 				isDeleted.value = true;
@@ -542,7 +556,7 @@ function focusAfter() {
 }
 
 function readPromo() {
-	os.api('promo/read', {
+	misskeyApi('promo/read', {
 		noteId: appearNote.value.id,
 	});
 	isDeleted.value = true;
