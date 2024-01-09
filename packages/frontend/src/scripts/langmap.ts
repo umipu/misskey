@@ -23,9 +23,6 @@ export const langmap = {
 	'ak': {
 		nativeName: 'Tɕɥi',
 	},
-	'ap': {
-		nativeName: 'Apolan',
-	},
 	'ar': {
 		nativeName: 'العربية',
 	},

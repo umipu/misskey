@@ -175,10 +175,6 @@ export function getNoteMenu(props: {
 		});
 	}
 
-	function edit(): void {
-		os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel, updateMode: true });
-	}
-
 	function toggleFavorite(favorite: boolean): void {
 		claimAchievement('noteFavorited1');
 		os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
@@ -395,11 +391,6 @@ export function getNoteMenu(props: {
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				{ type: 'divider' },
-				appearNote.userId === $i.id && $i.policies.canEditNote ? {
-					icon: 'ti ti-edit',
-					text: i18n.ts.edit,
-					action: edit,
-				} : undefined,
 				appearNote.userId === $i.id ? {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
@@ -544,8 +535,10 @@ export function getRenoteMenu(props: {
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
 
-				const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.visibility) as Visibility;
-				let visibility = appearNote.visibility as Visibility;
+				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+
+				let visibility = appearNote.visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
 				if (appearNote.channel?.isSensitive) {
 					visibility = smallerVisibility(visibility, 'home');
@@ -553,7 +546,7 @@ export function getRenoteMenu(props: {
 
 				if (!props.mock) {
 					misskeyApi('notes/create', {
-						localOnly: defaultStore.state.defaultRenoteLocalOnly,
+						localOnly,
 						visibility,
 						renoteId: appearNote.id,
 					}).then(() => {
