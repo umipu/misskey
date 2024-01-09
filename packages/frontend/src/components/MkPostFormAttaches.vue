@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
+<div v-show="items.length != 0" :class="$style.root">
+	<Sortable :modelValue="items" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
 		<template #item="{element}">
 			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
@@ -15,12 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 	</Sortable>
-	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
+	<p :class="$style.remain">{{ 16 - items.length }}/16</p>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject } from 'vue';
+import { defineAsyncComponent, inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
@@ -35,6 +35,7 @@ const props = defineProps<{
 }>();
 
 const mock = inject<boolean>('mock', false);
+const items = ref(props.modelValue.filter(x => x != null));
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
