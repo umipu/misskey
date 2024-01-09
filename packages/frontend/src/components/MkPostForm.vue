@@ -176,7 +176,7 @@ const hasNotSpecifiedMentionsEl = shallowRef<HTMLElement | null>(null);
 const posting = ref(false);
 const posted = ref(false);
 const text = ref(props.initialText ?? '');
-const files = ref(props.initialFiles?.filter(x => x != null) ?? [null]);
+const files = ref(props.initialFiles?.filter(x => x != null) ?? []);
 const poll = ref<{
 	choices: string[];
 	multiple: boolean;
