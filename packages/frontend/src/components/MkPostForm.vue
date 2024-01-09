@@ -176,7 +176,7 @@ const hasNotSpecifiedMentionsEl = shallowRef<HTMLElement | null>(null);
 const posting = ref(false);
 const posted = ref(false);
 const text = ref(props.initialText ?? '');
-const files = ref(props.initialFiles ?? []);
+const files = ref(props.initialFiles?.filter(x => x != null) ?? [null]);
 const poll = ref<{
 	choices: string[];
 	multiple: boolean;
@@ -686,7 +686,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	if (props.mock) return;
-
+	files.value = files.value.filter(x => x != null) ?? [];
 	let postData = {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
