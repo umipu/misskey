@@ -158,8 +158,8 @@ importers:
         specifier: 1.20.2
         version: 1.20.2
       bullmq:
-        specifier: 4.17.0
-        version: 4.17.0
+        specifier: 4.15.4
+        version: 4.15.4
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
@@ -9988,8 +9988,8 @@ packages:
     dependencies:
       node-gyp-build: 4.8.0
 
-  /bullmq@4.17.0:
-    resolution: {integrity: sha512-URnHgB01rlCP8RTpmW3kFnvv3vdd2aI1OcBMYQwnqODxGiJUlz9MibDVXE83mq7ee1eS1IvD9lMQqGszX6E5Pw==}
+  /bullmq@4.15.4:
+    resolution: {integrity: sha512-lrEtiERjYPPfb0OEXva5G8cF6kbtJFy/BmIL0yjmO+kj2eSVjCpAVVeYikxoqKtaYyEnNFal7ERVLanEvp+1Lw==}
     dependencies:
       cron-parser: 4.9.0
       glob: 8.1.0
