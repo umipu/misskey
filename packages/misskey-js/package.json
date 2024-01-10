@@ -36,7 +36,7 @@
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.0.2",
-		"tsd": "0.30.0",
+		"tsd": "0.30.3",
 		"typescript": "5.3.3"
 	},
 	"files": [
