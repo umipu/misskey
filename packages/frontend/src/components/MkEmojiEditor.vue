@@ -77,6 +77,7 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	emoji?: any,
@@ -94,7 +95,7 @@ let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
-	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
@@ -113,7 +114,7 @@ async function changeImage(ev) {
 }
 
 async function addRole() {
-	const roles = await os.api('admin/roles/list');
+	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
@@ -175,7 +176,7 @@ async function del() {
 	});
 	if (canceled) return;
 
-	os.api('admin/emoji/delete', {
+	misskeyApi('admin/emoji/delete', {
 		id: props.emoji.id,
 	}).then(() => {
 		emit('done', {
