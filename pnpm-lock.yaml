@@ -158,8 +158,8 @@ importers:
         specifier: 1.20.2
         version: 1.20.2
       bullmq:
-        specifier: 4.15.4
-        version: 4.15.4
+        specifier: 5.1.1
+        version: 5.1.1
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
@@ -380,8 +380,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0
       typeorm:
-        specifier: 0.3.19
-        version: 0.3.19(ioredis@5.3.2)(pg@8.11.3)
+        specifier: 0.3.17
+        version: 0.3.17(ioredis@5.3.2)(pg@8.11.3)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3046,7 +3046,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
-    dev: true
 
   /@babel/template@7.22.15:
     resolution: {integrity: sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==}
@@ -9988,8 +9987,8 @@ packages:
     dependencies:
       node-gyp-build: 4.8.0
 
-  /bullmq@4.15.4:
-    resolution: {integrity: sha512-lrEtiERjYPPfb0OEXva5G8cF6kbtJFy/BmIL0yjmO+kj2eSVjCpAVVeYikxoqKtaYyEnNFal7ERVLanEvp+1Lw==}
+  /bullmq@5.1.1:
+    resolution: {integrity: sha512-j3zbNEQWsyHjpqGWiem2XBfmxAjYcArbwsmGlkM1E9MAVcrqB5hQUsXmyy9gEBAdL+PVotMICr7xTquR4Y2sKQ==}
     dependencies:
       cron-parser: 4.9.0
       glob: 8.1.0
@@ -10949,12 +10948,20 @@ packages:
       whatwg-url: 14.0.0
     dev: false
 
+  /date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
+    engines: {node: '>=0.11'}
+    dependencies:
+      '@babel/runtime': 7.23.8
+    dev: false
+
   /date-fns@3.0.1:
     resolution: {integrity: sha512-cr9igCUa0QSqgAMj7JOrYTY6Nh1rmyGrFDko7ADqfmaQqP/I2N4rlfrLl7AWuzDaoIpz6MNjoEcTPzgZYIrhnA==}
     dev: false
 
   /dayjs@1.11.10:
     resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
+    dev: true
 
   /de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
@@ -19147,20 +19154,20 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typeorm@0.3.19(ioredis@5.3.2)(pg@8.11.3):
-    resolution: {integrity: sha512-OGelrY5qEoAU80mR1iyvmUHiKCPUydL6xp6bebXzS7jyv/X70Gp/jBWRAfF4qGOfy2A7orMiGRfwsBUNbEL65g==}
+  /typeorm@0.3.17(ioredis@5.3.2)(pg@8.11.3):
+    resolution: {integrity: sha512-UDjUEwIQalO9tWw9O2A4GU+sT3oyoUXheHJy4ft+RFdnRdQctdQ34L9SqE2p7LdwzafHx1maxT+bqXON+Qnmig==}
     engines: {node: '>= 12.9.0'}
     hasBin: true
     peerDependencies:
       '@google-cloud/spanner': ^5.18.0
       '@sap/hana-client': ^2.12.25
-      better-sqlite3: ^7.1.2 || ^8.0.0 || ^9.0.0
+      better-sqlite3: ^7.1.2 || ^8.0.0
       hdb-pool: ^0.1.6
       ioredis: ^5.0.4
-      mongodb: ^5.8.0
-      mssql: ^9.1.1 || ^10.0.1
+      mongodb: ^5.2.0
+      mssql: ^9.1.1
       mysql2: ^2.2.5 || ^3.0.1
-      oracledb: ^6.3.0
+      oracledb: ^5.1.0
       pg: ^8.5.1
       pg-native: ^3.0.0
       pg-query-stream: ^4.0.0
@@ -19210,10 +19217,10 @@ packages:
       buffer: 6.0.3
       chalk: 4.1.2
       cli-highlight: 2.1.11
-      dayjs: 1.11.10
+      date-fns: 2.30.0
       debug: 4.3.4(supports-color@8.1.1)
       dotenv: 16.3.1
-      glob: 10.3.10
+      glob: 8.1.0
       ioredis: 5.3.2
       mkdirp: 2.1.6
       pg: 8.11.3
