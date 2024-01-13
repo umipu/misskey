@@ -145,7 +145,7 @@ export class DownloadService {
 		const parsedIp = ipaddr.parse(ip);
 
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
-			if (parsedIp.match(ipaddr.parseCIDR(net))) {
+			if (ipaddr.parseCIDR(net)[0].kind() === parsedIp.kind() && parsedIp.match(ipaddr.parseCIDR(net))) {
 				return false;
 			}
 		}
