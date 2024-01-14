@@ -151,4 +151,6 @@ export const MFM_TAGS = [
 	'rotate',
 	'rotate.deg=',
 	'ruby',
-	'unixtime'];
+	'unixtime',
+	'border',
+];
