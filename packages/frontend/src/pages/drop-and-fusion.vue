@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps" style="padding: 16px;">
 							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
 							<MkSwitch v-model="mute">
-								<template #label>{{ i18n.ts.mute }}</template>
+								<template #label><div :class="$style.switchLabel">{{ i18n.ts.mute }}</div></template>
 							</MkSwitch>
 						</div>
 					</div>
@@ -170,6 +170,10 @@ definePageMetadata({
 	&:first-child {
 		margin-top: 0;
 	}
+}
+
+.switchLabel {
+	color: #693410;
 }
 
 .frameDivider {
