@@ -1042,7 +1042,6 @@ export interface Locale {
     "nonSensitiveOnlyForLocalLikeOnlyForRemote": string;
     "rolesAssignedToMe": string;
     "resetPasswordConfirm": string;
-    "disposableEmail": string;
     "sensitiveWords": string;
     "sensitiveWordsDescription": string;
     "sensitiveWordsDescription2": string;

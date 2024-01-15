@@ -547,12 +547,6 @@ export class MiMeta {
 	})
 	public preservedUsernames: string[];
 
-	@Column('varchar', {
-		length: 280,
-		array: true,
-		default: '{}',
-	})
-	public disposableEmailDomains: string[];
 	@Column('boolean', {
 		default: true,
 	})

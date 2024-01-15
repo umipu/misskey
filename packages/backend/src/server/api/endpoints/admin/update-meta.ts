@@ -537,10 +537,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.preservedUsernames = ps.preservedUsernames;
 			}
 
-			if (ps.disposableEmailDomains !== undefined) {
-				set.disposableEmailDomains = ps.disposableEmailDomains;
-			}
-
 			if (ps.manifestJsonOverride !== undefined) {
 				set.manifestJsonOverride = ps.manifestJsonOverride;
 			}
