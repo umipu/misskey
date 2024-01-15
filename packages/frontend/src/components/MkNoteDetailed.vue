@@ -288,6 +288,7 @@ const isRenote = (
 	note.value.poll == null
 );
 
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
 const el = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
 const renoteButton = shallowRef<HTMLElement>();
@@ -314,7 +315,7 @@ const defaultRenoteLocalOnly = defaultStore.state.defaultRenoteLocalOnly;
 const keymap = {
 	'r': () => reply(true),
 	'e|a|plus': () => react(true),
-	'q': () => renoteButton.value.renote(true),
+	'q': () => renote(true),
 	'esc': blur,
 	'm|o': () => menu(true),
 	's': () => showContent.value !== showContent.value,
@@ -399,9 +400,9 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
-	const { menu } = getRenoteMenu({ note: appearNote.value, renoteButton });
+	const { menu: renoteMenu } = getRenoteMenu({ note: appearNote.value, renoteButton });
 	if (!splitRNButton) {
-		os.popupMenu(menu, renoteButton.value, {
+		os.popupMenu(renoteMenu, renoteButton.value, {
 			viaKeyboard,
 		});
 	} else {
@@ -415,14 +416,14 @@ function renote(viaKeyboard = false) {
 		}
 
 		if (!appearNote.value.channel || appearNote.value.channel.allowRenoteToExternal) {
-			const configuredVisibility = (defaultStore.state.defaultRenoteVisibility !== 'follow' ? defaultStore.state.defaultRenoteVisibility : appearNote?.value?.visibility) as Visibility;
+			const configuredVisibility = (defaultRenoteVisibility !== 'follow' ? defaultRenoteVisibility : appearNote.value.visibility) as Visibility;
 			let visibility: Visibility = appearNote.value.visibility as Visibility;
 			visibility = smallerVisibility(visibility, configuredVisibility);
 			if (appearNote.value.channel?.isSensitive) {
 				visibility = smallerVisibility(visibility, 'home');
 			}
 			misskeyApi('notes/create', {
-				localOnly: defaultStore.state.defaultRenoteLocalOnly,
+				localOnly: appearNote.value.localOnly ?? defaultRenoteLocalOnly,
 				visibility,
 				renoteId: appearNote.value.id,
 			}).then(() => {

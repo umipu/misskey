@@ -527,6 +527,7 @@ export function getRenoteMenu(props: {
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
+				const defaultRenoteVisibility = defaultStore.state.defaultRenoteVisibility;
 				const el = props.renoteButton.value as HTMLElement | null | undefined;
 				if (el) {
 					const rect = el.getBoundingClientRect();
@@ -535,10 +536,10 @@ export function getRenoteMenu(props: {
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
 
-				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+				const configuredVisibility = (defaultRenoteVisibility !== 'follow' ? defaultRenoteVisibility : appearNote.visibility) as Visibility;
+				const localOnly = defaultStore.state.defaultRenoteLocalOnly;
 
-				let visibility = appearNote.visibility;
+				let visibility = appearNote.visibility as Visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
 				if (appearNote.channel?.isSensitive) {
 					visibility = smallerVisibility(visibility, 'home');
