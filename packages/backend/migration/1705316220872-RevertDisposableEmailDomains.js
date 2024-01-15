@@ -2,7 +2,7 @@ export class RevertDisposableEmailDomains1705316220872 {
 	name = 'RevertDisposableEmailDomains1705316220872'
 
 	async up(queryRunner) {
-		await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "disposable_email_domain"`);
+		await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "disposableEmailDomain"`);
 	}
 
 	async down(queryRunner) {
