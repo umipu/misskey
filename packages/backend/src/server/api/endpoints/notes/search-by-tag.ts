@@ -86,15 +86,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			try {
 				if (ps.tag) {
-					if (!safeForSql(normalizeForSearch(ps.tag))) throw 'Injection';
-					query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
+					if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');
+					query.andWhere(':tag <@ note.tags', { tag: [normalizeForSearch(ps.tag)] });
 				} else {
 					query.andWhere(new Brackets(qb => {
 						for (const tags of ps.query!) {
 							qb.orWhere(new Brackets(qb => {
 								for (const tag of tags) {
-									if (!safeForSql(normalizeForSearch(tag))) throw 'Injection';
-									qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+									if (!safeForSql(normalizeForSearch(tag))) throw new Error('Injection');
+									qb.andWhere(':tag <@ note.tags', { tag: [normalizeForSearch(tag)] });
 								}
 							}));
 						}
