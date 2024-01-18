@@ -14,6 +14,7 @@ import { GetterService } from '@/server/api/GetterService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { ApiError } from '../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -65,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 		private globalEventService: GlobalEventService,
 		private noteEditService: NoteEditService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
@@ -74,6 +76,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (note.userId !== me.id) {
 				throw new ApiError(meta.errors.noSuchNote);
+			}
+
+			if ((await this.roleService.getUserPolicies(me.id)).canEditNote !== true) {
+				throw new Error('Not allow edit note');
 			}
 
 			// TODO: ファイルもできるようにする
