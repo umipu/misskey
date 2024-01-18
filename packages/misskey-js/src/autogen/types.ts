@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.2-pie-3.1.3
- * generatedAt: 2024-01-14T05:57:15.816Z
+ * version: 2023.12.2-pie-3.1.5
+ * generatedAt: 2024-01-18T09:14:11.124Z
  */
 
 /**
@@ -3702,6 +3702,7 @@ export type components = {
       policies: {
         gtlAvailable: boolean;
         ltlAvailable: boolean;
+        canEditNote: boolean;
         canPublicNote: boolean;
         canInvite: boolean;
         inviteLimit: number;

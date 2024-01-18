@@ -596,6 +596,21 @@ export class ApRendererService {
 		};
 	}
 
+	public renderNoteUpdate(object: IObject, note: MiNote): IUpdate {
+		const activity: IUpdate = {
+			id: `${this.config.url}/notes/${note.id}/activity`,
+			actor: this.userEntityService.genLocalUserUri(note.userId),
+			type: 'Update',
+			published: new Date().toISOString(),
+			object,
+		};
+
+		if (object.to) activity.to = object.to;
+		if (object.cc) activity.cc = object.cc;
+
+		return activity;
+	}
+
 	@bindThis
 	public renderVote(user: { id: MiUser['id'] }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: MiRemoteUser): ICreate {
 		return {

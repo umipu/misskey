@@ -599,6 +599,10 @@ export const packedMeDetailedOnlySchema = {
 					type: 'boolean',
 					nullable: false, optional: false,
 				},
+				canEditNote: {
+					type: 'boolean',
+					nullable: false, optional: false,
+				},
 				canPublicNote: {
 					type: 'boolean',
 					nullable: false, optional: false,

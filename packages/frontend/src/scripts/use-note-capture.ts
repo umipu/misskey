@@ -6,7 +6,7 @@
 import { onUnmounted, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useStream } from '@/stream.js';
-import { $i } from '@/account.js';
+import { $i, notesCount } from '@/account.js';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;
@@ -75,6 +75,14 @@ export function useNoteCapture(props: {
 
 			case 'deleted': {
 				props.isDeletedRef.value = true;
+				break;
+			}
+
+			case 'updated': {
+				if (body.text) note.value.text = body.text;
+				if (body.cw) note.value.cw = body.cw;
+				if (body.fileIds) note.value.fileIds = body.fileIds;
+				if (body.files) note.value.files = body.files;
 				break;
 			}
 		}
