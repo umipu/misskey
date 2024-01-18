@@ -449,7 +449,7 @@ export class ApNoteService {
 			throw new Error('unexpected schema of note url: ' + url);
 		}
 
-		this.logger.info(`Creating the Note: ${note.id}`);
+		this.logger.info(`Updating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
 		if (note.attributedTo == null) {
