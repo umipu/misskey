@@ -5,10 +5,9 @@
 
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
-import { In, DataSource, IsNull, LessThan } from 'typeorm';
+import { In, DataSource, LessThan } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import RE2 from 're2';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -21,13 +20,9 @@ import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { IPoll } from '@/models/Poll.js';
-import { MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { checkWordMute } from '@/misc/check-word-mute.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import type { MiUserProfile } from '@/models/UserProfile.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -58,9 +53,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { isReply } from '@/misc/is-reply.js';
-import { ImportFollowingProcessorService } from '@/queue/processors/ImportFollowingProcessorService.js';
-import DataHandler from 'ioredis/built/DataHandler.js';
+import Logger from '@/logger.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -152,7 +145,7 @@ type Option = {
 @Injectable()
 export class NoteEditService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
-
+	private logger: Logger;
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -567,8 +560,9 @@ export class NoteEditService implements OnApplicationShutdown {
 
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
+				this.logger.info(`Delivering updated note activity ${note.url}`);
 				(async () => {
-					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
+					const noteActivity = await this.renderNoteOrRenoteActivity(data, note, user.id);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
 					// メンションされたリモートユーザーに配送
@@ -620,12 +614,12 @@ export class NoteEditService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
+	private async renderNoteOrRenoteActivity(data: Option, note: MiNote, userId: string) {
 		if (data.localOnly) return null;
 
 		const content = data.renote && !this.isQuote(data)
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
-			: this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), note);
+			: this.apRendererService.renderNoteUpdate(await this.apRendererService.renderNote(note, false, true), note, { id: userId });
 
 		return this.apRendererService.addContext(content);
 	}

@@ -5,16 +5,16 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import type { DriveFilesRepository } from '@/models/_.js';
 import { NoteEditService } from '@/core/NoteEditService.js';
-import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { ApiError } from '../../error.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
+import { DI } from '@/di-symbols.js';
+import { In } from 'typeorm';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,19 +49,44 @@ export const paramDef = {
 			maxLength: MAX_NOTE_TEXT_LENGTH,
 			nullable: false,
 		},
-		cw: { type: 'string', nullable: true, maxLength: 100 },
+		cw: {
+			type: 'string',
+			nullable: true,
+			maxLength: 100,
+		},
+		fileIds: {
+			type: 'array',
+			uniqueItems: true,
+			minItems: 1,
+			maxItems: 16,
+			items: { type: 'string', format: 'misskey:id' },
+		},
+		poll: {
+			type: 'object',
+			nullable: true,
+			properties: {
+				choices: {
+					type: 'array',
+					uniqueItems: true,
+					minItems: 2,
+					maxItems: 10,
+					items: { type: 'string', minLength: 1, maxLength: 50 },
+				},
+				multiple: { type: 'boolean' },
+				expiresAt: { type: 'integer', nullable: true },
+				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
+			},
+			required: ['choices'],
+		},
 	},
 	required: ['noteId', 'text', 'cw'],
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private getterService: GetterService,
 		private globalEventService: GlobalEventService,
@@ -83,15 +108,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// TODO: ファイルもできるようにする
-			await this.noteEditService.edit(me, note.id, {
+			const targetNote = await this.noteEditService.edit(me, note.id, {
 				text: ps.text,
 				cw: ps.cw,
+				files: ps.fileIds ? await this.driveFilesRepository.findBy({ id: In(ps.fileIds) }) : undefined,
+				poll: ps.poll ? {
+					choices: ps.poll.choices,
+					multiple: ps.poll.multiple ?? false,
+					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				} : undefined,
 			});
 
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
-				cw: ps.cw,
-				text: ps.text,
-			});
+			this.globalEventService.publishNoteStream(note.id, 'updated', targetNote);
 		});
 	}
 }

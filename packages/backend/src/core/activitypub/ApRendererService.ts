@@ -596,9 +596,9 @@ export class ApRendererService {
 		};
 	}
 
-	public renderNoteUpdate(object: IObject, note: MiNote): IUpdate {
+	public renderNoteUpdate(object: IObject, note: MiNote, user: { id: MiUser['id'] }): IUpdate {
 		const activity: IUpdate = {
-			id: `${this.config.url}/notes/${note.id}/activity`,
+			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
 			type: 'Update',
 			published: new Date().toISOString(),

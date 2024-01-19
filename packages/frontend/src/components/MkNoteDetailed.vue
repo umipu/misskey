@@ -360,7 +360,7 @@ const quotesPagination = computed(() => ({
 	endpoint: 'notes/quotes',
 	limit: 10,
 	params: {
-		noteId:  appearNote.value.id,
+		noteId: appearNote.value.id,
 	},
 }));
 

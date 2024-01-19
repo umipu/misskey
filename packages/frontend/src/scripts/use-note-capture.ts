@@ -7,6 +7,7 @@ import { onUnmounted, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useStream } from '@/stream.js';
 import { $i, notesCount } from '@/account.js';
+import { misskeyApi } from './misskey-api.js';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;
@@ -18,7 +19,7 @@ export function useNoteCapture(props: {
 	const pureNote = props.pureNote;
 	const connection = $i ? useStream() : null;
 
-	function onStreamNoteUpdated(noteData): void {
+	async function onStreamNoteUpdated(noteData): Promise<void> {
 		const { type, id, body } = noteData;
 
 		if ((id !== note.value.id) && (id !== pureNote.value.id)) return;
@@ -79,10 +80,10 @@ export function useNoteCapture(props: {
 			}
 
 			case 'updated': {
-				if (body.text) note.value.text = body.text;
-				if (body.cw) note.value.cw = body.cw;
-				if (body.fileIds) note.value.fileIds = body.fileIds;
-				if (body.files) note.value.files = body.files;
+				note.value.text = body.text;
+				note.value.cw = body.cw;
+				note.value.updatedAt = body.updatedAt;
+				note.value.fileIds = body.fileIds;
 				break;
 			}
 		}

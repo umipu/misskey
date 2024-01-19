@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2-pie-3.1.5
- * generatedAt: 2024-01-18T09:14:11.124Z
+ * generatedAt: 2024-01-19T06:01:14.937Z
  */
 
 /**
@@ -19872,6 +19872,13 @@ export type operations = {
           noteId: string;
           text: string;
           cw: string | null;
+          fileIds?: string[];
+          poll?: ({
+            choices: string[];
+            multiple?: boolean;
+            expiresAt?: number | null;
+            expiredAfter?: number | null;
+          }) | null;
         };
       };
     };

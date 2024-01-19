@@ -115,9 +115,12 @@ export interface NoteEventTypes {
 		deletedAt: Date;
 	};
 	updated: {
+		updatedAt: Date | null;
 		cw: string | null;
+		files: MiDriveFile[] | null;
+		fileIds: string[] | null;
 		text: string;
-	};
+	} | MiNote;
 	reacted: {
 		reaction: string;
 		emoji?: {
