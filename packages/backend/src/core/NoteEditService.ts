@@ -53,7 +53,6 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import Logger from '@/logger.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -145,7 +144,6 @@ type Option = {
 @Injectable()
 export class NoteEditService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
-	private logger: Logger;
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -558,7 +556,6 @@ export class NoteEditService implements OnApplicationShutdown {
 
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
-				this.logger.info(`Delivering updated note activity ${note.url}`);
 				(async () => {
 					const noteActivity = await this.renderNoteOrRenoteActivity(data, note, user.id);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
