@@ -465,10 +465,8 @@ export class NoteEditService implements OnApplicationShutdown {
 			throw e;
 		}
 
-		//const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
-
-		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
-			() => this.postNoteEdited(note, user, data, silent, tags!, mentionedUsers!),
+		setImmediate('post updated', { signal: this.#shutdownController.signal }).then(
+			async () => this.postNoteEdited((await this.notesRepository.findOneByOrFail({ id: note.id })), user, data, silent, tags!, mentionedUsers!),
 			() => { /* aborted, ignore this */ },
 		);
 
