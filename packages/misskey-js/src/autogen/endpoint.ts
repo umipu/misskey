@@ -1,6 +1,6 @@
 /*
- * version: 2023.12.2-pie-3.1.5
- * generatedAt: 2024-01-19T12:07:53.971Z
+ * version: 2024.2.0-beta.4-pie-3.1.7
+ * generatedAt: 2024-01-23T12:09:37.238Z
  */
 
 import type {
@@ -557,6 +557,8 @@ import type {
 	ReversiShowGameRequest,
 	ReversiShowGameResponse,
 	ReversiSurrenderRequest,
+	ReversiVerifyRequest,
+	ReversiVerifyResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -928,4 +930,5 @@ export type Endpoints = {
 	'reversi/invitations': { req: EmptyRequest; res: ReversiInvitationsResponse };
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
+	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }

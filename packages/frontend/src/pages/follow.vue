@@ -20,7 +20,7 @@ import { defaultStore } from '@/store.js';
 async function follow(user): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.t('followConfirm', { name: user.name || user.username }),
+		text: i18n.tsx.followConfirm({ name: user.name || user.username }),
 	});
 
 	if (canceled) {

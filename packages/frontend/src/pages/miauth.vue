@@ -27,11 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img :src="icon ?? '/static-assets/mi-white.png'" :style="{'width': '68px','height': '68px', 'vertical-align':'bottom', 'border-radius':'100%'}"/>
 						</div>
 						<p :style="{'font-size':'20px'}">{{ name }}</p>
-						<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
+						<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
 						<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 						<div>
 							<ul :style="{'width':'45%','margin-left':'20%'}">
-								<li v-for="p in _permissions" :key="p" :style="{'text-align':'left'}">{{ i18n.t(`_permissions.${p}`) }}</li>
+								<li v-for="p in _permissions" :key="p" :style="{'text-align':'left'}">{{ i18n.ts._permissions[p] }}</li>
 							</ul>
 						</div>
 					</div>

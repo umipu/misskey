@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2023.12.2-pie-3.1.5
- * generatedAt: 2024-01-19T12:07:53.519Z
+ * version: 2024.2.0-beta.4-pie-3.1.7
+ * generatedAt: 2024-01-23T12:09:37.048Z
  */
 
 /**
@@ -3544,6 +3544,15 @@ export type paths = {
      */
     post: operations['reversi/surrender'];
   };
+  '/reversi/verify': {
+    /**
+     * reversi/verify
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['reversi/verify'];
+  };
 };
 
 export type webhooks = Record<string, never>;
@@ -4486,12 +4495,10 @@ export type components = {
       createdAt: string;
       /** Format: date-time */
       startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
       isStarted: boolean;
       isEnded: boolean;
-      form1: Record<string, never> | null;
-      form2: Record<string, never> | null;
-      user1Ready: boolean;
-      user2Ready: boolean;
       /** Format: id */
       user1Id: string;
       /** Format: id */
@@ -4502,12 +4509,15 @@ export type components = {
       winnerId: string | null;
       winner: components['schemas']['User'] | null;
       /** Format: id */
-      surrendered: string | null;
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
       black: number | null;
       bw: string;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
+      timeLimitForEachTurn: number;
     };
     ReversiGameDetailed: {
       /** Format: id */
@@ -4516,6 +4526,8 @@ export type components = {
       createdAt: string;
       /** Format: date-time */
       startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
       isStarted: boolean;
       isEnded: boolean;
       form1: Record<string, never> | null;
@@ -4532,17 +4544,16 @@ export type components = {
       winnerId: string | null;
       winner: components['schemas']['User'] | null;
       /** Format: id */
-      surrendered: string | null;
+      surrenderedUserId: string | null;
+      /** Format: id */
+      timeoutUserId: string | null;
       black: number | null;
       bw: string;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
-      logs: {
-          at: number;
-          color: boolean;
-          pos: number;
-        }[];
+      timeLimitForEachTurn: number;
+      logs: unknown[][];
       map: string[];
     };
   };
@@ -26100,6 +26111,64 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * reversi/verify
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'reversi/verify': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          gameId: string;
+          crc32: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            desynced: boolean;
+            game?: components['schemas']['ReversiGameDetailed'] | null;
+          };
+        };
       };
       /** @description Client error */
       400: {

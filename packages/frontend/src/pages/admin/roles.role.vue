@@ -117,6 +117,19 @@ async function save() {
 		router.push('/admin/roles/' + created.id);
 	}
 }
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.deleteAreYouSure({ x: role.name }),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('admin/roles/delete', {
+		roleId: role.id,
+	});
+
+	router.push('/admin/roles');
+}
 
 async function assign() {
 	const user = await os.selectUser({
