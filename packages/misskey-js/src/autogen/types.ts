@@ -3,7 +3,7 @@
 
 /*
  * version: 2024.2.0-beta.4-pie-3.1.7
- * generatedAt: 2024-01-23T12:09:37.048Z
+ * generatedAt: 2024-01-24T16:03:40.722Z
  */
 
 /**
@@ -4514,6 +4514,7 @@ export type components = {
       timeoutUserId: string | null;
       black: number | null;
       bw: string;
+      noIrregularRules: boolean;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
@@ -4549,6 +4550,7 @@ export type components = {
       timeoutUserId: string | null;
       black: number | null;
       bw: string;
+      noIrregularRules: boolean;
       isLlotheo: boolean;
       canPutEverywhere: boolean;
       loopedBoard: boolean;
@@ -25950,6 +25952,10 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           userId?: string | null;
+          /** @default false */
+          noIrregularRules?: boolean;
+          /** @default false */
+          multiple?: boolean;
         };
       };
     };

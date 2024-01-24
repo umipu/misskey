@@ -732,9 +732,6 @@ importers:
       date-fns:
         specifier: 3.3.1
         version: 3.3.1
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       escape-regexp:
         specifier: 0.0.1
         version: 0.0.1
@@ -11431,6 +11428,7 @@ packages:
 
   /defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+    dev: true
 
   /del@6.1.1:
     resolution: {integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==}
