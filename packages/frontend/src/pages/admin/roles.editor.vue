@@ -579,9 +579,13 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { ROLE_POLICIES } from '@/const.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
+import { rolesCache } from '@/cache.js';
+import { useRouter } from '@/global/router/supplier.js';
+const router = useRouter();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;
@@ -624,6 +628,21 @@ function getPriorityIcon(option) {
 function matchQuery(keywords: string[]): boolean {
 	if (q.value.trim().length === 0) return true;
 	return keywords.some(keyword => keyword.toLowerCase().includes(q.value.toLowerCase()));
+}
+
+async function deleteRole() {
+	rolesCache.delete();
+	if (role.value) {
+		const confirm = await os.confirm({
+			type: 'warning',
+			text: i18n.tsx.removeAreYouSure({ x: role.value.name }),
+		});
+		if (confirm.canceled) return;
+		os.apiWithDialog('admin/roles/delete', {
+			roleId: role.value.id,
+		});
+		router.push('/admin/roles');
+	}
 }
 
 const save = throttle(100, () => {
