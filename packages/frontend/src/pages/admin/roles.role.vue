@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
 					<div class="_gaps">
+						<!-- <XEditor v-if="data" v-model="data"/> -->
 						<XEdit :id="role.id"/>
 					</div>
 				</MkFolder>
@@ -62,7 +63,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
 import XHeader from './_header_.vue';
-import XEditor from './roles.editor.vue';
 import XEdit from './roles.edit.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';

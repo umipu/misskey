@@ -160,26 +160,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.canEditNote, 'canEditNote'])">
-				<template #label>{{ i18n.ts._role._options.canEditNote }}</template>
-				<template #suffix>
-					<span v-if="role.policies.canEditNote.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.canEditNote.value ? i18n.ts.yes : i18n.ts.no }}</span>
-					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canEditNote)"></i></span>
-				</template>
-				<div class="_gaps">
-					<MkSwitch v-model="role.policies.canEditNote.useDefault" :readonly="readonly">
-						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
-					</MkSwitch>
-					<MkSwitch v-model="role.policies.canEditNote.value" :disabled="role.policies.canEditNote.useDefault" :readonly="readonly">
-						<template #label>{{ i18n.ts.enable }}</template>
-					</MkSwitch>
-					<MkRange v-model="role.policies.canEditNote.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
-						<template #label>{{ i18n.ts._role.priority }}</template>
-					</MkRange>
-				</div>
-			</MkFolder>
-
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
 				<template #label>{{ i18n.ts._role._options.canInvite }}</template>
 				<template #suffix>
@@ -552,16 +532,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-			<MkFolder>
-				<template #label>{{ i18n.ts.delete }}</template>
-				<template #suffix>
-					<span :class="$style.useDefaultLabel">{{ i18n.ts.delete }}</span>
-				</template>
-				<div class="_gaps">
-					<MkButton danger rounded @click="deleteRole"><i class="ti ti-check"></i> {{ i18n.ts.delete  }}</MkButton>
-				</div>
-			</MkFolder>
-
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
 				<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 				<template #suffix>
@@ -581,16 +551,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts.delete }}</template>
+				<template #suffix>
+					<span :class="$style.useDefaultLabel">{{ i18n.ts.delete }}</span>
+				</template>
+				<div class="_gaps">
+					<MkButton danger rounded @click="deleteRole"><i class="ti ti-check"></i> {{ i18n.ts.delete  }}</MkButton>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, shallowRef } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -599,15 +578,10 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ROLE_POLICIES } from '@/const.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
-import { rolesCache } from '@/cache.js';
-import { useRouter } from '@/global/router/supplier.js';
-
-const router = useRouter();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;
@@ -618,7 +592,7 @@ const props = defineProps<{
 	readonly?: boolean;
 }>();
 
-const role = shallowRef( { ...props.modelValue } );
+const role = ref(deepClone(props.modelValue));
 
 // fill missing policy
 for (const ROLE_POLICY of ROLE_POLICIES) {
@@ -641,7 +615,7 @@ const rolePermission = computed({
 
 const q = ref('');
 
-function getPriorityIcon(option): string {
+function getPriorityIcon(option) {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
@@ -672,21 +646,6 @@ const save = throttle(100, () => {
 
 	emit('update:modelValue', data);
 });
-
-async function deleteRole() {
-	rolesCache.delete();
-	if (role.value) {
-		const confirm = await os.confirm({
-			type: 'warning',
-			text: i18n.t('removeAreYouSure', { x: role.value.name }),
-		});
-		if (confirm.canceled) return;
-		os.apiWithDialog('admin/roles/delete', {
-			roleId: role.value.id,
-		});
-		router.push('/admin/roles');
-	}
-}
 
 watch(role, save, { deep: true });
 </script>
