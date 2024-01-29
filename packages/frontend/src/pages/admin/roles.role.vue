@@ -117,6 +117,7 @@ async function save() {
 		router.push('/admin/roles/' + created.id);
 	}
 }
+
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',

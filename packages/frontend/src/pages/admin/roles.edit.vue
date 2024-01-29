@@ -66,6 +66,7 @@ if (props.id) {
 		canEditMembersByModerator: false,
 		displayOrder: 0,
 		policies: {},
+		canEditNote: false,
 	};
 }
 
