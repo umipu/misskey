@@ -14,6 +14,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canEditNote: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		canInvite: {
 			type: 'boolean',
 			optional: false, nullable: false,
