@@ -80,10 +80,11 @@ export function useNoteCapture(props: {
 			}
 
 			case 'updated': {
-				note.value.text = body.text;
-				note.value.cw = body.cw;
-				note.value.updatedAt = body.updatedAt;
-				note.value.fileIds = body.fileIds;
+				const updatedNote = await misskeyApi('notes/show', { noteId: id });
+				body.text = updatedNote.text;
+				body.cw = updatedNote.cw;
+				body.files = updatedNote.files;
+				body.poll = updatedNote.poll;
 				break;
 			}
 		}
