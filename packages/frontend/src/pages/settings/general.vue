@@ -327,6 +327,7 @@ watch([
 	keepScreenOn,
 	disableStreamingTimeline,
 	enableSeasonalScreenEffect,
+	aiChanMode,
 ], async () => {
 	await reloadAsk();
 });
