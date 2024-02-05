@@ -56,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="splitRNButton">{{ i18n.ts.splitRNButton }}<span class="_tips"><Mfm :key="emojiStyle" text="🥧"/></span></MkSwitch>
+				<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
