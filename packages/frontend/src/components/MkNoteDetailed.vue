@@ -160,6 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
 		<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<button v-if="defaultStore.state.devMode" class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'raw' }]" @click="tab = 'raw'"><i class="ti ti-code"></i>Raw</button>
 	</div>
 	<div>
 		<div v-if="tab === 'replies'" :class="$style.tab_replies">
@@ -180,7 +181,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-		<div v-if="tab === 'quotes'" :class="$style.tab_quotes">
+		<div v-else-if="tab === 'quotes'" :class="$style.tab_quotes">
 			<MkPagination :pagination="quotesPagination">
 				<template #default="{ items }">
 					<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
@@ -203,6 +204,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'raw'">
+			<MkObjectView v-if="ap" tall :value="ap"/>
 		</div>
 	</div>
 </div>
@@ -253,11 +257,14 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
+import { url } from '@/config.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
+type Visibility = 'public' | 'home' | 'followers' | 'specified';
 const inChannel = inject('inChannel', null);
 
 const note = ref(deepClone(props.note));
@@ -305,11 +312,18 @@ const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
-const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
 const splitRNButton = defaultStore.state.splitRNButton;
 const defaultRenoteVisibility = defaultStore.state.defaultRenoteVisibility;
 const defaultRenoteLocalOnly = defaultStore.state.defaultRenoteLocalOnly;
+const ap = ref<any>(null);
+onMounted(() => {
+	misskeyApi('ap/get', {
+		uri: appearNote.value.uri ?? `${url}/notes/${appearNote.value.id}`,
+	}).then(res => {
+		ap.value = res;
+	});
+});
 
 const keymap = {
 	'r': () => reply(true),
