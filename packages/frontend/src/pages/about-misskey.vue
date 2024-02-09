@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<FormSection>
 					<div class="_gaps_s">
-						<FormLink to="https://github.com/misskey-dev/misskey" external>
+						<FormLink to="https://github.com/grapeapple0/misskey" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
@@ -214,6 +214,12 @@ const patronsWithIcon = [{
 }, {
 	name: 'taichan',
 	icon: 'https://assets.misskey-hub.net/patrons/f981ab0159fb4e2c998e05f7263e1cd9.png',
+}, {
+	name: '猫吉よりお',
+	icon: 'https://assets.misskey-hub.net/patrons/a11518b3b34b4536a4bdd7178ba76a7b.png',
+}, {
+	name: '有栖かずみ',
+	icon: 'https://assets.misskey-hub.net/patrons/9240e8e0ba294a8884143e99ac7ed6a0.png',
 }];
 
 const patrons = [
