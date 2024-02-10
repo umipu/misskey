@@ -69,6 +69,9 @@ export type ModerationLog = {
 	type: 'deleteNote';
 	info: ModerationLogPayloads['deleteNote'];
 } | {
+	type: 'editNote';
+	info: ModerationLogPayloads['editNote'];
+} | {
 	type: 'createGlobalAnnouncement';
 	info: ModerationLogPayloads['createGlobalAnnouncement'];
 } | {

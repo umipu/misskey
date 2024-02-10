@@ -52,7 +52,7 @@ import { FeaturedService } from '@/core/FeaturedService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -216,7 +216,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
-		private driveFileEntityService: DriveFileEntityService,
+		private moderationLogService: ModerationLogService,
 	) { }
 
 	@bindThis
@@ -226,7 +226,7 @@ export class NoteEditService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
-	}, targetId: MiNote['id'], data: Option, silent = false): Promise<MiNote> {
+	}, targetId: MiNote['id'], data: Option, silent = false, editor?: MiUser): Promise<MiNote> {
 		const targetNote = await this.notesRepository.findOneByOrFail({ id: targetId });
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -467,7 +467,16 @@ export class NoteEditService implements OnApplicationShutdown {
 			async () => this.postNoteEdited((await this.notesRepository.findOneByOrFail({ id: note.id })), user, data, silent, tags!, mentionedUsers!),
 			() => { /* aborted, ignore this */ },
 		);
-
+		if (editor && (note.userId !== editor.id)) {
+			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+			this.moderationLogService.log(editor, 'editNote', {
+				noteId: note.id,
+				noteUserId: note.userId,
+				noteUserUsername: user.username,
+				noteUserHost: user.host,
+				note: note,
+			});
+		}
 		return note;
 	}
 

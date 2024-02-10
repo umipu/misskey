@@ -6,7 +6,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, UsersRepository } from '@/models/_.js';
 import { NoteEditService } from '@/core/NoteEditService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -35,6 +35,11 @@ export const meta = {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
 			id: 'a6584e14-6e01-4ad3-b566-851e7bf0d474',
+		},
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: 'fe8d7103-0ea8-4ec3-814d-f8b401dc69e9',
 		},
 	},
 } as const;
@@ -88,6 +93,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private getterService: GetterService,
 		private globalEventService: GlobalEventService,
 		private noteEditService: NoteEditService,
@@ -99,16 +107,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			if (note.userId !== me.id) {
-				throw new ApiError(meta.errors.noSuchNote);
+			if (!await this.roleService.isModerator(me) && (note.userId !== me.id) && (await this.roleService.getUserPolicies(me.id)).canEditNote !== true) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			if ((await this.roleService.getUserPolicies(me.id)).canEditNote !== true) {
-				throw new Error('Not allow edit note');
-			}
-
-			// TODO: ファイルもできるようにする
-			const targetNote = await this.noteEditService.edit(me, note.id, {
+			// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
+			const targetNote = await this.noteEditService.edit(await this.usersRepository.findOneByOrFail({ id: note.userId }), note.id, {
 				text: ps.text,
 				cw: ps.cw,
 				files: ps.fileIds ? await this.driveFilesRepository.findBy({ id: In(ps.fileIds) }) : undefined,
