@@ -121,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
-			});
+			}, undefined, me);
 
 			this.globalEventService.publishNoteStream(note.id, 'updated', targetNote);
 		});
