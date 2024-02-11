@@ -368,7 +368,10 @@ export class ApInboxService {
 		}
 
 		const resolver = this.apResolverService.createResolver();
-
+		if (typeof activity.object === 'string' && activity.object.startsWith('bear:')) {
+			this.logger.error(`skip bearcaps object: ${activity.object}`);
+			return;
+		}
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;

@@ -60,10 +60,10 @@ export function getApId(value: string | IObject): string {
 /**
  * Get ActivityStreams Object type
  */
-export function getApType(value: IObject): string {
+export function getApType(value: IObject): string | undefined {
 	if (typeof value.type === 'string') return value.type;
 	if (Array.isArray(value.type) && typeof value.type[0] === 'string') return value.type[0];
-	throw new Error('cannot detect type');
+	return undefined;
 }
 
 export function getOneApHrefNullable(value: ApObject | undefined): string | undefined {
@@ -108,7 +108,7 @@ export interface IOrderedCollection extends IObject {
 export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video', 'Event'];
 
 export const isPost = (object: IObject): object is IPost =>
-	validPost.includes(getApType(object));
+	validPost.includes(getApType(object) ?? '');
 
 export interface IPost extends IObject {
 	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video' | 'Event';
@@ -157,7 +157,7 @@ export const isTombstone = (object: IObject): object is ITombstone =>
 export const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'];
 
 export const isActor = (object: IObject): object is IActor =>
-	validActor.includes(getApType(object));
+	validActor.includes(getApType(object) ?? '');
 
 export interface IActor extends IObject {
 	type: 'Person' | 'Service' | 'Organization' | 'Group' | 'Application';
