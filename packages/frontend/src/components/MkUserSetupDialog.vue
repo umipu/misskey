@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div style="overflow-x: clip;">
 		<div :class="$style.progressBar">
-			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
+			<div :class="$style.progressBarValue" :style="{ width: `${(page / 4) * 100}%` }"></div>
 		</div>
 		<Transition
 			mode="out-in"
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
 							<div>{{ i18n.ts._initialAccountSetting.letsStartAccountSetup }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
-							<MkButton style="margin: 0 auto;" transparent rounded @click="later(true)">{{ i18n.ts.later }}</MkButton>
+							<MkButton style="margin: 0 auto;" transparent rounded @click="skip(true)">{{ i18n.ts.skip }}</MkButton>
 						</div>
 					</MkSpacer>
 				</div>
@@ -89,31 +89,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 4">
 				<div :class="$style.centerPage">
-					<MkSpacer :marginMin="20" :marginMax="28">
-						<div class="_gaps" style="text-align: center;">
-							<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
-							<div style="font-size: 120%;">{{ i18n.ts.pushNotification }}</div>
-							<div style="padding: 0 16px;">{{ i18n.tsx._initialAccountSetting.pushNotificationDescription({ name: instance.name ?? host }) }}</div>
-							<MkPushNotificationAllowButton primary showOnlyToRegister style="margin: 0 auto;"/>
-							<div class="_buttonsCenter" style="margin-top: 16px;">
-								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
-							</div>
-						</div>
-					</MkSpacer>
-				</div>
-			</template>
-			<template v-else-if="page === 5">
-				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
-							<div>{{ i18n.tsx._initialAccountSetting.youCanContinueTutorial({ name: instance.name ?? host }) }}</div>
-							<div class="_buttonsCenter" style="margin-top: 16px;">
-								<MkButton rounded primary gradate data-cy-user-setup-continue @click="launchTutorial()">{{ i18n.ts._initialAccountSetting.startTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
-							</div>
 							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 								<MkButton rounded primary data-cy-user-setup-continue @click="setupComplete()">{{ i18n.ts.close }}</MkButton>
@@ -136,9 +116,6 @@ import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { host } from '@/config.js';
-import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
@@ -173,26 +150,17 @@ function setupComplete() {
 	dialog.value?.close();
 }
 
-function launchTutorial() {
-	setupComplete();
-	nextTick(() => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {
-			initialPage: 1,
-		}, {}, 'closed');
-	});
-}
-
-async function later(later: boolean) {
-	if (later) {
+async function skip(skip: boolean) {
+	if (skip) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.ts._initialAccountSetting.laterAreYouSure,
+			text: i18n.ts._initialAccountSetting.skipAreYouSure,
 		});
 		if (canceled) return;
 	}
 
 	dialog.value?.close();
-	defaultStore.set('accountSetupWizard', 0);
+	defaultStore.set('accountSetupWizard', -1);
 }
 </script>
 

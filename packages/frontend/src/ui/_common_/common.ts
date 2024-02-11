@@ -103,13 +103,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		action: () => {
 			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
 		},
-	}, ($i) ? {
-		text: i18n.ts._initialTutorial.launchTutorial,
-		icon: 'ti ti-presentation',
-		action: () => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {}, 'closed');
-		},
-	} : undefined, {
+	}, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
 		to: '/about-misskey',
