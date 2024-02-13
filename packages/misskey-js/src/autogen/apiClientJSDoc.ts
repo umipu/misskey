@@ -1,8 +1,3 @@
-/*
- * version: 2024.2.0-beta.10-pie-3.2.1
- * generatedAt: 2024-02-10T11:39:02.785Z
- */
-
 import type { SwitchCaseResponseType } from '../api.js';
 import type { Endpoints } from './endpoint.js';
 
