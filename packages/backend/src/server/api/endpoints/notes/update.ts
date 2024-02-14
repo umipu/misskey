@@ -41,6 +41,11 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: 'fe8d7103-0ea8-4ec3-814d-f8b401dc69e9',
 		},
+		containsProhibitedWords: {
+			message: 'Cannot post because it contains prohibited words.',
+			code: 'CONTAINS_PROHIBITED_WORDS',
+			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
+		},
 	},
 } as const;
 
@@ -112,18 +117,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-			const targetNote = await this.noteEditService.edit(await this.usersRepository.findOneByOrFail({ id: note.userId }), note.id, {
-				text: ps.text,
-				cw: ps.cw,
-				files: ps.fileIds ? await this.driveFilesRepository.findBy({ id: In(ps.fileIds) }) : undefined,
-				poll: ps.poll ? {
-					choices: ps.poll.choices,
-					multiple: ps.poll.multiple ?? false,
-					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-				} : undefined,
-			}, undefined, me);
+			try {
+				const targetNote = await this.noteEditService.edit(await this.usersRepository.findOneByOrFail({ id: note.userId }), note.id, {
+					text: ps.text,
+					cw: ps.cw,
+					files: ps.fileIds ? await this.driveFilesRepository.findBy({ id: In(ps.fileIds) }) : undefined,
+					poll: ps.poll ? {
+						choices: ps.poll.choices,
+						multiple: ps.poll.multiple ?? false,
+						expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+					} : undefined,
+				}, undefined, me);
+				this.globalEventService.publishNoteStream(note.id, 'updated', targetNote);
+			} catch (e) {
+				if (e instanceof NoteEditService.ContainsProhibitedWordsError) {
+					throw new ApiError(meta.errors.containsProhibitedWords);
+				}
 
-			this.globalEventService.publishNoteStream(note.id, 'updated', targetNote);
+				throw e;
+			}
 		});
 	}
 }
