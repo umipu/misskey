@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <TransitionGroup
+	:key="reactionsKey"
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
 	:leaveActiveClass="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
 	:enterFromClass="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
@@ -13,12 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	tag="div" :class="$style.root"
 >
 	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
-	<slot v-if="hasMoreReactions" name="more"/>
+	<button v-if="hasMoreReactions" class="_button" :class="$style.showMore" @click="showMoreReactions">
+		<span>{{ i18n.ts.more }}</span>
+	</button>
 </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
@@ -29,9 +33,9 @@ const props = withDefaults(defineProps<{
 }>(), {
 	maxNumber: Infinity,
 });
-
+const reactionsKey = ref(0);
 const mock = inject<boolean>('mock', false);
-
+const max = ref(props.maxNumber);
 const emit = defineEmits<{
 	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;
 }>();
@@ -45,6 +49,10 @@ if (props.note.myReaction && !Object.keys(reactions.value).includes(props.note.m
 	reactions.value[props.note.myReaction] = props.note.reactions[props.note.myReaction];
 }
 
+function showMoreReactions() {
+	max.value = Infinity;
+}
+
 function onMockToggleReaction(emoji: string, count: number) {
 	if (!mock) return;
 
@@ -54,7 +62,11 @@ function onMockToggleReaction(emoji: string, count: number) {
 	emit('mockUpdateMyReaction', emoji, (count - reactions.value[i][1]));
 }
 
-watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+watch(() => props.maxNumber, () => {
+	max.value = props.maxNumber;
+}, { immediate: true, deep: true });
+
+watch([() => props.note.reactions, () => max.value], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
@@ -74,13 +86,14 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 			.filter(([y], i) => i < maxNumber && !newReactionsNames.includes(y)),
 	];
 
-	newReactions = newReactions.slice(0, props.maxNumber);
+	newReactions = newReactions.slice(0, maxNumber);
 
 	if (props.note.myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
 	}
 
 	reactions.value = newReactions;
+	reactionsKey.value = Math.random();
 }, { immediate: true, deep: true });
 </script>
 
@@ -104,6 +117,29 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 
 	&:empty {
 		display: none;
+	}
+}
+
+.showMore {
+	display: inline-flex;
+	height: 42px;
+	margin: 2px;
+	padding: 0 6px;
+	font-size: 1.5em;
+	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
+	border-style: dotted;
+	border: 1px;
+	border-radius: 6px;
+	height: 42px;
+	margin: 2px;
+	background: var(--buttonBg);
+
+	span {
+		font-size: 0.7em;
+		line-height: 42px;
+		margin: 0 0 0 4px;
 	}
 }
 </style>
