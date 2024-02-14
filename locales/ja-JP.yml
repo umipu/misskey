@@ -2360,6 +2360,7 @@ _moderationLogTypes:
   updateUserNote: "モデレーションノート更新"
   deleteDriveFile: "ファイルを削除"
   deleteNote: "ノートを削除"
+  editNote: "ノートを編集"
   createGlobalAnnouncement: "全体のお知らせを作成"
   createUserAnnouncement: "ユーザーへお知らせを作成"
   updateGlobalAnnouncement: "全体のお知らせを更新"
@@ -2381,6 +2382,7 @@ _moderationLogTypes:
   deleteAvatarDecoration: "アイコンデコレーションを削除"
   unsetUserAvatar: "ユーザーのアイコンを解除"
   unsetUserBanner: "ユーザーのバナーを解除"
+  promoteQueue: "キューを再試行"
 
 _fileViewer:
   title: "ファイルの詳細"

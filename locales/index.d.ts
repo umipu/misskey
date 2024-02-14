@@ -8908,6 +8908,10 @@ export interface Locale extends ILocale {
          */
         "deleteNote": string;
         /**
+         * ノートを編集
+         */
+        "editNote": string;
+        /**
          * 全体のお知らせを作成
          */
         "createGlobalAnnouncement": string;
@@ -8991,6 +8995,10 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * キューを再試行
+         */
+        "promoteQueue": string;
     };
     "_fileViewer": {
         /**

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>
 		<b
 			:class="{
-				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration'].includes(log.type),
+				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration', 'promoteQueue'].includes(log.type),
 				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
 				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'editNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
 			}"
@@ -110,6 +110,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
+		</template>
+		<template v-else-if="log.type === 'promoteQueue'">
+			<summary>raw</summary>
+			<pre>{{ JSON5.stringify(log, null, '\t') }}</pre>
 		</template>
 
 		<details>
