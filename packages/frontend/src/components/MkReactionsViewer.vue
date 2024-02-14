@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <TransitionGroup
-	:key="reactionsKey"
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
 	:leaveActiveClass="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
 	:enterFromClass="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
@@ -33,7 +32,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 	maxNumber: Infinity,
 });
-const reactionsKey = ref(0);
 const mock = inject<boolean>('mock', false);
 const max = ref(props.maxNumber);
 const emit = defineEmits<{
@@ -93,7 +91,6 @@ watch([() => props.note.reactions, () => max.value], ([newSource, maxNumber]) =>
 	}
 
 	reactions.value = newReactions;
-	reactionsKey.value = Math.random();
 }, { immediate: true, deep: true });
 </script>
 
