@@ -18,8 +18,7 @@ import type {
 	PublicKeyCredentialCreationOptionsJSON,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types';
-import type { INestApplicationContext } from '@nestjs/common';
+} from '@simplewebauthn/types';
 import type * as misskey from 'misskey-js';
 
 describe('2要素認証', () => {

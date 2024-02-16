@@ -17,7 +17,7 @@ export const lang = miLocalStorage.getItem('lang') ?? 'en-US';
 export const langs = _LANGS_;
 export let locale = JSON.parse(miLocalStorage.getItem('locale'));
 export const version = _VERSION_;
-export const instanceName = siteName === 'Misskey' ? host : siteName;
+export const instanceName = siteName === 'Misskey' || siteName == null ? host : siteName;
 export const ui = miLocalStorage.getItem('ui');
 export const debug = miLocalStorage.getItem('debug') === 'true';
 

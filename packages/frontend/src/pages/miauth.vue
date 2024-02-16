@@ -103,10 +103,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'MiAuth',
 	icon: 'ti ti-apps',
-});
+}));
 </script>
 
 <style lang="scss" module>

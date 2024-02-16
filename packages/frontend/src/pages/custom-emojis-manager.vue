@@ -338,21 +338,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.remote,
 }]);
 
-function updatePagination(result, emoji) {
-	if (result.updated) {
-		emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
-			...oldEmoji,
-			...result.updated,
-		}));
-	} else if (result.deleted) {
-		emojisPaginationComponent.value.removeItem(emoji.id);
-	}
-}
-
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
-})));
+}));
 </script>
 
 <style lang="scss" scoped>
