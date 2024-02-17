@@ -96,7 +96,7 @@ export function stealMenu(note: Note, el: HTMLElement) {
 				const localOnly = defaultStore.state.defaultNumberQuoteVisibility === 'inherits'
 					? note.localOnly
 					: defaultStore.state.defaultNumberQuoteLocalOnly;
-				api('notes/create', {
+				misskeyApi('notes/create', {
 					text: note.text,
 					visibility: visibility as never,
 					localOnly,
