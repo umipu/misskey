@@ -183,7 +183,7 @@ const routes: RouteDef[] = [{
 	}, {
 		path: '/ebisskey',
 		name: 'ebisskey',
-		component: page(() => import('./pages/settings/ebisskey.vue')),
+		component: page(() => import('@/pages/settings/ebisskey.vue')),
 	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
