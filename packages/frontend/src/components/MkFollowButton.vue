@@ -46,7 +46,6 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
 import { userName } from '@/filters/user.js';
 import { defaultStore } from "@/store.js";
-import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
