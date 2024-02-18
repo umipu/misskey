@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "2024.2.0-ebi.2",
+	"version": "2024.2.0-focalorus",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/shrimpia/misskey.git"
+		"url": "https://github.com/umipu/misskey.git"
 	},
 	"packageManager": "pnpm@8.15.1",
 	"workspaces": [
