@@ -482,6 +482,7 @@ export class NoteEditService implements OnApplicationShutdown {
 				noteUserUsername: user.username,
 				noteUserHost: user.host,
 				note: note,
+				oldNote: targetNote,
 			});
 		}
 		return note;
