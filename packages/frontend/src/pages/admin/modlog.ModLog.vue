@@ -110,7 +110,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
-
+		<template v-else-if="log.type === 'deleteNote'">
+			<MkNotePreview v-if="log.info.note" :class="$style.preview" :text="log.info.note.text" :files="targetFiles" :poll="log.info.note.poll ?? undefined" :useCw="log.info.note.useCw" :cw="log.info.note.cw" :user="targetUser"/>
+			<MkMediaList v-if="targetFiles" :mediaList="targetFiles"/>
+		</template>
+		<template v-else-if="log.type === 'editNote'">
+			<details>
+				<summary>Old Note</summary>
+				<MkNotePreview v-if="log.info.oldNote" :class="$style.preview" :text="log.info.oldNote.text" :files="targetOldFiles" :poll="log.info.oldNote.poll ?? undefined" :useCw="log.info.oldNote.useCw" :cw="log.info.oldNote.cw" :user="targetUser"/>
+				<MkMediaList v-if="targetOldFiles" :mediaList="targetOldFiles"/>
+			</details>
+			<details>
+				<summary>Current Note</summary>
+				<MkNotePreview v-if="log.info.note" :class="$style.preview" :text="log.info.note.text" :files="targetFiles" :poll="log.info.note.poll ?? undefined" :useCw="log.info.note.useCw" :cw="log.info.note.cw" :user="targetUser"/>
+				<MkMediaList v-if="targetFiles" :mediaList="targetFiles"/>
+			</details>
+		</template>
 		<details>
 			<summary>raw</summary>
 			<pre>{{ JSON5.stringify(log, null, '\t') }}</pre>
@@ -120,15 +135,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { defineProps, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
 import JSON5 from 'json5';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
-
+import MkNotePreview from '@/components/MkNotePreview.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 const props = defineProps<{
 	log: Misskey.entities.ModerationLog;
 }>();
+const log = ref(deepClone(props.log));
+const targetUser: Misskey.entities.User | undefined = log.value.type === 'editNote' || log.value.type === 'deleteNote' ? await misskeyApi('users/show', { userId: log.value.info.note.userId }) : undefined;
+const targetOldFiles = ref<Misskey.entities.DriveFile[] | undefined>(log.value.type === 'editNote' ? await Promise.all(log.value.info.oldNote.fileIds.map(async (id) => {
+	try {
+		return await misskeyApi('admin/drive/show-file', { fileId: id });
+	} catch {
+		return undefined;
+	}
+})) : undefined);
+const targetFiles = ref<Misskey.entities.DriveFile[] | undefined>(log.value.type === 'editNote' || log.value.type === 'deleteNote' ? await Promise.all(log.value.info.note.fileIds.map(async (id) => {
+	try {
+		return await misskeyApi('admin/drive/show-file', { fileId: id });
+	} catch {
+		return undefined;
+	}
+})) : undefined);
 </script>
 
 <style lang="scss" module>
