@@ -27,13 +27,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <template v-else-if="tweetId && tweetExpanded">
+	<MkLoading v-if="!isTweetLoaded" />
 	<div ref="twitter">
 		<iframe
 			ref="tweet"
 			allow="fullscreen;web-share"
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
+			:style="{ position: 'relative', width: `${tweetWidth}px`, height: isTweetLoaded ? `${tweetHeight}px` : '0px', border: 0, borderRadius: '13px'}"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
@@ -92,6 +93,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
+import MkLoading from '@/components/global/MkLoading.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -108,7 +110,6 @@ const props = withDefaults(defineProps<{
 
 const MOBILE_THRESHOLD = 500;
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
-
 const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
@@ -128,9 +129,12 @@ const playerEnabled = ref(false);
 const tweetId = ref<string | null>(null);
 const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
+const tweetWidth = ref(550);
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
-
+const tweet = ref<HTMLIFrameElement | null>(null);
+const twitter = ref<HTMLDivElement | null>(null);
+const isTweetLoaded = ref(false);
 onDeactivated(() => {
 	playerEnabled.value = false;
 });
@@ -178,13 +182,19 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		sensitive.value = info.sensitive ?? false;
 	});
 
-function adjustTweetHeight(message: any) {
+function loadMessage(message: any) {
 	if (message.origin !== 'https://platform.twitter.com') return;
 	const embed = message.data?.['twttr.embed'];
-	if (embed?.method !== 'twttr.private.resize') return;
-	if (embed?.id !== embedId) return;
-	const height = embed?.params[0]?.height;
-	if (height) tweetHeight.value = height;
+	if (embed?.method === 'twttr.private.rendered') {
+		isTweetLoaded.value = true;
+		adjustTweetWidth();
+	}
+	if (embed?.method === 'twttr.private.resize') {
+		if (embed?.id === embedId) {
+			const height = embed?.params[0]?.height;
+			if (height) tweetHeight.value = height;
+		}
+	}
 }
 
 const openPlayer = (): void => {
@@ -193,10 +203,22 @@ const openPlayer = (): void => {
 	});
 };
 
-(window as any).addEventListener('message', adjustTweetHeight);
+function adjustTweetWidth() {
+	if (twitter.value) {
+		if (twitter.value.clientWidth > 550) {
+			tweetWidth.value = 550;
+		} else {
+			tweetWidth.value = twitter.value.clientWidth;
+		}
+	}
+}
+
+(window as any).addEventListener('message', loadMessage);
+(window as any).addEventListener('resize', adjustTweetWidth);
 
 onUnmounted(() => {
-	(window as any).removeEventListener('message', adjustTweetHeight);
+	(window as any).removeEventListener('message', loadMessage);
+	(window as any).removeEventListener('resize', adjustTweetWidth);
 });
 </script>
 
