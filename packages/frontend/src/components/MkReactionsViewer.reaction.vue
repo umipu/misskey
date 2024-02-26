@@ -48,7 +48,7 @@ const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement>();
+const buttonEl = shallowRef<HTMLElement | null>(null);
 
 const isCustomEmoji = computed(() => props.reaction.includes(':'));
 const emoji = computed(() => isCustomEmoji.value ? customEmojis.value.find(emoji => emoji.name === props.reaction.replace(/:/g, '').replace(/@\./, '')) : null);
