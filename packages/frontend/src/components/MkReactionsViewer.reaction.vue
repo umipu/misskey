@@ -128,11 +128,12 @@ async function menu(ev) {
 
 function anime() {
 	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
-
-	const rect = buttonEl.value.getBoundingClientRect();
-	const x = rect.left + 16;
-	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	try {
+		const rect = buttonEl.value.getBoundingClientRect();
+		const x = rect.left + 16;
+		const y = rect.top + (buttonEl.value.offsetHeight / 2);
+		os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	} catch { /* empty */ }
 }
 
 const chooseAlternative = (ev) => {
