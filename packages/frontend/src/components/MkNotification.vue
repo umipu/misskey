@@ -6,12 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.head">
-		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
+		<div v-if="['pollEnded', 'note'].includes(notification.type) && notification.note">
+			<MkAvatar :class="$style.icon" :user="notification.note.user" link preview/>
+		</div>
 		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
-		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
+		<div v-else-if="notification.user">
+			<MkAvatar :class="$style.icon" :user="notification.user" link preview/>
+		</div>
 		<img v-else-if="notification.icon" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
 		<div
 			:class="[$style.subIcon, {
@@ -126,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-else-if="notification.type === 'renote:grouped'">
-				<div v-for="user of notification.users" :key="user.id" :class="$style.reactionsItem">
+				<div v-for="user of users" :key="user.id" :class="$style.reactionsItem">
 					<MkAvatar :class="$style.reactionsItemAvatar" :user="user" link preview/>
 				</div>
 			</div>
@@ -161,15 +165,15 @@ const props = withDefaults(defineProps<{
 
 const followRequestDone = ref(false);
 const reactions = ref(props.notification.type === 'reaction:grouped' ? props.notification.reactions.filter(reaction => reaction.user != null) : null);
-
+const users = ref(props.notification.type === 'renote:grouped' ? props.notification.users.filter(user => user != null) : null);
 const acceptFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (props.notification.type !== 'receiveFollowRequest' || props.notification.user == null) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (props.notification.type !== 'receiveFollowRequest' || props.notification.user == null) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
