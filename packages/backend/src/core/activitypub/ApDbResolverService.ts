@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -36,7 +36,7 @@ export type UriParseResult = {
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
 	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
-	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey[] | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,8 +54,8 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(1e3 * 60 * 20); // 20分
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(1e3 * 60 * 20); // 20分
 	}
 
 	@bindThis
@@ -157,16 +157,47 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
 		if (user.isDeleted) return null;
 
-		const key = await this.publicKeyByUserIdCache.fetch(
+		const keys = await this.publicKeyByUserIdCache.fetch(
 			user.id,
-			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
+			() => this.userPublickeysRepository.find({ where: { userId: user.id } }),
 			v => v != null,
 		);
+
+		if (keys == null || keys.length === 8) return null;
+
+		// 公開鍵は複数あるが、mainっぽいのを選ぶ
+		const key = keys.length === 1 ?
+			keys[0] :
+			keys.find(x => {
+				try {
+					const url = new URL(x.keyId);
+					const path = url.pathname.split('/').pop()?.toLowerCase();
+					if (url.hash) {
+						if (url.hash.toLowerCase().includes('main')) {
+							return true;
+						}
+					} else if (path?.includes('main') || path === 'publickey') {
+						return true;
+					}
+				} catch { /* noop */ }
+
+				return false;
+			}) ?? keys[0];
 
 		return {
 			user,
 			key,
 		};
+	}
+
+	@bindThis
+	public refreshCacheByUserId(userId: MiUser['id']): void {
+		this.publicKeyByUserIdCache.delete(userId);
+		for (const [k, v] of this.publicKeyCache.cache.entries()) {
+			if (v.value?.userId === userId) {
+				this.publicKeyCache.delete(k);
+			}
+		}
 	}
 
 	@bindThis

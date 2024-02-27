@@ -18,15 +18,35 @@ export class MiUserKeypair {
 	@JoinColumn()
 	public user: MiUser | null;
 
+	/**
+	 * RSA public key
+	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public publicKey: string;
 
+	/**
+	 * RSA private key
+	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public privateKey: string;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		default: null,
+	})
+	public ed25519PublicKey: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		default: null,
+	})
+	public ed25519PrivateKey: string | null;
 
 	constructor(data: Partial<MiUserKeypair>) {
 		if (data == null) return;

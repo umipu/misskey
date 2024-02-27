@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { verify } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DataSource } from 'typeorm';
+import { DataSource, In, Not } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
@@ -202,6 +203,27 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
+		if (x.additionalPublicKeys) {
+			if (!x.publicKey) {
+				throw new Error('invalid Actor: additionalPublicKeys is set but publicKey is not');
+			}
+
+			if (!Array.isArray(x.additionalPublicKeys)) {
+				throw new Error('invalid Actor: additionalPublicKeys is not an array');
+			}
+
+			for (const key of x.additionalPublicKeys) {
+				if (typeof key.id !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.id is not a string');
+				}
+
+				const keyIdHost = this.punyHost(key.id);
+				if (keyIdHost !== expectHost) {
+					throw new Error('invalid Actor: additionalPublicKeys.id has different host');
+				}
+			}
+		}
+
 		return x;
 	}
 
@@ -388,10 +410,20 @@ export class ApPersonService implements OnModuleInit {
 
 				if (person.publicKey) {
 					await transactionalEntityManager.save(new MiUserPublickey({
-						userId: user.id,
 						keyId: person.publicKey.id,
+						userId: user.id,
 						keyPem: person.publicKey.publicKeyPem,
 					}));
+
+					if (person.additionalPublicKeys) {
+						for (const key of person.additionalPublicKeys) {
+							await transactionalEntityManager.save(new MiUserPublickey({
+								keyId: key.id,
+								userId: user.id,
+								keyPem: key.publicKeyPem,
+							}));
+						}
+					}
 				}
 			});
 		} catch (e) {
@@ -543,12 +575,29 @@ export class ApPersonService implements OnModuleInit {
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
 
+		const availablePublicKeys = new Set<string>();
 		if (person.publicKey) {
-			await this.userPublickeysRepository.update({ userId: exist.id }, {
-				keyId: person.publicKey.id,
+			await this.userPublickeysRepository.update({ keyId: person.publicKey.id }, {
+				userId: exist.id,
 				keyPem: person.publicKey.publicKeyPem,
 			});
+			availablePublicKeys.add(person.publicKey.id);
+
+			if (person.additionalPublicKeys) {
+				for (const key of person.additionalPublicKeys) {
+					await this.userPublickeysRepository.update({ keyId: key.id }, {
+						userId: exist.id,
+						keyPem: key.publicKeyPem,
+					});
+					availablePublicKeys.add(key.id);
+				}
+			}
 		}
+
+		this.userPublickeysRepository.delete({
+			keyId: Not(In(Array.from(availablePublicKeys))),
+			userId: exist.id,
+		});
 
 		let _description: string | null = null;
 
