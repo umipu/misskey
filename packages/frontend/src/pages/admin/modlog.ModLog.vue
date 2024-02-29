@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>
 		<b
 			:class="{
-				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration'].includes(log.type),
+				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration', 'promoteQueue'].includes(log.type),
 				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
-				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
+				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'editNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'updateUserAnnouncement'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'deleteUserAnnouncement'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'deleteNote'">: @{{ log.info.noteUserUsername }}{{ log.info.noteUserHost ? '@' + log.info.noteUserHost : '' }}</span>
+		<span v-else-if="log.type === 'editNote'">: @{{ log.info.noteUserUsername }}{{ log.info.noteUserHost ? '@' + log.info.noteUserHost : '' }}</span>
 		<span v-else-if="log.type === 'deleteDriveFile'">: @{{ log.info.fileUserUsername }}{{ log.info.fileUserHost ? '@' + log.info.fileUserHost : '' }}</span>
 		<span v-else-if="log.type === 'createAvatarDecoration'">: {{ log.info.avatarDecoration.name }}</span>
 		<span v-else-if="log.type === 'updateAvatarDecoration'">: {{ log.info.before.name }}</span>
@@ -139,14 +140,15 @@ import { defineProps, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
 import JSON5 from 'json5';
+import { deepClone } from '@/scripts/clone.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 const props = defineProps<{
-	log: Misskey.entities.ModerationLog;
-}>();
+		log: Misskey.entities.ModerationLog;
+	}>();
 const log = ref(deepClone(props.log));
 const targetUser: Misskey.entities.User | undefined = log.value.type === 'editNote' || log.value.type === 'deleteNote' ? await misskeyApi('users/show', { userId: log.value.info.note.userId }) : undefined;
 const targetOldFiles = ref<Misskey.entities.DriveFile[] | undefined>(log.value.type === 'editNote' ? await Promise.all(log.value.info.oldNote.fileIds.map(async (id) => {
@@ -165,28 +167,28 @@ const targetFiles = ref<Misskey.entities.DriveFile[] | undefined>(log.value.type
 })) : undefined);
 </script>
 
-<style lang="scss" module>
-.avatar {
-	width: 18px;
-	height: 18px;
-}
+	<style lang="scss" module>
+	.avatar {
+		width: 18px;
+		height: 18px;
+	}
 
-.diff {
-	background: #fff;
-	color: #000;
-	border-radius: 6px;
-	overflow: clip;
-}
+	.diff {
+		background: #fff;
+		color: #000;
+		border-radius: 6px;
+		overflow: clip;
+	}
 
-.logYellow {
-	color: var(--warn);
-}
+	.logYellow {
+		color: var(--warn);
+	}
 
-.logRed {
-	color: var(--error);
-}
+	.logRed {
+		color: var(--error);
+	}
 
-.logGreen {
-	color: var(--success);
-}
-</style>
+	.logGreen {
+		color: var(--success);
+	}
+	</style>
