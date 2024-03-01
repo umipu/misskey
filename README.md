@@ -29,3 +29,14 @@ Ebisskey-FocalorusはEbisskeyにさらなる追加機能をもたらしていま
 2. `git pull`
 3. `pnpm install && pnpm build`
 4. `pnpm migrate`
+
+###　ブランチについて
+
+本リポジトリは主に3つのブランチがあります
+
+* Master
+	* EbisskeyのMasterブランチになります。
+* focalorus
+	* Ebisskeyに追加機能をもたらしたブランチになります。
+* focalorus-dev
+	* focalorusブランチのdevelopブランチになります。
