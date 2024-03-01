@@ -34,7 +34,7 @@ import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import { unicodeEmojisMap } from '@/scripts/emojilist.js';
+import { getUnicodeEmoji } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -49,10 +49,10 @@ const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement>();
+const buttonEl = shallowRef<HTMLElement | null>(null);
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? unicodeEmojisMap.get(props.reaction));
+const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
 	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
@@ -128,11 +128,12 @@ async function menu(ev) {
 
 function anime() {
 	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
-
-	const rect = buttonEl.value.getBoundingClientRect();
-	const x = rect.left + 16;
-	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	try {
+		const rect = buttonEl.value.getBoundingClientRect();
+		const x = rect.left + 16;
+		const y = rect.top + (buttonEl.value.offsetHeight / 2);
+		os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	} catch { /* empty */ }
 }
 
 const chooseAlternative = (ev) => {

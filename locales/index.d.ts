@@ -4657,6 +4657,10 @@ export interface Locale extends ILocale {
      */
     "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
@@ -6439,6 +6443,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -6528,6 +6536,10 @@ export interface Locale extends ILocale {
             "avatarDecorationLimit": string;
         };
         "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */
@@ -8905,6 +8917,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        "flushNotification": string;
         "_types": {
             /**
              * すべて

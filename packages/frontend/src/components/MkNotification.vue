@@ -116,8 +116,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</span>
 
 			<div v-if="notification.type === 'reaction:grouped'">
-				<div v-for="reaction of notification.reactions" :key="reaction.user.id + reaction.reaction" :class="$style.reactionsItem">
-					<MkAvatar :class="$style.reactionsItemAvatar" :user="reaction.user" link preview/>
+				<div v-for="reaction of reactions" :key="reaction.user.id + reaction.reaction" :class="$style.reactionsItem">
+					<MkAvatar v-if="reaction.user" :class="$style.reactionsItemAvatar" :user="reaction.user" link preview/>
 					<div :class="$style.reactionsItemReaction">
 						<MkReactionIcon
 							:withTooltip="true"
@@ -164,6 +164,7 @@ const props = withDefaults(defineProps<{
 });
 
 const followRequestDone = ref(false);
+const reactions = ref(props.notification.type === 'reaction:grouped' ? props.notification.reactions.filter(reaction => reaction.user != null) : null);
 
 const acceptFollowRequest = () => {
 	if (props.notification.user == null) return;
