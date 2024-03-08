@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2024.3.1-f",
+	"version": "2024.3.1-focalorus 1.0.2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
