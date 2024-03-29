@@ -100,9 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<template v-else-if="notification.type === 'follow'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
-				<div v-if="full && defaultStore.reactiveState.showFollowingMessageInsteadOfButtonEnabled.value">
-					<MkFollowButton :user="notification.user" :full="true" :disable-if-following="defaultStore.reactiveState.showFollowingMessageInsteadOfButtonEnabled.value"/>
-				</div>
+				<MkFollowButton :class="$style.follow" :user="notification.user" full/>
 			</template>
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
@@ -143,6 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkFollowButton from './MkFollowButton.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
