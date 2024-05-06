@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { verify } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DataSource, In, Not } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
@@ -41,6 +40,7 @@ import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -79,8 +79,6 @@ export class ApPersonService implements OnModuleInit {
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
 	private logger: Logger;
-	private httpRequestService: HttpRequestService;
-	private avatarDecorationService: AvatarDecorationService;
 	private httpRequestService: HttpRequestService;
 	private avatarDecorationService: AvatarDecorationService;
 
@@ -131,8 +129,6 @@ export class ApPersonService implements OnModuleInit {
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
 		this.logger = this.apLoggerService.logger;
-		this.httpRequestService = this.moduleRef.get('HttpRequestService');
-		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 		this.httpRequestService = this.moduleRef.get('HttpRequestService');
 		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 	}
@@ -203,27 +199,6 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		if (x.additionalPublicKeys) {
-			if (!x.publicKey) {
-				throw new Error('invalid Actor: additionalPublicKeys is set but publicKey is not');
-			}
-
-			if (!Array.isArray(x.additionalPublicKeys)) {
-				throw new Error('invalid Actor: additionalPublicKeys is not an array');
-			}
-
-			for (const key of x.additionalPublicKeys) {
-				if (typeof key.id !== 'string') {
-					throw new Error('invalid Actor: additionalPublicKeys.id is not a string');
-				}
-
-				const keyIdHost = this.punyHost(key.id);
-				if (keyIdHost !== expectHost) {
-					throw new Error('invalid Actor: additionalPublicKeys.id has different host');
-				}
-			}
-		}
-
 		return x;
 	}
 
@@ -257,7 +232,9 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
-	private async resolveAvatarAndBanner(user: MiRemoteUser, host: string | null, icon: any, image: any): Promise<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash' | 'avatarDecorations'>> {
+	private async resolveAvatarAndBanner(user: MiRemoteUser, host: string | null, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash' | 'avatarDecorations'>>> {
+		if (user == null) throw new Error('failed to create user: user is null');
+
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {
 			// if we have an explicitly missing image, return an
 			// explicitly-null set of values
@@ -268,13 +245,24 @@ export class ApPersonService implements OnModuleInit {
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
+		/*
+			we don't want to return nulls on errors! if the database fields
+			are already null, nothing changes; if the database has old
+			values, we should keep those. The exception is if the remote has
+			actually removed the images: in that case, the block above
+			returns the special {id:null}&c value, and we return those
+		*/
 		const returnData: any = {
-			avatarId: avatar?.id ?? null,
-			bannerId: banner?.id ?? null,
-			avatarUrl: avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
-			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
-			avatarBlurhash: avatar?.blurhash ?? null,
-			bannerBlurhash: banner?.blurhash ?? null,
+			...( avatar ? {
+				avatarId: avatar.id,
+				avatarUrl: avatar.url ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
+				avatarBlurhash: avatar.blurhash,
+			} : {}),
+			...( banner ? {
+				bannerId: banner.id,
+				bannerUrl: banner.url ? this.driveFileEntityService.getPublicUrl(banner) : null,
+				bannerBlurhash: banner.blurhash,
+			} : {}),
 		};
 
 		if (host) {
@@ -410,20 +398,10 @@ export class ApPersonService implements OnModuleInit {
 
 				if (person.publicKey) {
 					await transactionalEntityManager.save(new MiUserPublickey({
-						keyId: person.publicKey.id,
 						userId: user.id,
+						keyId: person.publicKey.id,
 						keyPem: person.publicKey.publicKeyPem,
 					}));
-
-					if (person.additionalPublicKeys) {
-						for (const key of person.additionalPublicKeys) {
-							await transactionalEntityManager.save(new MiUserPublickey({
-								keyId: key.id,
-								userId: user.id,
-								keyPem: key.publicKeyPem,
-							}));
-						}
-					}
 				}
 			});
 		} catch (e) {
@@ -575,29 +553,12 @@ export class ApPersonService implements OnModuleInit {
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
 
-		const availablePublicKeys = new Set<string>();
 		if (person.publicKey) {
-			await this.userPublickeysRepository.update({ keyId: person.publicKey.id }, {
-				userId: exist.id,
+			await this.userPublickeysRepository.update({ userId: exist.id }, {
+				keyId: person.publicKey.id,
 				keyPem: person.publicKey.publicKeyPem,
 			});
-			availablePublicKeys.add(person.publicKey.id);
-
-			if (person.additionalPublicKeys) {
-				for (const key of person.additionalPublicKeys) {
-					await this.userPublickeysRepository.update({ keyId: key.id }, {
-						userId: exist.id,
-						keyPem: key.publicKeyPem,
-					});
-					availablePublicKeys.add(key.id);
-				}
-			}
 		}
-
-		this.userPublickeysRepository.delete({
-			keyId: Not(In(Array.from(availablePublicKeys))),
-			userId: exist.id,
-		});
 
 		let _description: string | null = null;
 
