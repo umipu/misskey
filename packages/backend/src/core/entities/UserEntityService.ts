@@ -453,11 +453,6 @@ export class UserEntityService implements OnModuleInit {
 
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 
-		const memo = meId == null ? null : this.userMemosRepository.findOneBy({
-			userId: meId,
-			targetUserId: user.id,
-		}).then(row => row?.memo ?? null);
-
 		const packed = {
 			id: user.id,
 			name: user.name,
