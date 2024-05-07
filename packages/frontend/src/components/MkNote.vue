@@ -125,6 +125,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
+				<button v-if="stealButtonVisible" ref="stealButton" :class="$style.footerButton" class="_button" @mousedown="stealMenu(appearNote, stealButton)">
+					<i class="ti ti-swipe"></i>
+				</button>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
@@ -202,6 +205,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { notePage } from '@/filters/note.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { stealMenu } from '@/scripts/steal-menu.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
