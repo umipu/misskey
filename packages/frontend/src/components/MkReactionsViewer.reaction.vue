@@ -52,6 +52,7 @@ const emit = defineEmits<{
 const buttonEl = shallowRef<HTMLElement | null>(null);
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
+const alternative: ComputedRef<string | null> = computed(() => defaultStore.state.reactableRemoteReactionEnabled ? (customEmojisMap.get(emojiName.value)?.name ?? null) : null);
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
