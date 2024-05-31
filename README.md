@@ -26,37 +26,24 @@
 
 </div>
 
-[Misskey](https://github.com/misskey-dev/misskey) は、ActivityPubによるサーバー間連合をサポートした、多機能で楽しいSNSです。
+## Thanks
 
-Ebisskeyは、Misskeyの最新版に追従しながら、いくつかの追加機能と改善をもたらしています。
+<a href="https://sentry.io/"><img src="https://github.com/misskey-dev/misskey/assets/4439005/98576556-222f-467a-94be-e98dbda1d852" height="30" alt="Sentry" /></a>
 
-[本家 Misskey との違い](DIFFERENCE.md) にて違いを確認できます。
+Thanks to [Sentry](https://sentry.io/) for providing the error tracking platform that helps us catch unexpected errors.
 
-Ebisskey固有のリリースノートは [CHANGELOG-EBISSKEY.md](CHANGELOG-EBISSKEY.md)を参照。
+<a href="https://www.chromatic.com/"><img src="https://user-images.githubusercontent.com/321738/84662277-e3db4f80-af1b-11ea-88f5-91d67a5e59f6.png" height="30" alt="Chromatic" /></a>
 
-Ebisskey-FocalorusはEbisskeyにさらなる追加機能をもたらしています。
+Thanks to [Chromatic](https://www.chromatic.com/) for providing the visual testing platform that helps us review UI changes and catch visual regressions.
 
-基本的にEbisskeyに追従しています。
-## サーバー構築方法
+<a href="https://about.codecov.io/for/open-source/"><img src="https://about.codecov.io/wp-content/themes/codecov/assets/brand/sentry-cobranding/logos/codecov-by-sentry-logo.svg" height="30" alt="Codecov" /></a>
 
-基本的に[Misskey Hubの手順](https://misskey-hub.net/docs/install/manual.html)が適用できます。
-ただし、cloneする場合は `https://github.com/umipu/misskey.git` をURLに指定してください。
+Thanks to [Codecov](https://about.codecov.io/for/open-source/) for providing the code coverage platform that helps us improve our test coverage.
 
-### 本家 Misskeyから移行する
+<a href="https://crowdin.com/"><img src="https://user-images.githubusercontent.com/20679825/230709597-1299a011-171a-4294-a91e-355a9b37c672.svg" height="30" alt="Crowdin" /></a>
 
-1. リモートブランチのURLを変更する
-  `git remote set-url origin https://github.com/umipu/misskey.git`
-2. `git pull`
-3. `pnpm install && pnpm build`
-4. `pnpm migrate`
+Thanks to [Crowdin](https://crowdin.com/) for providing the localization platform that helps us translate Misskey into many languages.
 
-###　ブランチについて
+<a href="https://hub.docker.com/"><img src="https://user-images.githubusercontent.com/20679825/230148221-f8e73a32-a49b-47c3-9029-9a15c3824f92.png" height="30" alt="Docker" /></a>
 
-本リポジトリは主に3つのブランチがあります
-
-* Master
-	* EbisskeyのMasterブランチになります。
-* focalorus
-	* Ebisskeyに追加機能をもたらしたブランチになります。
-* focalorus-dev
-	* focalorusブランチのdevelopブランチになります。
+Thanks to [Docker](https://hub.docker.com/) for providing the container platform that helps us run Misskey in production.
