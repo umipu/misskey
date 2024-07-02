@@ -129,6 +129,8 @@ async function onClick() {
 				});
 				hasPendingFollowRequestFromYou.value = true;
 
+				if ($i == null) return;
+
 				claimAchievement('following1');
 
 				if ($i.followingCount >= 10) {
