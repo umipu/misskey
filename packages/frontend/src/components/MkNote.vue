@@ -208,7 +208,6 @@ import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { stealMenu } from '@/scripts/steal-menu.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
-import { focusPrev, focusNext } from '@/scripts/focus.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
