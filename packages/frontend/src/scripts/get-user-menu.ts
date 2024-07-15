@@ -101,9 +101,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 	}
 
 	function reportAbuse() {
-		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 
 	async function getConfirmed(text: string): Promise<boolean> {
@@ -185,7 +187,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
-	}, {
+	}, ...($i ? [{
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
@@ -264,7 +266,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 				},
 			}));
 		},
-	}] as any;
+	}] : [])] as any;
 
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {

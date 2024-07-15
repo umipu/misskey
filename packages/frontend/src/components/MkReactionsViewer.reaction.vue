@@ -118,10 +118,12 @@ async function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: async () => {
-			os.popup(MkCustomEmojiDetailedDialog, {
+			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
 				emoji: await misskeyApiGet('emoji', {
 					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
 				}),
+			}, {
+				closed: () => dispose(),
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -129,22 +131,14 @@ async function menu(ev) {
 
 function anime() {
 	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
-	try {
-		const rect = buttonEl.value.getBoundingClientRect();
-		const x = rect.left + 16;
-		const y = rect.top + (buttonEl.value.offsetHeight / 2);
-		os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
-	} catch { /* empty */ }
-}
 
-const chooseAlternative = (ev) => {
-	// メニュー表示にして、モデレーター以上の場合は登録もできるように
-	if (!alternative.value) return;
-	misskeyApi('notes/reactions/create', {
-		noteId: props.note.id,
-		reaction: `:${alternative.value}:`,
+	const rect = buttonEl.value.getBoundingClientRect();
+	const x = rect.left + 16;
+	const y = rect.top + (buttonEl.value.offsetHeight / 2);
+	const { dispose } = os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {
+		end: () => dispose(),
 	});
-};
+}
 
 watch(() => props.count, (newCount, oldCount) => {
 	if (oldCount < newCount) anime();
@@ -165,13 +159,15 @@ if (!mock) {
 
 		const users = reactions.map(x => x.user);
 
-		os.popup(XDetails, {
+		const { dispose } = os.popup(XDetails, {
 			showing,
 			reaction: props.reaction,
 			users,
 			count: props.count,
 			targetElement: buttonEl.value,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}, 100);
 }
 </script>
