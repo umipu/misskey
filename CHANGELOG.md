@@ -28,6 +28,7 @@
 - Fix: テーマプレビューが見れない問題を修正
 - Fix: ショートカットキーが連打できる問題を修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/234)
+- Fix: MkSignin.vueのcredentialRequestからReactivityを削除（ProxyがPasskey認証処理に渡ることを避けるため）
 
 ### Server
 - Feat: レートリミット制限に引っかかったときに`Retry-After`ヘッダーを返すように (#13949)
@@ -38,7 +39,7 @@
 - Enhance: エンドポイント`i/webhook/update`の必須項目を`webhookId`のみに
 - Enhance: エンドポイント`admin/ad/update`の必須項目を`id`のみに
 - Enhance: `default.yml`内の`url`, `db.db`, `db.user`, `db.pass`を環境変数から読み込めるように
-- Fix: チャート生成時にinstance.suspentionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
+- Fix: チャート生成時にinstance.suspensionStateに置き換えられたinstance.isSuspendedが参照されてしまう問題を修正
 - Fix: ユーザーのフィードページのMFMをHTMLに展開するように (#14006)
 - Fix: アンテナ・クリップ・リスト・ウェブフックがロールポリシーの上限より一つ多く作れてしまうのを修正 (#14036)
 - Fix: notRespondingSinceが実装される前に不通になったインスタンスが自動的に配信停止にならない (#14059)
