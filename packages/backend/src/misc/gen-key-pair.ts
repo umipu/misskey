@@ -14,14 +14,3 @@ export async function genRSAAndEd25519KeyPair(rsaModulusLength = 4096) {
 		ed25519PrivateKey: ed25519.privateKey,
 	};
 }
-
-export async function genRSAAndEd25519KeyPair(rsaModulusLength = 4096) {
-	const rsa = await genRsaKeyPair(rsaModulusLength);
-	const ed25519 = await genEd25519KeyPair();
-	return {
-		publicKey: rsa.publicKey,
-		privateKey: rsa.privateKey,
-		ed25519PublicKey: ed25519.publicKey,
-		ed25519PrivateKey: ed25519.privateKey,
-	};
-}
