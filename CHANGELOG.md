@@ -1,3 +1,8 @@
+## focalorus-1.0.1
+
+### General
+- ロール別にお知らせを発行可能に　@tai-cha
+
 ## 2024.7.0
 
 ### Note
