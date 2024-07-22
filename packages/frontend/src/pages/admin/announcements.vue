@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
 					<div class="_gaps_s">
-						<div class="label">{{ i18n.ts.roles }}</div>
+						<div class="label" :class="$style.rolesLabel">{{ i18n.ts.roles }}</div>
 						<div v-for="role in announcement.roles" :key="`announcement-role-${role.id}`" class="_gaps_s">
 							<div :class="$style.roleItems">
 								<MkRolePreview :role="role" :noLink="true" :forModeration="false" :class="$style.rolePreview"/>
@@ -201,6 +201,16 @@ definePageMetadata(() => ({
 
 .rolePreview {
 	flex-grow: 1;
+}
+
+.rolesLabel {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
+
+	&:empty {
+		display: none;
+	}
 }
 
 .remove {
