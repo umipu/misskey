@@ -1834,7 +1834,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes*
+     * **Credential required**: *No*
      */
     request<E extends 'federation/instances', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3963,17 +3963,6 @@ declare module '../api.js' {
      * **Credential required**: *No*
      */
     request<E extends 'users/notes', P extends Endpoints[E]['req']>(
-      endpoint: E,
-      params: P,
-      credential?: string | null,
-    ): Promise<SwitchCaseResponseType<E, P>>;
-
-    /**
-     * Show all pages this user created.
-     * 
-     * **Credential required**: *No*
-     */
-    request<E extends 'users/pages', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

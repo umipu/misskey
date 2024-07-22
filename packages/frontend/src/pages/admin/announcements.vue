@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
-			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
+			<MkFolder v-for="(announcement, announcementIndex) in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
 				<template #label>{{ announcement.title }}</template>
 				<template #icon>
 					<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
@@ -44,6 +44,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
+					<div class="_gaps_s">
+						<div class="label">{{ i18n.ts.roles }}</div>
+						<div v-for="role in announcement.roles" :key="`announcement-role-${role.id}`" class="_gaps_s">
+							<div :class="$style.roleItems">
+								<MkRolePreview :role="role" :noLink="true" :forModeration="false" :class="$style.rolePreview"/>
+								<button class="_button" :class="$style.remove" @click="removeRole(announcementIndex, role)"><i class="ti ti-x"></i></button>
+							</div>
+						</div>
+						<MkButton @click="addRole(announcement)">{{ i18n.ts.add }}</MkButton>
+					</div>
 					<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
@@ -84,12 +94,25 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const announcements = ref<any[]>([]);
 
 misskeyApi('admin/announcements/list').then(announcementResponse => {
 	announcements.value = announcementResponse;
 });
+
+function addRole(announcement) {
+	os.selectRole({ admin: true }).then(role => {
+		const index = announcements.value.findIndex(x => x.id === announcement.id);
+		console.log(index);
+		announcements.value[index].roles.push(role);
+	});
+}
+
+function removeRole(index: number, role) {
+	announcements.value[index].roles = announcements.value[index].roles.filter(x => x.id !== role.id);
+}
 
 function add() {
 	announcements.value.unshift({
@@ -103,6 +126,9 @@ function add() {
 		forExistingUsers: false,
 		silence: false,
 		needConfirmationToRead: false,
+		isRoleSpecified: false,
+		roles: [],
+		roleIds: [] as string[],
 	});
 }
 
@@ -126,6 +152,12 @@ async function archive(announcement) {
 }
 
 async function save(announcement) {
+	announcement.roleIds = announcement.roles.map(role => role.id);
+	if (announcement.roleIds.length === 0) {
+		announcement.isRoleSpecified = false;
+	} else {
+		announcement.isRoleSpecified = true;
+	}
 	if (announcement.id == null) {
 		await os.apiWithDialog('admin/announcements/create', announcement);
 		refresh();
@@ -162,3 +194,21 @@ definePageMetadata(() => ({
 	icon: 'ti ti-speakerphone',
 }));
 </script>
+<style module>
+.roleItems {
+	display: flex;
+}
+
+.rolePreview {
+	flex-grow: 1;
+}
+
+.remove {
+	width: 32px;
+	height: 32px;
+	align-self: center;
+	& > i:before {
+		color: #ff2a2a;
+	}
+}
+</style>
