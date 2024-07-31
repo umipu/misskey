@@ -137,12 +137,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					announcementId: announcement.id,
 				}));
 			}
-			const announcementRoleIds = await this.announcementRolesRepository
+			const announcementRoleIds = announcements.length > 0 ? await this.announcementRolesRepository
 				.createQueryBuilder('announcement_role')
 				.where('announcement_role.announcementId IN (:...announcementIds)', { announcementIds: announcements.map(announcement => announcement.id) })
 				.select('announcement_role.announcementId')
 				.addSelect('announcement_role.roleId')
-				.getMany() as Pick<MiAnnouncementRole, 'announcementId' | 'roleId'>[];
+				.getMany() as Pick<MiAnnouncementRole, 'announcementId' | 'roleId'>[] : [];
 
 			const announcementRoles = await Promise.all(announcementRoleIds.map(async ar => { const role = await this.roleEntityService.pack(ar.roleId); return { ...ar, role }; }));
 
