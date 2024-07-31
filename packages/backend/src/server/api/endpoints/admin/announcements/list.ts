@@ -92,6 +92,7 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
+		status: { type: 'string', enum: ['all', 'active', 'archived'], default: 'active' },
 	},
 	required: [],
 } as const;
@@ -114,7 +115,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
-			query.andWhere('announcement.isActive = true');
+
+			if (ps.status === 'archived') {
+				query.andWhere('announcement.isActive = false');
+			} else if (ps.status === 'active') {
+				query.andWhere('announcement.isActive = true');
+			}
+
 			if (ps.userId) {
 				query.andWhere('announcement.userId = :userId', { userId: ps.userId });
 			} else {
@@ -130,12 +137,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					announcementId: announcement.id,
 				}));
 			}
-			const announcementRoleIds = await this.announcementRolesRepository
+			const announcementRoleIds = announcements.length > 0 ? await this.announcementRolesRepository
 				.createQueryBuilder('announcement_role')
 				.where('announcement_role.announcementId IN (:...announcementIds)', { announcementIds: announcements.map(announcement => announcement.id) })
 				.select('announcement_role.announcementId')
 				.addSelect('announcement_role.roleId')
-				.getMany() as Pick<MiAnnouncementRole, 'announcementId' | 'roleId'>[];
+				.getMany() as Pick<MiAnnouncementRole, 'announcementId' | 'roleId'>[] : [];
 
 			const announcementRoles = await Promise.all(announcementRoleIds.map(async ar => { const role = await this.roleEntityService.pack(ar.roleId); return { ...ar, role }; }));
 
