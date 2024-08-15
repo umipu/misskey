@@ -22,6 +22,12 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/679)
 - Fix: ActivityPubのエンティティタイプ判定で不明なタイプを受け取った場合でも処理を継続するように
   - キュー処理のつまりが改善される可能性があります
+
+## focalorus-1.0.2
+
+### General
+- お知らせが1件もない場合にコンパネでエラーになる問題を修正　@tai-cha
+
 ## focalorus-1.0.1
 
 ### General
