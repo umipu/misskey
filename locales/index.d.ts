@@ -2829,7 +2829,7 @@ export interface Locale extends ILocale {
      */
     "reportAbuseOf": ParameterizedString<"name">;
     /**
-     * 通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。
+     * 通報理由の詳細を記入してください。対象のノートやページなどがある場合はそのURLも記入してください。
      */
     "fillAbuseReportDescription": string;
     /**
@@ -8633,6 +8633,18 @@ export interface Locale extends ILocale {
          * 最大{max}つまでデコレーションを付けられます。
          */
         "avatarDecorationMax": ParameterizedString<"max">;
+        /**
+         * フォローされた時のメッセージ
+         */
+        "followedMessage": string;
+        /**
+         * フォローされた時に相手に表示するメッセージを設定できます。
+         */
+        "followedMessageDescription": string;
+        /**
+         * フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。
+         */
+        "followedMessageDescriptionForLockedAccount": string;
     };
     "_exportOrImport": {
         /**
@@ -8989,6 +9001,10 @@ export interface Locale extends ILocale {
          * ブロックを追加
          */
         "chooseBlock": string;
+        /**
+         * セクションタイトルを入力
+         */
+        "enterSectionTitle": string;
         /**
          * 種類を選択
          */
@@ -9683,6 +9699,22 @@ export interface Locale extends ILocale {
          * 通報の通知先を削除
          */
         "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * アカウントを削除
+         */
+        "deleteAccount": string;
+        /**
+         * ページを削除
+         */
+        "deletePage": string;
+        /**
+         * Playを削除
+         */
+        "deleteFlash": string;
+        /**
+         * ギャラリーの投稿を削除
+         */
+        "deleteGalleryPost": string;
     };
     "_fileViewer": {
         /**

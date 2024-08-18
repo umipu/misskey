@@ -454,12 +454,12 @@ export class UserEntityService implements OnModuleInit {
 		}
 
 		const followingCount = profile == null ? null :
-			(profile.followingVisibility === 'public') || isMe ? user.followingCount :
+			(profile.followingVisibility === 'public') || isMe || iAmModerator ? user.followingCount :
 			(profile.followingVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
 			null;
 
 		const followersCount = profile == null ? null :
-			(profile.followersVisibility === 'public') || isMe ? user.followersCount :
+			(profile.followersVisibility === 'public') || isMe || iAmModerator ? user.followersCount :
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
@@ -508,7 +508,7 @@ export class UserEntityService implements OnModuleInit {
 					name: r.name,
 					iconUrl: r.iconUrl,
 					displayOrder: r.displayOrder,
-				}))
+				})),
 			) : undefined,
 
 			...(isDetailed ? {
@@ -567,6 +567,7 @@ export class UserEntityService implements OnModuleInit {
 			...(isDetailed && isMe ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
+				followedMessage: profile!.followedMessage,
 				isModerator: isModerator,
 				isAdmin: isAdmin,
 				injectFeaturedNote: profile!.injectFeaturedNote,
