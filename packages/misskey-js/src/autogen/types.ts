@@ -3779,6 +3779,7 @@ export type components = {
       avatarId: string | null;
       /** Format: id */
       bannerId: string | null;
+      followedMessage: string | null;
       isModerator: boolean | null;
       isAdmin: boolean | null;
       injectFeaturedNote: boolean;
@@ -4219,7 +4220,7 @@ export type components = {
       user: components['schemas']['UserLite'];
       /** Format: id */
       userId: string;
-    } | {
+    } | ({
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4229,7 +4230,8 @@ export type components = {
       user: components['schemas']['UserLite'];
       /** Format: id */
       userId: string;
-    } | {
+      message: string | null;
+    }) | {
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -8900,6 +8902,7 @@ export type operations = {
           'application/json': {
             email: string | null;
             emailVerified: boolean;
+            followedMessage: string | null;
             autoAcceptFollowed: boolean;
             noCrawle: boolean;
             preventAiLearning: boolean;
@@ -19562,6 +19565,7 @@ export type operations = {
         'application/json': {
           name?: string | null;
           description?: string | null;
+          followedMessage?: string | null;
           location?: string | null;
           birthday?: string | null;
           /** @enum {string|null} */
