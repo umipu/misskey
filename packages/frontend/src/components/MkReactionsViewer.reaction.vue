@@ -139,7 +139,6 @@ async function menu(ev) {
         text: i18n.ts.copy,
         icon: 'ti ti-copy',
         action: () => {
-            copyToClipboard(`:${reactionName.value}:`);
             os.toast(i18n.ts.copied, 'copied');
         },
     } : undefined], ev.currentTarget ?? ev.target);
