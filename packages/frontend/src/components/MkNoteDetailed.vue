@@ -134,10 +134,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
 			</button>
-			<button v-if="stealButtonVisible" ref="stealButton" class="button _button" :class="$style.noteFooterButton" @mousedown="stealMenu(appearNote, stealButton)">
+			<button v-if="stealButtonVisible" ref="stealButton" class="button _button" :class="$style.noteFooterButton" @mousedown.prevent="stealMenu(appearNote, stealButton)">
 				<i class="ti ti-swipe"></i>
 			</button>
-			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown="clip()">
+			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 				<i class="ti ti-paperclip"></i>
 			</button>
 			<button ref="menuButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="showMenu()">
@@ -295,6 +295,7 @@ const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultS
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
+const stealButtonVisible = appearNote.value.text && defaultStore.state.stealEnabled;
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
