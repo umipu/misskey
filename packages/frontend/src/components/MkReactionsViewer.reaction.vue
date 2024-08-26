@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle || alternative, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
-	@click="toggleReaction()"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: (canToggle || alternative), [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	@click.stop="(ev) => { canToggle || alternative ? toggleReaction(ev) : stealReaction(ev) }"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]" @click.stop="(ev) => { canToggle || alternative ? toggleReaction(ev) : stealReaction(ev) }"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -33,7 +33,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { getUnicodeEmoji } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
@@ -52,7 +52,6 @@ const emit = defineEmits<{
 const buttonEl = shallowRef<HTMLElement>();
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const alternative: ComputedRef<string | null> = computed(() => defaultStore.state.reactableRemoteReactionEnabled ? (customEmojisMap.get(emojiName.value)?.name ?? null) : null);
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
@@ -60,7 +59,14 @@ const canToggle = computed(() => {
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
-async function toggleReaction(ev) {
+const reactionName = computed(() => {
+	const r = props.reaction.replace(':', '');
+	return r.slice(0, r.indexOf('@'));
+});
+
+const alternative: ComputedRef<string | null> = computed(() => defaultStore.state.reactableRemoteReactionEnabled ? (customEmojis.value.find(it => it.name === reactionName.value)?.name ?? null) : null);
+
+async function toggleReaction(ev: MouseEvent) {
 	if (!canToggle.value) {
 		chooseAlternative(ev);
 		return;
@@ -89,7 +95,7 @@ async function toggleReaction(ev) {
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
-					reaction: props.reaction,
+					reaction: `:${reactionName.value}:`,
 				});
 			}
 		});
@@ -111,10 +117,45 @@ async function toggleReaction(ev) {
 	}
 }
 
+function stealReaction(ev: MouseEvent) {
+	if (!props.note.user.host && $i && !($i.isAdmin ?? $i.policies.canManageCustomEmojis)) return;
+
+	os.popupMenu([{
+		type: 'label',
+		text: props.reaction,
+	}, {
+		text: i18n.ts.import,
+		icon: 'ti ti-plus',
+		action: async () => {
+			await os.apiWithDialog('admin/emoji/steal', {
+				name: reactionName.value,
+				host: props.note.user.host,
+			});
+		},
+	}, {
+		text: `${i18n.ts.doReaction} (${i18n.ts.import})`,
+		icon: 'ti ti-mood-plus',
+		action: async () => {
+			await os.apiWithDialog('admin/emoji/steal', {
+				name: reactionName.value,
+				host: props.note.user.host,
+			});
+
+			await misskeyApi('notes/reactions/create', {
+				noteId: props.note.id,
+				reaction: `:${reactionName.value}:`,
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
 async function menu(ev) {
 	if (!canGetInfo.value) return;
 
 	os.popupMenu([{
+		type: 'label',
+		text: `:${reactionName.value}:`,
+	}, {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: async () => {
@@ -126,7 +167,14 @@ async function menu(ev) {
 				closed: () => dispose(),
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, customEmojis.value.find(it => it.name === reactionName.value)?.name ? {
+		text: i18n.ts.copy,
+		icon: 'ti ti-copy',
+		action: () => {
+			copyToClipboard(`:${reactionName.value}:`);
+			os.toast(i18n.ts.copied, 'copied');
+		},
+	} : undefined], ev.currentTarget ?? ev.target);
 }
 
 function anime() {
@@ -140,14 +188,15 @@ function anime() {
 	});
 }
 
-const chooseAlternative = (ev) => {
+function chooseAlternative(ev) {
 	// メニュー表示にして、モデレーター以上の場合は登録もできるように
 	if (!alternative.value) return;
+	console.log(alternative.value);
 	misskeyApi('notes/reactions/create', {
 		noteId: props.note.id,
 		reaction: `:${alternative.value}:`,
 	});
-};
+}
 
 watch(() => props.count, (newCount, oldCount) => {
 	if (oldCount < newCount) anime();
