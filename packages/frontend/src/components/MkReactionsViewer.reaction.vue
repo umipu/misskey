@@ -49,7 +49,7 @@ const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement | null>(null);
+const buttonEl = shallowRef<HTMLElement>();
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const alternative: ComputedRef<string | null> = computed(() => defaultStore.state.reactableRemoteReactionEnabled ? (customEmojisMap.get(emojiName.value)?.name ?? null) : null);
@@ -139,6 +139,15 @@ function anime() {
 		end: () => dispose(),
 	});
 }
+
+const chooseAlternative = (ev) => {
+	// メニュー表示にして、モデレーター以上の場合は登録もできるように
+	if (!alternative.value) return;
+	misskeyApi('notes/reactions/create', {
+		noteId: props.note.id,
+		reaction: `:${alternative.value}:`,
+	});
+};
 
 watch(() => props.count, (newCount, oldCount) => {
 	if (oldCount < newCount) anime();
