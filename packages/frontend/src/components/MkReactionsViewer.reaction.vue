@@ -168,13 +168,15 @@ if (!mock) {
 
 		const users = reactions.map(x => x.user);
 
-		os.popup(XDetails, {
+		const { dispose } = os.popup(XDetails, {
 			showing,
 			reaction: props.reaction,
 			users,
 			count: props.count,
 			targetElement: buttonEl.value,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}, 100);
 }
 </script>
