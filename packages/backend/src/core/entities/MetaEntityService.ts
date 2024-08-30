@@ -17,6 +17,7 @@ import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { NodeinfoServerService } from '@/server/NodeinfoServerService.js';
 
 @Injectable()
 export class MetaEntityService {
@@ -130,6 +131,7 @@ export class MetaEntityService {
 			enableUrlPreview: instance.urlPreviewEnabled,
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
 			maxFileSize: this.config.maxFileSize,
+			reversiVersion: NodeinfoServerService.reversiVersion,
 		};
 
 		return packed;
