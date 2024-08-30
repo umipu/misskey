@@ -125,10 +125,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
-				<button v-if="stealButtonVisible" ref="stealButton" :class="$style.footerButton" class="_button" @mousedown="stealMenu(appearNote, stealButton)">
+				<button v-if="stealButtonVisible" ref="stealButton" :class="$style.footerButton" class="_button" @mousedown.prevent="stealMenu(appearNote, stealButton)">
 					<i class="ti ti-swipe"></i>
 				</button>
-				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
 				<MkA v-if="defaultStore.state.infoButtonForNoteActionsEnabled && defaultStore.state.showNoteActionsOnlyHover" :to="notePage(note)" :class="$style.footerButton" class="_button">
@@ -181,7 +181,7 @@ import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import ShNoteHeader from '@/components/ShNoteHeader.vue';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
@@ -205,6 +205,7 @@ import { notePage } from '@/filters/note.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { stealMenu } from '@/scripts/steal-menu.js';
+import { host } from '@/config.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
@@ -869,7 +870,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	z-index: 2;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), var(--X15));
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
 
 	&:hover > .collapsedLabel {
 		background: var(--panelHighlight);

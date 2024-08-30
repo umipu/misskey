@@ -4,10 +4,21 @@
 - Feat: フォローされた際のメッセージを設定できるように
 
 ### Client
--
+- サイズ制限を超過するファイルをアップロードしようとした際にエラーを出すように
 
 ### Server
--
+- ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
+
+## focalorus-1.0.3
+
+### General
+- リバーシがリモートユーザーと対戦に対応 
+	- 相手側のソフトウェアがリバーシのリモートユーザーと対戦に対応している必要があります
+	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/271 , https://github.com/yojo-art/cherrypick/pull/333 , https://github.com/yojo-art/cherrypick/pull/310)
+
+### Client
+- ノートの詳細画面にてパクるボタンが消滅している問題を修正　@nr1a
+- リアクションの相乗りができなかった問題を修正 @nr1a
 
 
 ## 2024.8.0

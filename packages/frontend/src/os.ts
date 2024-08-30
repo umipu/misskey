@@ -715,9 +715,8 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		//       Vueが渡されたコンポーネントに内部的に__propsというプロパティを生やす影響で、
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
-		let dispose;
 		const component = defaultStore.state.usePostFormWindow ? MkPostFormWindow : MkPostFormDialog;
-		popup(component, props, {
+		const { dispose } =popup(component, props, {
 			closed: () => {
 				resolve();
 				dispose();
