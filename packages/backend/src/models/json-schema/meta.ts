@@ -253,6 +253,10 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: false,
 			default: 'local',
 		},
+		maxFileSize: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
 		reversiVersion: {
 			type: 'string',
 			optional: false, nullable: false,
