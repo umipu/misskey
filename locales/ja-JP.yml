@@ -1264,6 +1264,7 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
+clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 
 _delivery:
   status: "配信状態"
@@ -2691,6 +2692,9 @@ _reversi:
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
   useAvatarAsStone: "石をアイコンにする"
+  remoteVersionUnknown: "リモートサーバーのバージョンが不明です"
+  remoteVersionUnknownCaption: "対応していない可能性があります"
+  remoteVersionBad: "リモートサーバーのバージョンが非互換です"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

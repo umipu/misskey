@@ -5072,6 +5072,10 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
     "_delivery": {
         /**
          * 配信状態
@@ -10111,6 +10115,18 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
+        /**
+         * リモートサーバーのバージョンが不明です
+         */
+        "remoteVersionUnknown": string;
+        /**
+         * 対応していない可能性があります
+         */
+        "remoteVersionUnknownCaption": string;
+        /**
+         * リモートサーバーのバージョンが非互換です
+         */
+        "remoteVersionBad": string;
     };
     "_offlineScreen": {
         /**
