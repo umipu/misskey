@@ -15,7 +15,7 @@
 ### General
 - リバーシがリモートユーザーと対戦に対応 
 	- 相手側のソフトウェアがリバーシのリモートユーザーと対戦に対応している必要があります
-	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/271 , https://github.com/yojo-art/cherrypick/pull/333 , https://github.com/yojo-art/cherrypick/pull/310)
+	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/271 , https://github.com/yojo-art/cherrypick/pull/333 , https://github.com/yojo-art/cherrypick/pull/310 ,https://github.com/yojo-art/cherrypick/pull/384)
 
 ### Client
 - ノートの詳細画面にてパクるボタンが消滅している問題を修正　@nr1a
