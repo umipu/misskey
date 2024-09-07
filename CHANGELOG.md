@@ -11,6 +11,13 @@
 ### Server
 - ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
 
+## focalorus-1.0.4
+
+### General
+
+### Client
+- Fix: 非ログインでリバーシの戦績が見れない不具合の修正 (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/404)
+
 ## focalorus-1.0.3
 
 ### General
