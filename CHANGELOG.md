@@ -17,6 +17,7 @@
 
 ### Client
 - Fix: 非ログインでリバーシの戦績が見れない不具合の修正 (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/404)
+- Feat: サーバー情報をアイコンのみにすることができるように @MattyaDaihuku
 
 ## focalorus-1.0.3
 
