@@ -21,7 +21,7 @@ import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { $i } from '@/account.js';
 
 const router = useRouter();
