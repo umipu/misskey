@@ -578,6 +578,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: {} as Record<string, string>,
 	},
 	// #endregion
+	reactionChecksMuting: {
+		where: 'device',
+		default: true,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
