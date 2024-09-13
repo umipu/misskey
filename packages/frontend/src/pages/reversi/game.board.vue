@@ -150,7 +150,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/scripts/clone.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { userPage } from '@/filters/user.js';
