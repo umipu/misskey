@@ -54,7 +54,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { defaultStore } from '@/store.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { MenuItem } from '@/types/menu.js';
@@ -112,7 +112,7 @@ function removeItem(index: number) {
 
 async function save() {
 	defaultStore.set('menu', items.value.map(x => x.type));
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 
 function reset() {
@@ -123,7 +123,7 @@ function reset() {
 }
 
 watch(menuDisplay, async () => {
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 const headerActions = computed(() => []);
