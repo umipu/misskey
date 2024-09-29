@@ -308,9 +308,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 2,
 	},
-	emojiPickerUseDrawerForMobile: {
+	emojiPickerStyle: {
 		where: 'device',
-		default: true,
+		default: 'auto' as 'auto' | 'popup' | 'drawer',
 	},
 	recentlyUsedEmojis: {
 		where: 'device',
@@ -396,9 +396,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'horizontal' as 'vertical' | 'horizontal',
 	},
-	enableCondensedLineForAcct: {
+	enableCondensedLine: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
