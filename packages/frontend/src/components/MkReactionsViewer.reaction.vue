@@ -36,6 +36,8 @@ import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojis, customEmojisMap } from '@/custom-emojis.js';
 
+const reactionChecksMuting = computed(defaultStore.makeGetterSetter('reactionChecksMuting'));
+
 const props = defineProps<{
     reaction: string;
     count: number;
@@ -175,14 +177,17 @@ onMounted(() => {
 
 if (!mock) {
     useTooltip(buttonEl, async (showing) => {
-        const reactions = await misskeyApiGet('notes/reactions', {
+		const useGet = !reactionChecksMuting.value;
+		const apiCall = useGet ? misskeyApiGet : misskeyApi;
+        const reactions = await apiCall('notes/reactions', {
             noteId: props.note.id,
             type: props.reaction,
             limit: 10,
             _cacheKey_: props.count,
         });
 
-        const users = reactions.map(x => x.user);
+		const users = reactions.map(x => x.user);
+		const count = users.length;
 
         const { dispose } = os.popup(XDetails, {
             showing,
