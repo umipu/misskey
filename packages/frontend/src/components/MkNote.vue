@@ -47,13 +47,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
+		<MkInstanceLogo v-if="showInstanceLogo && showTicker" :class="$style.instancelogo" :instance="appearNote.user.instance"/>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="showTicker && !showInstanceLogo" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+					<Mfm
+						v-if="appearNote.cw != ''"
+						:text="appearNote.cw"
+						:author="appearNote.user"
+						:nyaize="'respect'"
+						:enableEmojiMenu="true"
+						:enableEmojiMenuReaction="true"
+					/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
@@ -119,7 +127,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-ban"></i>
 				</button>
 				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--love);"></i>
 					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
@@ -169,6 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { isLink } from '@@/js/is-link.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -180,6 +189,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import MkInstanceLogo from '@/components/MkInstanceLogo.vue';
 import ShNoteHeader from '@/components/ShNoteHeader.vue';
 import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
@@ -199,13 +209,13 @@ import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { notePage } from '@/filters/note.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 import { stealMenu } from '@/scripts/steal-menu.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
@@ -275,6 +285,7 @@ const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hard
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
+const showInstanceLogo = ref(defaultStore.state.instanceLogo);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const stealButtonVisible = appearNote.value.text && (defaultStore.state.numberQuoteEnabled || defaultStore.state.stealEnabled);
 const renoteCollapsed = ref(
@@ -516,16 +527,6 @@ function onContextmenu(ev: MouseEvent): void {
 	if (props.mock) {
 		return;
 	}
-
-	const isLink = (el: HTMLElement): boolean => {
-		if (el.tagName === 'A') return true;
-		// 再生速度の選択などのために、Audio要素のコンテキストメニューはブラウザデフォルトとする。
-		if (el.tagName === 'AUDIO') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-		return false;
-	};
 
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
@@ -827,6 +828,16 @@ function emitUpdReaction(emoji: string, delta: number) {
 	left: 0;
 }
 
+.instancelogo {
+	display: block !important;
+	padding-top: 33px;
+	width: 0;
+	height: 25px;
+	z-index: 10;
+	position: sticky !important;
+	top: calc(22px + var(--stickyTop, 0px));
+}
+
 .main {
 	flex: 1;
 	min-width: 0;
@@ -972,6 +983,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 		width: 50px;
 		height: 50px;
 	}
+
+	.instancelogo {
+		padding-top: 29px;
+		height: 21px;
+	}
 }
 
 @container (max-width: 500px) {
@@ -1018,6 +1034,12 @@ function emitUpdReaction(emoji: string, delta: number) {
 		height: 46px;
 		top: calc(14px + var(--stickyTop, 0px));
 	}
+
+	.instancelogo {
+		padding-top: 27px;
+		height: 19px;
+		top: calc(14px + var(--stickyTop, 0px));
+	}
 }
 
 @container (max-width: 400px) {
@@ -1049,6 +1071,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 	.avatar {
 		width: 44px;
 		height: 44px;
+	}
+
+	.instancelogo {
+		height: 17px;
 	}
 
 	.root:not(.showActionsOnlyHover) {

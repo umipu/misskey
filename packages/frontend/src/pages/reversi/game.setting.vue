@@ -114,17 +114,15 @@ import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router/supplier.js';
-
-const $i = signinRequired();
+import { $i } from '@/account.js';
 
 const router = useRouter();
 
@@ -222,7 +220,7 @@ function updateSettings(key: keyof Misskey.entities.ReversiGameDetailed) {
 }
 
 function onUpdateSettings({ userId, key, value }: { userId: string; key: keyof Misskey.entities.ReversiGameDetailed; value: any; }) {
-	if (userId === $i.id) return;
+	if (userId === $i?.id) return;
 	if (game.value[key] === value) return;
 	game.value[key] = value;
 	if (isReady.value) {

@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, shallowRef, watch, ComputedRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getUnicodeEmoji } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -34,7 +35,8 @@ import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojis, customEmojisMap } from '@/custom-emojis.js';
-import { getUnicodeEmoji } from '@/scripts/emojilist.js';
+
+const reactionChecksMuting = computed(defaultStore.makeGetterSetter('reactionChecksMuting'));
 
 const props = defineProps<{
     reaction: string;
@@ -175,14 +177,17 @@ onMounted(() => {
 
 if (!mock) {
     useTooltip(buttonEl, async (showing) => {
-        const reactions = await misskeyApiGet('notes/reactions', {
+		const useGet = !reactionChecksMuting.value;
+		const apiCall = useGet ? misskeyApiGet : misskeyApi;
+        const reactions = await apiCall('notes/reactions', {
             noteId: props.note.id,
             type: props.reaction,
             limit: 10,
             _cacheKey_: props.count,
         });
 
-        const users = reactions.map(x => x.user);
+		const users = reactions.map(x => x.user);
+		const count = users.length;
 
         const { dispose } = os.popup(XDetails, {
             showing,
